@@ -1,5 +1,7 @@
 <?php
+
 namespace at\externet\eps_bank_transfer;
+
 use org\cakephp;
 
 class SoCommunicator
@@ -69,7 +71,7 @@ class SoCommunicator
     {
         $url = 'https://routing.eps.or.at/appl/epsSO/data/haendler/v2_4';
         $body = $this->GetUrl($url, 'Requesting bank list');
-        
+
         if ($validateXml)
             XmlValidator::ValidateBankList($body);
         return $body;
@@ -78,7 +80,7 @@ class SoCommunicator
     /**
      * Sends the given TransferInitiatorDetails to the Scheme Operator
      * @param TransferInitiatorDetails $transferInitiatorDetails
-     * @param targetUrl url with preselected bank identifier
+     * @param string $targetUrl url with preselected bank identifier
      * @throws XmlValidationException when the returned BankResponseDetails does not validate against XSD
      * @throws cakephp\SocketException when communication with SO fails
      * @return string BankResponseDetails
@@ -98,9 +100,9 @@ class SoCommunicator
 
     /**
      * Call this function when the confirmation URL is called by the Scheme Operator.
-     * @param type $callback a callable to send BankConfirmationDetails to.
+     * @param callable $callback a callable to send BankConfirmationDetails to.
      * This callable must return TRUE.
-     * @param type $rawPostStream will read from this stream or file with file_get_contents
+     * @param string $rawPostStream will read from this stream or file with file_get_contents
      * @throws InvalidCallbackException when callback is not callable
      * @throws CallbackResponseException when callback does not return TRUE
      * @throws XmlValidationException when $rawInputStream does not validate against XSD
@@ -124,38 +126,24 @@ class SoCommunicator
             $this->WriteLog('Cannot handle confirmation URL. ' . $message);
             throw new CallbackResponseException($message);
         }
-        
+
         // TODO 7.1.8. Schritt III-2: Vitality Check eps SO-Händler
         // TODO 7.1.9. Schritt III-3: Bestätigung Vitality Check Händler-eps SO
         // TOOD Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
-
         //$this->GetBankConfirmationDetailsArray();
     }
-/*
-    public function GetBankConfirmationDetailsArray()
-    {
-        $simpleXml = new \SimpleXMLElement($this->GetBankConfirmationDetails());
-        $bankConfirmationDetails = $simpleXml->children(XMLNS_epsp)->BankConfirmationDetails;
-        $paymentConfirmationDetails = $bankConfirmationDetails->children(XMLNS_eps)->PaymentConfirmationDetails;
-        $remittanceIdentifier = $paymentConfirmationDetails->children(XMLNS_epi)->RemittanceIdentifier;
-        return array(
-            'SessionId' => '' . $bankConfirmationDetails->SessionId,
-            'PaymentConfirmationDetails' => array(
-                'RemittanceIdentifier' => '' . $remittanceIdentifier,
-                'PayConApprovalTime' => '' . $paymentConfirmationDetails->PayConApprovalTime,
-                'PaymentReferenceIdentifier' => '' . $paymentConfirmationDetails->PaymentReferenceIdentifier,
-                'StatusCode' => '' . $paymentConfirmationDetails->StatusCode
-            )
-        );
-    }
 
-    public function GetBankConfirmationDetails()
-    {
-        $HTTP_RAW_POST_DATA = file_get_contents($this->RawPostStream);
-        XmlValidator::ValidateEpsProtocol($HTTP_RAW_POST_DATA);
-        return $HTTP_RAW_POST_DATA;
-    }
-*/
+    /*
+
+
+      public function GetBankConfirmationDetails()
+      {
+      $HTTP_RAW_POST_DATA = file_get_contents($this->RawPostStream);
+      XmlValidator::ValidateEpsProtocol($HTTP_RAW_POST_DATA);
+      return $HTTP_RAW_POST_DATA;
+      }
+     */
+
     private function GetUrl($url, $logMessage)
     {
         $this->WriteLog($logMessage);
@@ -189,8 +177,9 @@ class SoCommunicator
         if (is_callable($this->LogCallback))
         {
             if ($success != null)
-                $message = ($success ? "SUCCESS":"FAIL") . ' ' . $message;
+                $message = ($success ? "SUCCESS" : "FAIL") . ' ' . $message;
             call_user_func($this->LogCallback, $message);
         }
     }
+
 }
