@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008" targetNamespace="http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xsd:element name="epsSOBankListProtocol">
+    <xsd:annotation>
+      <xsd:documentation>Liste von Banken erreichbar über den eps Scheme Operator</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name="bank" type="bankData" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="errorDetails" type="errorData" />
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="bankData">
+    <xsd:sequence>
+      <xsd:element name="bic">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[A-Z]{6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3}){0,1}" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="bezeichnung">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="80" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="land">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[A-Z]{2}" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="epsUrl">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:anyURI">
+            <xsd:maxLength value="120" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="zahlungsweiseNat" type="auftragsart" maxOccurs="3" />
+      <xsd:element name="zahlungsweiseInt" type="auftragsartInt" minOccurs="0" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="errorData">
+    <xsd:sequence>
+      <xsd:element name="errorCode">
+        <xsd:simpleType>
+          <xsd:annotation>
+            <xsd:documentation>Moegliche Werte: 001 (Schemavalidierung nicht möglich), 002 (Interner
+              Fehler), 003 (Unbekannter Fehler)</xsd:documentation>
+          </xsd:annotation>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="001" />
+            <xsd:enumeration value="002" />
+            <xsd:enumeration value="003" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="errorMsg" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="255" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="auftragsartTyp">
+    <xsd:annotation>
+      <xsd:documentation>Moegliche Werte: EPG (garantierte Zahlung), EPN (nicht garantierte Zahlung),
+        EPF (FlatFee)</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="EPG" />
+      <xsd:enumeration value="EPN" />
+      <xsd:enumeration value="EPF" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="auftragsart">
+    <xsd:simpleContent>
+      <xsd:extension base="auftragsartTyp">
+        <xsd:attribute name="terminueberweisung" type="xsd:boolean" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:simpleType name="auftragsartInt">
+    <xsd:annotation>
+      <xsd:documentation>Moegliche Werte: EPG (garantierte Zahlung)</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="auftragsartTyp">
+      <xsd:enumeration value="EPG" />
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

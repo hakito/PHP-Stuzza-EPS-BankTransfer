@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2011 (http://www.altova.com) von STUZZA (STUZZA) bearbeitet -->
+<!-- edited with XMLSPY v5 rel. 3 U (http://www.xmlspy.com) by Hendrik Muus (STUZZA GmbH) -->
+<!-- XML schema  for TC6 WG2 ePI electronic Payment Initiator datacontainer
+    (c) 2003 TC6 WG2 ePI
+-->
+<!--Version 1.1 - Joachim Geisler, November 2011: change original namespace from "http://www.ecbs.org/epi/15092003" to "http://www.stuzza.at/namespaces/eps/epi/11-2011" since www.ecbs.org as European Committee for Banking Standards no longer exist and therefore is the registrar of the underlying domain!
+March 2012: ECBS_ePI_V11.xsd => update character definition (see pattern definition in data elements) according to SEPA requirements-->
+<!--Joachim Geisler, 13.11.2003: changes due to discussions on version control, BIC pattern-->
+<!--Datacontainer for Payment Initiator, based on ECBS ePI Bankstandard-->
+<xsd:schema xmlns:epi="http://www.stuzza.at/namespaces/eps/epi/2011/11" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.stuzza.at/namespaces/eps/epi/2011/11" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:element name="EpiDetails">
+		<xsd:annotation>
+			<xsd:documentation>Electronic Payment Initiator (payment request) Datacontainer- rootelement</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epi:IdentificationDetails"/>
+				<xsd:element ref="epi:PartyDetails"/>
+				<xsd:element ref="epi:PaymentInstructionDetails"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="IdentificationDetails">
+		<xsd:annotation>
+			<xsd:documentation>additional information to payment details</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epi:Date"/>
+				<xsd:element ref="epi:ReferenceIdentifier"/>
+				<xsd:element ref="epi:Url" minOccurs="0"/>
+				<xsd:element ref="epi:EmailAddressIdentifier" minOccurs="0"/>
+				<xsd:element ref="epi:OrderInfoText" minOccurs="0"/>
+				<xsd:element ref="epi:OrderingCustomerOfiIdentifier" minOccurs="0"/>
+				<xsd:element ref="epi:OrderingCustomerIdentifier" minOccurs="0"/>
+				<xsd:element ref="epi:OrderingCustomerNameAddressText" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Date" type="xsd:date">
+		<xsd:annotation>
+			<xsd:documentation>The date on which the ePI was created, or was made available to the ordering customer, by or on behalf of the beneficiary</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="PartyDetails">
+		<xsd:annotation>
+			<xsd:documentation>A person or organisation involved in or impacted by a business process</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epi:BfiPartyDetails"/>
+				<xsd:element ref="epi:BeneficiaryPartyDetails"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="BfiPartyDetails">
+		<xsd:annotation>
+			<xsd:documentation>Beneficiarys Financial Institution (BFI)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epi:BfiBicIdentifier"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="BeneficiaryPartyDetails">
+		<xsd:annotation>
+			<xsd:documentation>identification of beneficiary</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:choice>
+					<xsd:element ref="epi:BeneficiaryNameAddressText"/>
+					<xsd:element ref="epi:BeneficiaryBeiIdentifier"/>
+				</xsd:choice>
+				<xsd:element ref="epi:BeneficiaryAccountIdentifier"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="PaymentInstructionDetails">
+		<xsd:annotation>
+			<xsd:documentation>An instruction to place at the disposal of an ultimate beneficiary a fixed or determinable amount of money on behalf of the ordering customer</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epi:PaymentInstructionIdentifier" minOccurs="0"/>
+				<xsd:element ref="epi:TransactionTypeCode" minOccurs="0"/>
+				<xsd:element ref="epi:InstructionCode" minOccurs="0"/>
+				<xsd:element ref="epi:RemittanceIdentifier"/>
+				<xsd:element ref="epi:InstructedAmount"/>
+				<xsd:element ref="epi:ChargeCode"/>
+				<xsd:element ref="epi:DateOptionDetails" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="PaymentInstructionIdentifier">
+		<xsd:annotation>
+			<xsd:documentation>String of characters that serves as an identification of the particular payment instruction provided by the beneficiary for optional use by the ordering customer.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="35"/>
+				<xsd:pattern value="[\-A-Za-z0-9\+/\?:\(\)\.,'&#x20;]*"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="TransactionTypeCode">
+		<xsd:annotation>
+			<xsd:documentation>Specification in coded form of the underlying reason for the transfer of funds</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="3"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="ReferenceIdentifier">
+		<xsd:annotation>
+			<xsd:documentation>The reference assigned to the document by or on behalf of the beneficiary</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="35"/>
+				<xsd:pattern value="[\-A-Za-z0-9\+/\?:\(\)\.,'&#x20;äöüßÄÖÜ&amp;&gt;&lt;&quot;\|€$§%!=#~;\*\{\}\[\]@\\_°\^]*"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="Url">
+		<xsd:annotation>
+			<xsd:documentation>Beneficiary’s URL (Uniform Resource Locator); information to the web-site of the beneficiary, or on behalf, a third party service provider</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:anyURI">
+				<xsd:maxLength value="512"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="EmailAddressIdentifier">
+		<xsd:annotation>
+			<xsd:documentation>eMail address of the beneficiary, or on behalf, a third party service provider</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="512"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="OrderInfoText">
+		<xsd:annotation>
+			<xsd:documentation>Free text information between beneficiary and ordering customer which will not be part of the payment instruction!</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="350"/>
+				<xsd:pattern value="[\-A-Za-z0-9\+/\?:\(\)\.,'&#x20;äöüßÄÖÜ&amp;&gt;&lt;&quot;\|€$§%!=#~;\*\{\}\[\]@\\_°\^]*"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="OrderingCustomerOfiIdentifier">
+		<xsd:annotation>
+			<xsd:documentation>Identification of ordering customer’s financial institution by a BIC, routing information for  use in more complex scenarios</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:minLength value="8"/>
+				<xsd:maxLength value="11"/>
+				<xsd:pattern value="[A-Z]{6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3}){0,1}"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="OrderingCustomerIdentifier">
+		<xsd:annotation>
+			<xsd:documentation>Ordering customer’s account identification, routing information for use in more complex scenarios</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="34"/>
+				<xsd:pattern value="[A-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="OrderingCustomerNameAddressText">
+		<xsd:annotation>
+			<xsd:documentation>Identification of ordering customer in non-coded form, routing information for use in more complex scenarios</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="140"/>
+				<xsd:pattern value="[\-A-Za-z0-9\+/\?:\(\)\.,'&#x20;äöüßÄÖÜ&amp;&gt;&lt;&quot;\|€$§%!=#~;\*\{\}\[\]@\\_°\^]*"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="BfiBicIdentifier">
+		<xsd:annotation>
+			<xsd:documentation>An 8 or 11 character ISO code assigned by SWIFT and used to identify a financial institution in financial transactions</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:minLength value="8"/>
+				<xsd:maxLength value="11"/>
+				<xsd:pattern value="[A-Z]{6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3}){0,1}"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="BeneficiaryNameAddressText">
+		<xsd:annotation>
+			<xsd:documentation>identification of the beneficiary in non-coded form</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="140"/>
+				<xsd:pattern value="[\-A-Za-z0-9\+/\?:\(\)\.,'&#x20;äöüßÄÖÜ&amp;&gt;&lt;&quot;\|€$§%!=#~;\*\{\}\[\]@\\_°\^]*"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="BeneficiaryBeiIdentifier">
+		<xsd:annotation>
+			<xsd:documentation>the Business Entity Identifier registered for the beneficiary</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="11"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="BeneficiaryAccountIdentifier">
+		<xsd:annotation>
+			<xsd:documentation>The unique and unambiguous identification of the account for the account owner and the account servicer. This must be an IBAN (International Bank Account Number).</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="34"/>
+				<xsd:pattern value="[A-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="InstructionCode">
+		<xsd:annotation>
+			<xsd:documentation>Further stipulates instruction related to the processing of the payment instruction. This can relate to a level of service between the financial institution and the customer, or give instruction for the next parties in the payment chain (e.g. intermediaries)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="35"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="RemittanceIdentifier">
+		<xsd:annotation>
+			<xsd:documentation>A string of characters, to be forwarded with the payment throughout the payment chain in order to identify and reconcile the credit transfer upon receipt by the ultimate beneficiary</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="35"/>
+				<xsd:pattern value="[\-A-Za-z0-9\+/\?:\(\)\.,'&#x20;]*"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="InstructedAmount">
+		<xsd:annotation>
+			<xsd:documentation>Associated with the Class PaymentInstructionDetails, a monetary amount as specified by the beneficiary</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="xsd:decimal">
+					<xsd:attribute name="AmountCurrencyIdentifier" use="required">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="3"/>
+								<xsd:pattern value="[A-Z]{3}"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ChargeCode">
+		<xsd:annotation>
+			<xsd:documentation>Stipulation, in coded form, of which party(ies) will bear the charges for the performance of a/several business processes</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="3"/>
+				<xsd:enumeration value="SHA"/>
+				<xsd:enumeration value="BEN"/>
+				<xsd:enumeration value="OUR"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="DateOptionDetails">
+		<xsd:annotation>
+			<xsd:documentation>Associated with the Class PaymentInstructionDetails, the date and time on which  a specific process is requested to be performed</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epi:OptionDate" minOccurs="0"/>
+				<xsd:element ref="epi:OptionTime" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="DateSpecificationCode" use="required">
+				<xsd:annotation>
+					<xsd:documentation>Specifies whether the DateOption is a credit  (CRD) or a debit (DBD) date</xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="3"/>
+						<xsd:enumeration value="CRD"/>
+						<xsd:enumeration value="DBD"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="OptionDate" type="xsd:date">
+		<xsd:annotation>
+			<xsd:documentation>The date on which the beneficiary would like to have the funds available on his/her account (credit date) or on which the ordering customer’s financial institution  should initiate the funds transfer by transferring funds from the ordering customer (debit date).</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="OptionTime" type="xsd:time">
+		<xsd:annotation>
+			<xsd:documentation>The optional time indication which may be added to the date if the date is present.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+</xsd:schema>
