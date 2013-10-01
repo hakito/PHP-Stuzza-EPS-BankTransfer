@@ -5,12 +5,12 @@ require_once dirname(dirname(dirname(dirname(dirname(__DIR__))))) . DIRECTORY_SE
 
 class BaseTest extends \PHPUnit_Framework_TestCase
 {
-    public function GetEpsData($filename)
+    public static function GetEpsData($filename)
     {
-        return file_get_contents($this->GetEpsDataPath($filename));
+        return file_get_contents(self::GetEpsDataPath($filename));
     }
 
-    public function GetEpsDataPath($filename)
+    public static function GetEpsDataPath($filename)
     {
         return __DIR__ . DIRECTORY_SEPARATOR . 'EpsData' . DIRECTORY_SEPARATOR . $filename;
     }
