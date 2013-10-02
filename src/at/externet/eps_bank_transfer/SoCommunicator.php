@@ -100,6 +100,9 @@ class SoCommunicator
 
     /**
      * Call this function when the confirmation URL is called by the Scheme Operator.
+     * The function will write ShopResponseDetails to the $outputStream in case of
+     * BankConfirmationDetails.
+     * 
      * @param callable $confirmationCallback a callable to send BankConfirmationDetails to.
      * This callable must return TRUE.
      * @param callable $vitalityCheckCallback an optional callable for the vitalityCheck
@@ -127,7 +130,7 @@ class SoCommunicator
             $this->ReturnShopResponseError('Error occured during XML validation', $outputStream);
             throw $e;
         }        
-
+        
         $xml = new \SimpleXMLElement($HTTP_RAW_POST_DATA);
         $epspChildren = $xml->children(XMLNS_epsp);
         $firstChildName = $epspChildren[0]->getName();
@@ -136,13 +139,25 @@ class SoCommunicator
         {            
             if ($vitalityCheckCallback != null)            
             {
-                $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', $HTTP_RAW_POST_DATA);
+                $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', $HTTP_RAW_POST_DATA, $outputStream);
             }
             // 7.1.9 Schritt III-3: Bestätigung Vitality Check Händler-eps SO
             file_put_contents($outputStream, $HTTP_RAW_POST_DATA);
         } else if ($firstChildName == 'BankConfirmationDetails')
         {
-            $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', $HTTP_RAW_POST_DATA);
+            $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', $HTTP_RAW_POST_DATA, $outputStream);
+
+            // Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
+            $BankConfirmationDetails = $epspChildren[0];
+            $t = $BankConfirmationDetails->children(XMLNS_eps); // Nescessary because of missing language feature in PHP 5.3
+            $PaymentConfirmationDetails = $t[0];
+
+            $shopResponseDetails = new ShopResponseDetails();
+            $shopResponseDetails->SessionId = $BankConfirmationDetails->SessionId;
+            $shopResponseDetails->StatusCode = $PaymentConfirmationDetails->StatusCode;
+            if (!empty($PaymentConfirmationDetails->PaymentReferenceIdentifier))
+                $shopResponseDetails->PaymentReferenceIdentifier = $PaymentConfirmationDetails->PaymentReferenceIdentifier;
+            file_put_contents($outputStream, $shopResponseDetails->GetSimpleXml()->asXml());            
         } else
         {        
             // Should never be executed
@@ -150,10 +165,9 @@ class SoCommunicator
             $this->ReturnShopResponseError($message, $outputStream);
             throw new \UnexpectedValueException($message);
         }
-
-        // TOOD Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
-        //$this->GetBankConfirmationDetailsArray();
     }
+    
+    // Private functions
 
     private function ReturnShopResponseError($message, $outputStream)
     {            
@@ -163,12 +177,13 @@ class SoCommunicator
         $this->WriteLog($message);        
     }
     
-    private function ConfirmationUrlCallback($callback, $name, $xml)
+    private function ConfirmationUrlCallback($callback, $name, $xml, $outputStream)
     {
         if (call_user_func($callback, $xml) !== true)
         {
             $message = 'The given ' . $name . ' confirmation callback function did not return TRUE';
-            $this->WriteLog('Cannot handle confirmation URL. ' . $message);
+            $fullMessage = 'Cannot handle confirmation URL. ' . $message;
+            $this->ReturnShopResponseError($fullMessage, $outputStream);
             throw new CallbackResponseException($message);
         }
     }
