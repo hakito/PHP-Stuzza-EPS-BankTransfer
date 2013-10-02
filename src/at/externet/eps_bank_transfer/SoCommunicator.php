@@ -104,7 +104,8 @@ class SoCommunicator
      * BankConfirmationDetails.
      * 
      * @param callable $confirmationCallback a callable to send BankConfirmationDetails to.
-     * This callable must return TRUE.
+     * Will be called with the parameters BankConfirmationDetails as string and 
+     * RemittanceIdentifier as string. This callable must return TRUE.
      * @param callable $vitalityCheckCallback an optional callable for the vitalityCheck
      * @param string $rawPostStream will read from this stream or file with file_get_contents
      * @param string $outputStream will write to this stream the expected responses for the
@@ -139,19 +140,39 @@ class SoCommunicator
         {            
             if ($vitalityCheckCallback != null)            
             {
-                $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', $HTTP_RAW_POST_DATA, $outputStream);
+                $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', array($HTTP_RAW_POST_DATA), $outputStream);
             }
             // 7.1.9 Schritt III-3: Bestätigung Vitality Check Händler-eps SO
             file_put_contents($outputStream, $HTTP_RAW_POST_DATA);
         } else if ($firstChildName == 'BankConfirmationDetails')
-        {
-            $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', $HTTP_RAW_POST_DATA, $outputStream);
+        {            
+            $BankConfirmationDetails = $epspChildren[0];
+            $t1 = $BankConfirmationDetails->children(XMLNS_eps); // Nescessary because of missing language feature in PHP 5.3
+            $PaymentConfirmationDetails = $t1[0];
+            $t2 = $PaymentConfirmationDetails->children(XMLNS_epi);
+            $remittanceIdentifier = null;
+            
+            if (isset($t2->RemittanceIdentifier))
+            {
+                $remittanceIdentifier = $t2->RemittanceIdentifier;
+            }
+            else
+            {
+                $t3 = $PaymentConfirmationDetails->PaymentInitiatorDetails->children(XMLNS_epi);
+                $EpiDetails = $t3[0];            
+                $remittanceIdentifier = $EpiDetails->PaymentInstructionDetails->RemittanceIdentifier;                
+            }
+            
+            if ($remittanceIdentifier == null)
+            {
+                $message = 'Could not find RemittanceIdentifier in XML';
+                $this->ReturnShopResponseError($message, $outputStream);
+                throw new \LogicException($message);
+            }
+            
+            $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', array($HTTP_RAW_POST_DATA, $remittanceIdentifier), $outputStream);
 
             // Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
-            $BankConfirmationDetails = $epspChildren[0];
-            $t = $BankConfirmationDetails->children(XMLNS_eps); // Nescessary because of missing language feature in PHP 5.3
-            $PaymentConfirmationDetails = $t[0];
-
             $shopResponseDetails = new ShopResponseDetails();
             $shopResponseDetails->SessionId = $BankConfirmationDetails->SessionId;
             $shopResponseDetails->StatusCode = $PaymentConfirmationDetails->StatusCode;
@@ -177,9 +198,9 @@ class SoCommunicator
         $this->WriteLog($message);        
     }
     
-    private function ConfirmationUrlCallback($callback, $name, $xml, $outputStream)
+    private function ConfirmationUrlCallback($callback, $name, $args, $outputStream)
     {
-        if (call_user_func($callback, $xml) !== true)
+        if (call_user_func_array($callback, $args) !== true)
         {
             $message = 'The given ' . $name . ' confirmation callback function did not return TRUE';
             $fullMessage = 'Cannot handle confirmation URL. ' . $message;

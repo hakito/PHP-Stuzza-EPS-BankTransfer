@@ -203,6 +203,30 @@ class SoCommunicatorTest extends BaseTest
         $this->assertEquals($actual, $expected);
     }
     
+    public function testHandleConfirmationUrlCallsCallbackWithRemittanceIdentifier()
+    {
+        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignature.xml');
+        $remittanceIdentifier = 'Nothing';
+        $this->target->HandleConfirmationUrl(function($data, $ri) use (&$remittanceIdentifier) {
+            $remittanceIdentifier = $ri;
+            return true;
+            }, null, $dataPath, 'php://temp');
+        
+        $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
+    }
+    
+    public function testHandleConfirmationUrlCallsCallbackWithRemittanceIdentifierWithGivenSignature()
+    {
+        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
+        $remittanceIdentifier = 'Nothing';
+        $this->target->HandleConfirmationUrl(function($data, $ri) use (&$remittanceIdentifier) {
+            $remittanceIdentifier = $ri;
+            return true;
+            }, null, $dataPath, 'php://temp');
+        
+        $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
+    }
+    
     public function testHandleConfirmationUrlThrowsExceptionWhenCallbackDoesNotReturnTrue()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignature.xml');
