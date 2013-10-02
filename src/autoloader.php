@@ -10,4 +10,5 @@ spl_autoload_register(function ($className)
 }
 );
 
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'org' . DIRECTORY_SEPARATOR . 'cakephp' . DIRECTORY_SEPARATOR . 'basics.php';
+require_once join(DIRECTORY_SEPARATOR, array(__DIR__, 'org', 'cakephp', 'basics.php'));
+require_once join(DIRECTORY_SEPARATOR, array(__DIR__, 'at', 'externet', 'eps_bank_transfer', 'functions.php'));
