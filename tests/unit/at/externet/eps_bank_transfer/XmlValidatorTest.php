@@ -36,4 +36,10 @@ class XmlValidatorTest extends BaseTest
         $ret = XmlValidator::ValidateBankList($this->GetEpsData('BankListSample.xml'));
         $this->assertTrue($ret);
     }
+    
+    public function testWithSignatureReturnsTrue()
+    {
+        $ret = XmlValidator::ValidateEpsProtocol($this->GetEpsData('BankConfirmationDetailsWithSignature.xml'));
+        $this->assertTrue($ret);
+    }
 }
