@@ -100,49 +100,89 @@ class SoCommunicator
 
     /**
      * Call this function when the confirmation URL is called by the Scheme Operator.
-     * @param callable $callback a callable to send BankConfirmationDetails to.
+     * @param callable $confirmationCallback a callable to send BankConfirmationDetails to.
      * This callable must return TRUE.
+     * @param callable $vitalityCheckCallback an optional callable for the vitalityCheck
      * @param string $rawPostStream will read from this stream or file with file_get_contents
+     * @param string $outputStream will write to this stream the expected responses for the
+     * Scheme Operator
      * @throws InvalidCallbackException when callback is not callable
      * @throws CallbackResponseException when callback does not return TRUE
      * @throws XmlValidationException when $rawInputStream does not validate against XSD
      * @throws cakephp\SocketException when communication with SO fails
      */
-    public function HandleConfirmationUrl($callback, $rawPostStream = 'php://input')
+    public function HandleConfirmationUrl($confirmationCallback, $vitalityCheckCallback = null, $rawPostStream = 'php://input', $outputStream = 'php://output')
     {
-        if (!is_callable($callback))
+        $this->TestCallability($confirmationCallback, 'confirmationCallback', $outputStream);
+        if ($vitalityCheckCallback != null)
+            $this->TestCallability($vitalityCheckCallback, 'vitalityCheckCallback', $outputStream);
+
+        $HTTP_RAW_POST_DATA = file_get_contents($rawPostStream);        
+        try
         {
-            $message = 'The given callback function is not a callable';
-            $this->WriteLog('Cannot handle confirmation URL. ' . $message);
-            throw new InvalidCallbackException($message);
+            XmlValidator::ValidateEpsProtocol($HTTP_RAW_POST_DATA);
+        }
+        catch (\Exception $e)
+        {
+            $this->ReturnShopResponseError('Error occured during XML validation', $outputStream);
+            throw $e;
+        }        
+
+        $xml = new \SimpleXMLElement($HTTP_RAW_POST_DATA);
+        $epspChildren = $xml->children(XMLNS_epsp);
+        $firstChildName = $epspChildren[0]->getName();
+        
+        if ($firstChildName == 'VitalityCheckDetails')
+        {            
+            if ($vitalityCheckCallback != null)            
+            {
+                $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', $HTTP_RAW_POST_DATA);
+            }
+            // 7.1.9 Schritt III-3: Bestätigung Vitality Check Händler-eps SO
+            file_put_contents($outputStream, $HTTP_RAW_POST_DATA);
+        } else if ($firstChildName == 'BankConfirmationDetails')
+        {
+            $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', $HTTP_RAW_POST_DATA);
+        } else
+        {        
+            // Should never be executed
+            $message = 'No implementation to handle the given value: ' . $firstChildName;
+            $this->ReturnShopResponseError($message, $outputStream);
+            throw new \UnexpectedValueException($message);
         }
 
-        $HTTP_RAW_POST_DATA = file_get_contents($rawPostStream);
-        XmlValidator::ValidateEpsProtocol($HTTP_RAW_POST_DATA);
-
-        if (!call_user_func($callback, $HTTP_RAW_POST_DATA))
-        {
-            $message = 'The given callback function did not return TRUE';
-            $this->WriteLog('Cannot handle confirmation URL. ' . $message);
-            throw new CallbackResponseException($message);
-        }
-
-        // TODO 7.1.8. Schritt III-2: Vitality Check eps SO-Händler
-        // TODO 7.1.9. Schritt III-3: Bestätigung Vitality Check Händler-eps SO
         // TOOD Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
         //$this->GetBankConfirmationDetailsArray();
     }
 
-    /*
-
-
-      public function GetBankConfirmationDetails()
-      {
-      $HTTP_RAW_POST_DATA = file_get_contents($this->RawPostStream);
-      XmlValidator::ValidateEpsProtocol($HTTP_RAW_POST_DATA);
-      return $HTTP_RAW_POST_DATA;
-      }
-     */
+    private function ReturnShopResponseError($message, $outputStream)
+    {            
+        $shopResponseDetails = new ShopResponseDetails();        
+        $shopResponseDetails->ErrorMsg = $message;
+        file_put_contents($outputStream, $shopResponseDetails->GetSimpleXml()->asXml());
+        $this->WriteLog($message);        
+    }
+    
+    private function ConfirmationUrlCallback($callback, $name, $xml)
+    {
+        if (call_user_func($callback, $xml) !== true)
+        {
+            $message = 'The given ' . $name . ' confirmation callback function did not return TRUE';
+            $this->WriteLog('Cannot handle confirmation URL. ' . $message);
+            throw new CallbackResponseException($message);
+        }
+    }
+    
+    private function TestCallability(&$callback, $name, $outputStream)
+    {
+        if (!is_callable($callback))
+        {
+            $message = 'The given callback function for "' . $name . '" is not a callable';            
+            $fullMessage = 'Cannot handle confirmation URL. ' . $message;                        
+            $this->ReturnShopResponseError($fullMessage, $outputStream);
+            throw new InvalidCallbackException($message);
+        }
+    }
 
     private function GetUrl($url, $logMessage)
     {

@@ -164,14 +164,31 @@ class SoCommunicatorTest extends BaseTest
     public function testHandleConfirmationUrlThrowsExceptionOnMissingCallback()
     {
         $this->setExpectedException('at\externet\eps_bank_transfer\InvalidCallbackException');
-        $this->target->HandleConfirmationUrl(null);
+        $this->target->HandleConfirmationUrl(null, null, null, 'php://temp');
+    }
+    
+    public function testHandleConfirmationUrlReturnsErrorOnMissingCallback()
+    {
+        $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
+        $message = null;
+        try
+        {
+            $this->target->HandleConfirmationUrl(null, null, null, $temp);
+        } catch (\at\externet\eps_bank_transfer\InvalidCallbackException $e)
+        {
+            $message = $e->getMessage();
+        }
+        $actual = file_get_contents($temp);
+        XmlValidator::ValidateEpsProtocol($actual);
+        $this->assertNotEmpty($message);
+        $this->assertContains($message, $actual);        
     }
 
     public function testHandleConfirmationUrlThrowsExceptionOnInvalidXml()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsInvalid.xml');
         $this->setExpectedException('at\externet\eps_bank_transfer\XmlValidationException');
-        $this->target->HandleConfirmationUrl(function(){}, $dataPath);
+        $this->target->HandleConfirmationUrl(function(){}, null, $dataPath, 'php://temp');
     }
 
     public function testHandleConfirmationUrlCallsCallback()
@@ -181,18 +198,88 @@ class SoCommunicatorTest extends BaseTest
         $this->target->HandleConfirmationUrl(function($data) use (&$actual) {
             $actual = $data;
             return true;
-            }, $dataPath);
+            }, null, $dataPath);
         $expected = file_get_contents($dataPath);
         $this->assertEquals($actual, $expected);
     }
-
+    
     public function testHandleConfirmationUrlThrowsExceptionWhenCallbackDoesNotReturnTrue()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignature.xml');
         $this->setExpectedException('at\externet\eps_bank_transfer\CallbackResponseException');
-        $this->target->HandleConfirmationUrl(function($data) {}, $dataPath);
+        $this->target->HandleConfirmationUrl(function($data) {}, null, $dataPath);
     }
-
+    
+    public function testHandleConfirmationUrlVitalityCheckDoesNotCallBankConfirmationCallback()
+    {
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
+        $actual = true;
+        $this->target->HandleConfirmationUrl(function($data) use (&$actual)
+                {
+                    $actual = false;
+                    return true;
+                }, null, $dataPath, 'php://temp');
+        $this->assertTrue($actual);
+    }
+    
+    public function testHandleConfirmationUrlVitalityThrowsExceptionOnInvalidValidationCallback()
+    {
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
+        $this->setExpectedException('at\externet\eps_bank_transfer\InvalidCallbackException');
+        $this->target->HandleConfirmationUrl(function($data) {}, "invalid", $dataPath, 'php://temp');       
+    }
+    
+    public function testHandleConfirmationUrlVitalityReturnsErrorOnInvalidValidationCallback()
+    {
+        $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
+        $message = null;
+        try
+        {
+            $this->target->HandleConfirmationUrl(function($data) {}, "invalid", null, $temp);
+        } catch (\at\externet\eps_bank_transfer\InvalidCallbackException $e)
+        {
+            $message = $e->getMessage();
+        }
+        $actual = file_get_contents($temp);
+        XmlValidator::ValidateEpsProtocol($actual);
+        $this->assertNotEmpty($message);
+        $this->assertContains($message, $actual);        
+    }    
+    
+    public function testHandleConfirmationUrlVitalityThrowsExceptionWhenCallbackDoesNotReturnTrue()
+    {
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
+        $this->setExpectedException('at\externet\eps_bank_transfer\CallbackResponseException');
+        $this->target->HandleConfirmationUrl(function() {}, function($data) {}, $dataPath); 
+    }
+    
+    public function testHandleConfirmationUrlVitalityWritesInputToOutputstream()
+    {
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
+        $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
+        $this->target->HandleConfirmationUrl(function() {}, null, $dataPath, $temp);
+        $expected = file_get_contents($dataPath);
+        $actual = file_get_contents($temp);
+        $this->assertEquals($expected, $actual);
+    }
+    
+    public function testHandleConfirmationUrlReturnsErrorOnInvalidXml()
+    {
+        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsInvalid.xml');        
+        $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
+        try
+        {
+            $this->target->HandleConfirmationUrl(function() {}, null, $dataPath, $temp);
+        } catch (\at\externet\eps_bank_transfer\XmlValidationException $e)
+        {
+            // expected
+        }
+        $actual = file_get_contents($temp);
+        XmlValidator::ValidateEpsProtocol($actual);
+        $this->assertContains('ShopResponseDetails>', $actual);
+        $this->assertContains('ErrorMsg>Error occured during XML validation</', $actual);
+    }
+    
     
     // HELPER FUNCTIONS
 
