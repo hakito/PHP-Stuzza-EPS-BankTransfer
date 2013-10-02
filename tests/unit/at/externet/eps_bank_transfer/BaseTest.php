@@ -3,7 +3,7 @@
 namespace at\externet\eps_bank_transfer;
 require_once dirname(dirname(dirname(dirname(dirname(__DIR__))))) . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'autoloader.php';
 
-class BaseTest extends \PHPUnit_Framework_TestCase
+abstract class BaseTest extends \PHPUnit_Framework_TestCase
 {
     public static function GetEpsData($filename)
     {
