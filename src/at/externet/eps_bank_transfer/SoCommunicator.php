@@ -104,8 +104,8 @@ class SoCommunicator
      * BankConfirmationDetails.
      * 
      * @param callable $confirmationCallback a callable to send BankConfirmationDetails to.
-     * Will be called with the parameters BankConfirmationDetails as string and 
-     * RemittanceIdentifier as string. This callable must return TRUE.
+     * Will be called with the parameters BankConfirmationDetails as string, 
+     * RemittanceIdentifier as string and StatusCode as string. This callable must return TRUE.
      * @param callable $vitalityCheckCallback an optional callable for the vitalityCheck
      * @param string $rawPostStream will read from this stream or file with file_get_contents
      * @param string $outputStream will write to this stream the expected responses for the
@@ -160,18 +160,20 @@ class SoCommunicator
                 }
 
                 if ($remittanceIdentifier == null)
-                {
-                    $message = 'Could not find RemittanceIdentifier in XML';
-                    throw new \LogicException($message);
-                }
+                    throw new \LogicException('Could not find RemittanceIdentifier in XML');                
 
-                $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', array($HTTP_RAW_POST_DATA, $remittanceIdentifier));
-
-                // Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
                 $shopResponseDetails->SessionId = $BankConfirmationDetails->SessionId;
                 $shopResponseDetails->StatusCode = $PaymentConfirmationDetails->StatusCode;
+                
+                if (empty($shopResponseDetails->StatusCode))
+                    throw new \LogicException('Could not find StatusCode in XML');
+                
                 if (!empty($PaymentConfirmationDetails->PaymentReferenceIdentifier))
                     $shopResponseDetails->PaymentReferenceIdentifier = $PaymentConfirmationDetails->PaymentReferenceIdentifier;
+                
+                $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', array($HTTP_RAW_POST_DATA, $remittanceIdentifier, $shopResponseDetails->StatusCode));
+
+                // Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
                 file_put_contents($outputStream, $shopResponseDetails->GetSimpleXml()->asXml());
             } else
             {

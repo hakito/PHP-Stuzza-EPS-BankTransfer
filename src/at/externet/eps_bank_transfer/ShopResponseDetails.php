@@ -28,16 +28,16 @@ class ShopResponseDetails
 
         $ShopResponseDetails = $xml->addChildExt('ShopResponseDetails', '', 'epsp');
 
-        if (!empty($this->SessionId))
-            $ShopResponseDetails->addChildExt('SessionId', $this->SessionId, 'epsp');
-
-        if (!empty($this->ErrorMsg))
+       if (!empty($this->ErrorMsg))
         {
             if (!empty($this->ErrorMsg))
                 $ShopResponseDetails->addChildExt('ErrorMsg', $this->ErrorMsg, 'epsp');
         }
         else
         {
+            if (!empty($this->SessionId))
+                $ShopResponseDetails->addChildExt('SessionId', $this->SessionId, 'epsp');
+
             $ShopConfirmationDetails = $ShopResponseDetails->addChildExt('ShopConfirmationDetails', '', 'eps');
             $ShopConfirmationDetails->addChildExt('StatusCode', $this->StatusCode, 'eps');
             if (isset($this->PaymentReferenceIdentifier))
