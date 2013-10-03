@@ -2,7 +2,7 @@
 
 namespace at\externet\eps_bank_transfer;
 
-class InvalidCallbackException extends \Exception
+class InvalidCallbackException extends ShopResponseException
 {
 
 }

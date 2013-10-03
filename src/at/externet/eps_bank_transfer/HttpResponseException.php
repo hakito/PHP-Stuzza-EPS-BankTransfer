@@ -2,7 +2,7 @@
 
 namespace at\externet\eps_bank_transfer;
 
-class HttpResponseException extends \Exception
+class HttpResponseException extends ShopResponseException
 {
     
 }

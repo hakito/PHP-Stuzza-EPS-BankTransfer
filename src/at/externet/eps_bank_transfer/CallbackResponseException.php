@@ -2,7 +2,10 @@
 
 namespace at\externet\eps_bank_transfer;
 
-class CallbackResponseException extends \Exception
+/**
+ * Exception if callback returns an invalid value
+ */
+class CallbackResponseException extends ShopResponseException
 {
 
 }

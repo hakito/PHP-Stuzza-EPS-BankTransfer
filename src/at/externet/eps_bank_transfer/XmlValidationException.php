@@ -2,7 +2,7 @@
 
 namespace at\externet\eps_bank_transfer;
 
-class XmlValidationException extends \Exception
+class XmlValidationException extends ShopResponseException
 {
     
 }
