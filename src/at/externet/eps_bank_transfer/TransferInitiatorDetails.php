@@ -3,28 +3,52 @@
 namespace at\externet\eps_bank_transfer;
 require_once "functions.php";
 
+/**
+ * eps Zahlungsauftragsnachricht
+ */
 class TransferInitiatorDetails
 {
 
-    /** @var string Identifikation des Geschäftspartners dank UserID (= Händler-ID), die er von einer eps Bank ausgestellt bekommt */
+    /**
+     * Identifikation des Geschäftspartners dank UserID (= Händler-ID), die er von einer eps Bank ausgestellt bekommt
+     * @var string
+     */
     public $UserId;
 
-    /** @var string */
+    /**
+     * Secret given by bank
+     * @var string
+     */
     public $Secret;
 
-    /** @var string Erstellungsdatum des Zahlungsauftrags (xsd::date) */
+    /**
+     * Erstellungsdatum des Zahlungsauftrags (xsd::date)
+     * @var string
+     */
     public $date;
 
-    /** @var string ISO 9362 Bank Identifier Code (BIC), Bankcode zur Identifikation einer Bank */
+    /**
+     * ISO 9362 Bank Identifier Code (BIC), Bankcode zur Identifikation einer Bank
+     * @var string
+     */
     public $BfiBicIdentifier;
 
-    /** @var string Identifikation des Begünstigten (Name und Adresse) in unstruktu-rierter Form, wobei der Begünstigte nicht mit dem Kontoinhaber ident sein muss. */
+    /**
+     * Identifikation des Begünstigten (Name und Adresse) in unstruktu-rierter Form, wobei der Begünstigte nicht mit dem Kontoinhaber ident sein muss.
+     * @var string
+     */
     public $BeneficiaryNameAddressText;
 
-    /** @var string Angabe der Kontoverbindung des Begünstigten durch Angabe der IBAN (International Bank Account Number) - Kontonummer des Begünstigten, z.B. AT611904300234573201 (11-stellige Konto-nummer: 00234573201) */
+    /**
+     * Angabe der Kontoverbindung des Begünstigten durch Angabe der IBAN (International Bank Account Number) - Kontonummer des Begünstigten, z.B. AT611904300234573201 (11-stellige Konto-nummer: 00234573201)
+     * @var string
+     */
     public $BeneficiaryAccountIdentifier;
 
-    /** @var string Referenz der Zahlungsauftragsnachricht, z.B. für Nachforschungs-zwecke beim Händler */
+    /**
+     * Referenz der Zahlungsauftragsnachricht, z.B. für Nachforschungs-zwecke beim Händler
+     * @var string
+     */
     public $ReferenceIdentifier;
 
     /**
@@ -33,14 +57,28 @@ class TransferInitiatorDetails
      */
     public $RemittanceIdentifier;
 
-    /** @var string Bei Angabe von Cent-Werten müssen diese vom Euro-Betrag mit einem Punkt ge-trennt übermittelt werden, z.B. 150.55 (NICHT 150,55)! */
+    /**
+     * Bei Angabe von Cent-Werten müssen diese vom Euro-Betrag mit einem Punkt ge-trennt übermittelt werden, z.B. 150.55 (NICHT 150,55)!
+     * @var string
+     */
     public $InstructedAmount;
+
+    /**
+     * Angabe der Währung gem. ISO 4217
+     * @var string
+     */
     public $AmountCurrencyIdentifier = 'EUR';
 
-    /** @var WebshopArticle array */
+    /**
+     * Array of webshop articles
+     * @var WebshopArticle array
+     */
     public $WebshopArticles;
 
-    /** @var TransferMsgDetails */
+    /**
+     * Händler Angabe relevanter URL Adressen
+     * @var TransferMsgDetails
+     */
     public $TransferMsgDetails;
 
     /**

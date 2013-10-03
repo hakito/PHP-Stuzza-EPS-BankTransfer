@@ -140,6 +140,8 @@ class SoCommunicator
      * @throws CallbackResponseException when callback does not return TRUE
      * @throws XmlValidationException when $rawInputStream does not validate against XSD
      * @throws cakephp\SocketException when communication with SO fails
+     * @throws \UnexpectedValueException when using security suffix without security seed
+     * @throws UnknownRemittanceIdentifierException when security suffix does not match
      */
     public function HandleConfirmationUrl($confirmationCallback, $vitalityCheckCallback = null, $rawPostStream = 'php://input', $outputStream = 'php://output')
     {
