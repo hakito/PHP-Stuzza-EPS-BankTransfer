@@ -4,14 +4,37 @@ namespace at\externet\eps_bank_transfer;
 
 use org\cakephp;
 
+/**
+ * Handles the communication with the EPS scheme operator
+ */
 class SoCommunicator
 {
 
-    /** @var callable function to send log messages to */
+    /** 
+     * Optional function to send log messages to
+     * @var callable  
+     */
     public $LogCallback;
 
-    /** @var cakephp\HttpSocket http socket */
+    /**
+     * http socket 
+     * @internal
+     * @var cakephp\HttpSocket     * 
+     */
     public $HttpSocket;
+    
+    /** 
+     * Number of hash chars to append to RemittanceIdentifier.
+     * If set greater as 0 you'll also have to set a SecuritySeed
+     * @var int
+     */
+    public $SecuritySuffixLength = 0;
+    
+    /**
+     * Seed to be used by hash function for RemittanceIdentifier
+     * @var string
+     */
+    public $SecuritySeed;
 
     public function __construct()
     {
@@ -83,10 +106,13 @@ class SoCommunicator
      * @param string $targetUrl url with preselected bank identifier
      * @throws XmlValidationException when the returned BankResponseDetails does not validate against XSD
      * @throws cakephp\SocketException when communication with SO fails
+     * @throws \UnexpectedValueException when using security suffix without security seed
      * @return string BankResponseDetails
      */
     public function SendTransferInitiatorDetails($transferInitiatorDetails, $targetUrl = null)
     {
+        $transferInitiatorDetails->RemittanceIdentifier = $this->AppendHash($transferInitiatorDetails->RemittanceIdentifier);
+        
         if ($targetUrl == null)
             $targetUrl = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4';
 
@@ -162,6 +188,8 @@ class SoCommunicator
                 if ($remittanceIdentifier == null)
                     throw new \LogicException('Could not find RemittanceIdentifier in XML');                
 
+                $this->StripHash($remittanceIdentifier);
+                
                 $shopResponseDetails->SessionId = $BankConfirmationDetails->SessionId;
                 $shopResponseDetails->StatusCode = $PaymentConfirmationDetails->StatusCode;
                 
@@ -256,4 +284,27 @@ class SoCommunicator
         }
     }
 
+    private function AppendHash($string)
+    {
+        if ($this->SecuritySuffixLength == 0)
+            return $string;
+        
+        if (empty($this->SecuritySeed))
+                throw new \UnexpectedValueException('No security seed set when using security suffix.');
+        
+        $hash = cakephp\Security::hash($string, null, $this->SecuritySeed);
+        return $string . substr($hash, 0, $this->SecuritySuffixLength);
+    }
+    
+    private function StripHash(&$suffixed)
+    {
+        if ($this->SecuritySuffixLength == 0)
+            return;
+        
+        $remittanceIdentifier = substr($suffixed, 0, -$this->SecuritySuffixLength);
+        if ($this->AppendHash($remittanceIdentifier) != $suffixed)
+            throw new UnknownRemittanceIdentifierException('Unknown RemittanceIdentifier supplied');
+        
+        $suffixed = $remittanceIdentifier;
+    }
 }

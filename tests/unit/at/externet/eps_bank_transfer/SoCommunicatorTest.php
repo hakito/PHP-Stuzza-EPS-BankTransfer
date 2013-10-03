@@ -94,24 +94,6 @@ class SoCommunicatorTest extends BaseTest
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGenerateTransferIinitiatorDetails()
-    {
-        $webshopArticle = new WebshopArticle("Toaster", 1, 15000);
-        $transferMsgDetails = new TransferMsgDetails("http://10.18.70.8:7001/vendorconfirmation", "http://10.18.70.8:7001/transactionok?danke.asp", "http://10.18.70.8:7001/transactionnok?fehler.asp");
-        $transferMsgDetails->TargetWindowNok = $transferMsgDetails->TargetWindowOk = 'Mustershop';
-
-        $data = new TransferInitiatorDetails('AKLJS231534', 'topSecret', 'GAWIATW1XXX', 'Max Mustermann', 'AT611904300234573201', '1234567890ABCDEFG', 'AT1234567890XYZ', 15000, $webshopArticle, $transferMsgDetails, '2007-03-16');
-        $aSimpleXml = $data->GetSimpleXml();
-
-        $eDom = new \DOMDocument();
-        $eDom->loadXML($this->GetEpsData('TransferInitiatorDetailsWithoutSignature.xml'));
-        $eDom->formatOutput = true;
-        $eDom->preserveWhiteSpace = false;
-        $eDom->normalizeDocument();
-
-        $this->assertEquals($aSimpleXml->asXML(), $eDom->saveXML());
-    }
-
     public function testSendTransferInitiatorDetailsThrowsValidationException()
     {
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
@@ -160,7 +142,36 @@ class SoCommunicatorTest extends BaseTest
                 ->will($this->returnValue($this->httpResponseDummy));
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails, $url);
     }
+    
+    public function testSendTransferInitiatorDetailsWithSecurityThrowsExceptionOnEmptySalt()
+    {
+        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4/23ea3d14-278c-4e81-a021-d7b77492b611';
+        $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
+        $this->httpResponseDummy->body = $this->GetEpsData('BankResponseDetails000.xml');
+        $this->target->SecuritySuffixLength = 8;        
 
+        $this->setExpectedException('UnexpectedValueException', 'No security seed set when using security suffix.');
+        $this->target->SendTransferInitiatorDetails($transferInitiatorDetails, $url);
+    }
+    
+    public function testSendTransferInitiatorDetailsWithSecurityAppendsHash()
+    {
+        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4/23ea3d14-278c-4e81-a021-d7b77492b611';
+        $t = new TransferMsgDetails('a', 'b', 'c');
+        $transferInitiatorDetails = new TransferInitiatorDetails('a', 'b', 'c', 'd', 'e', 'f', 'g', 0, array(), $t);
+        $transferInitiatorDetails->RemittanceIdentifier = 'Order1';
+        $this->httpResponseDummy->body = $this->GetEpsData('BankResponseDetails000.xml');
+        $this->target->SecuritySuffixLength = 8;        
+        $this->target->SecuritySeed = 'Some seed';
+        
+        $this->target->HttpSocket->expects($this->once())
+                ->method('post')
+                ->with($url, $this->stringContains('>'. $transferInitiatorDetails->RemittanceIdentifier . 'cca2ef99' . '<'))
+                ->will($this->returnValue($this->httpResponseDummy));
+        
+        $this->target->SendTransferInitiatorDetails($transferInitiatorDetails, $url);
+    }
+    
     public function testHandleConfirmationUrlThrowsExceptionOnMissingCallback()
     {
         $this->setExpectedException('at\externet\eps_bank_transfer\InvalidCallbackException');
@@ -377,9 +388,74 @@ class SoCommunicatorTest extends BaseTest
         $this->assertContains('ErrorMsg>An exception of type', $actual);
     }
     
+    public function testHandleConfirmationUrlThrowsExceptionOnInvalidSecuritySuffix()
+    {
+        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
+        $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
+        $this->target->SecuritySuffixLength = 3;
+        $this->target->SecuritySeed = 'Foo';
+        try 
+        {
+            $this->target->HandleConfirmationUrl(function() { }, null, $dataPath, $temp);
+        }
+        catch (UnknownRemittanceIdentifierException $e)
+        {
+            // expected
+        }
+        
+        $actual = file_get_contents($temp);        
+        XmlValidator::ValidateEpsProtocol($actual);
+        $this->assertContains('ShopResponseDetails>', $actual);        
+        $this->assertContains('ErrorMsg>Unknown RemittanceIdentifier supplied', $actual);
+    }
+    
+    public function testHandleConfirmationUrlThrowsExceptionOnInvalidSecuritySetup()
+    {
+        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
+        $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
+        $this->target->SecuritySuffixLength = 3;
+        try 
+        {
+            $this->target->HandleConfirmationUrl(function() { }, null, $dataPath, $temp);
+        }
+        catch (\UnexpectedValueException $e)
+        {
+            // expected
+        }
+        
+        $actual = file_get_contents($temp);        
+        XmlValidator::ValidateEpsProtocol($actual);
+        $this->assertContains('ShopResponseDetails>', $actual);        
+        $this->assertContains('ErrorMsg>An exception of type "UnexpectedValueException" occurred during handling of the confirmation url', $actual);
+    }
+    
+    public function testHandleConfirmationUrlStripsSecurityHashFromRemittanceIdentifier()            
+    {
+        $original = $this->GetEpsData('BankConfirmationDetailsWithoutSignature.xml');
+        $expected = 'AT1234567890XYZ';
+        $data = str_replace($expected, $expected . 'd33', $original);
+        $dataPath = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
+        file_put_contents($dataPath, $data);
+        
+        $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
+        $this->target->SecuritySuffixLength = 3;
+        $this->target->SecuritySeed = 'Foo';
+        $remittanceIdentifier = null;
+        $this->target->HandleConfirmationUrl(function($raw, $ri) use (&$remittanceIdentifier)
+        { 
+            $remittanceIdentifier = $ri;
+            return true;
+        }, null, $dataPath, $temp);
+        
+        $this->assertSame($expected, $remittanceIdentifier);    
+    }
     
     // HELPER FUNCTIONS
 
+    /**
+     * 
+     * @return TransferInitiatorDetails
+     */
     private function getMockedTransferInitiatorDetails()
     {
         $simpleXml = $this->getMock('at\externet\eps_bank_transfer\EpsXmlElement', null, array('<xml/>'));

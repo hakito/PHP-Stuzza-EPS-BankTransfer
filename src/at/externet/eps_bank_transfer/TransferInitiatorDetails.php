@@ -27,7 +27,10 @@ class TransferInitiatorDetails
     /** @var string Referenz der Zahlungsauftragsnachricht, z.B. für Nachforschungs-zwecke beim Händler */
     public $ReferenceIdentifier;
 
-    /** @var string Zahlungsreferenz Eindeutige Referenz des Händlers (= Begünstigter) zu einem Ge-schäftsfall, der im Zahlungsverkehr unverändert wieder an den Händler zurückgeleitet werden muss. */
+    /**
+     * Zahlungsreferenz Eindeutige Referenz des Händlers (= Begünstigter) zu einem Geschäftsfall, der im Zahlungsverkehr unverändert wieder an den Händler zurückgeleitet werden muss 
+     * @var string 
+     */
     public $RemittanceIdentifier;
 
     /** @var string Bei Angabe von Cent-Werten müssen diese vom Euro-Betrag mit einem Punkt ge-trennt übermittelt werden, z.B. 150.55 (NICHT 150,55)! */
@@ -42,17 +45,17 @@ class TransferInitiatorDetails
 
     /**
      *
-     * @param type $userId
-     * @param type $secret
-     * @param type $bfiBicIdentifier
-     * @param type $beneficiaryNameAddressText
-     * @param type $beneficiaryAccountIdentifier
-     * @param type $referenceIdentifier
-     * @param type $remittanceIdentifier
-     * @param int $instructedAmount in cents
-     * @param type $webshopArticles
-     * @param type $transferMsgDetails
-     * @param type $date
+     * @param string $userId
+     * @param string $secret
+     * @param string $bfiBicIdentifier
+     * @param string $beneficiaryNameAddressText
+     * @param string $beneficiaryAccountIdentifier
+     * @param string $referenceIdentifier
+     * @param string $remittanceIdentifier
+     * @param string $instructedAmount in cents
+     * @param WebshopArticle[] $webshopArticles
+     * @param TransferMsgDetails $transferMsgDetails
+     * @param string $date
      */
     public function __construct($userId, $secret, $bfiBicIdentifier, $beneficiaryNameAddressText, $beneficiaryAccountIdentifier, $referenceIdentifier, $remittanceIdentifier, $instructedAmount, $webshopArticles, $transferMsgDetails, $date = null)
     {
