@@ -117,106 +117,102 @@ class SoCommunicator
      */
     public function HandleConfirmationUrl($confirmationCallback, $vitalityCheckCallback = null, $rawPostStream = 'php://input', $outputStream = 'php://output')
     {
-        $this->TestCallability($confirmationCallback, 'confirmationCallback', $outputStream);
-        if ($vitalityCheckCallback != null)
-            $this->TestCallability($vitalityCheckCallback, 'vitalityCheckCallback', $outputStream);
-
-        $HTTP_RAW_POST_DATA = file_get_contents($rawPostStream);        
+        $shopResponseDetails = new ShopResponseDetails();
         try
         {
+            $this->TestCallability($confirmationCallback, 'confirmationCallback');
+            if ($vitalityCheckCallback != null)
+                $this->TestCallability($vitalityCheckCallback, 'vitalityCheckCallback');
+
+            $HTTP_RAW_POST_DATA = file_get_contents($rawPostStream);
             XmlValidator::ValidateEpsProtocol($HTTP_RAW_POST_DATA);
+
+            $xml = new \SimpleXMLElement($HTTP_RAW_POST_DATA);
+            $epspChildren = $xml->children(XMLNS_epsp);
+            $firstChildName = $epspChildren[0]->getName();
+
+            if ($firstChildName == 'VitalityCheckDetails')
+            {
+                if ($vitalityCheckCallback != null)
+                {
+                    $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', array($HTTP_RAW_POST_DATA));
+                }
+                // 7.1.9 Schritt III-3: Bestätigung Vitality Check Händler-eps SO
+                file_put_contents($outputStream, $HTTP_RAW_POST_DATA);
+            }
+            else if ($firstChildName == 'BankConfirmationDetails')
+            {
+                $BankConfirmationDetails = $epspChildren[0];
+                $t1 = $BankConfirmationDetails->children(XMLNS_eps); // Nescessary because of missing language feature in PHP 5.3
+                $PaymentConfirmationDetails = $t1[0];
+                $t2 = $PaymentConfirmationDetails->children(XMLNS_epi);
+                $remittanceIdentifier = null;
+
+                if (isset($t2->RemittanceIdentifier))
+                {
+                    $remittanceIdentifier = $t2->RemittanceIdentifier;
+                }
+                else
+                {
+                    $t3 = $PaymentConfirmationDetails->PaymentInitiatorDetails->children(XMLNS_epi);
+                    $EpiDetails = $t3[0];
+                    $remittanceIdentifier = $EpiDetails->PaymentInstructionDetails->RemittanceIdentifier;
+                }
+
+                if ($remittanceIdentifier == null)
+                {
+                    $message = 'Could not find RemittanceIdentifier in XML';
+                    throw new \LogicException($message);
+                }
+
+                $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', array($HTTP_RAW_POST_DATA, $remittanceIdentifier));
+
+                // Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
+                $shopResponseDetails->SessionId = $BankConfirmationDetails->SessionId;
+                $shopResponseDetails->StatusCode = $PaymentConfirmationDetails->StatusCode;
+                if (!empty($PaymentConfirmationDetails->PaymentReferenceIdentifier))
+                    $shopResponseDetails->PaymentReferenceIdentifier = $PaymentConfirmationDetails->PaymentReferenceIdentifier;
+                file_put_contents($outputStream, $shopResponseDetails->GetSimpleXml()->asXml());
+            } else
+            {
+                // Should never be executed
+                $message = 'No implementation to handle the given value: ' . $firstChildName;        
+                throw new \UnexpectedValueException($message);;
+            }
         }
         catch (\Exception $e)
         {
-            $this->ReturnShopResponseError('Error occured during XML validation', $outputStream);
-            throw $e;
-        }        
-        
-        $xml = new \SimpleXMLElement($HTTP_RAW_POST_DATA);
-        $epspChildren = $xml->children(XMLNS_epsp);
-        $firstChildName = $epspChildren[0]->getName();
-        
-        if ($firstChildName == 'VitalityCheckDetails')
-        {            
-            if ($vitalityCheckCallback != null)            
-            {
-                $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', array($HTTP_RAW_POST_DATA), $outputStream);
-            }
-            // 7.1.9 Schritt III-3: Bestätigung Vitality Check Händler-eps SO
-            file_put_contents($outputStream, $HTTP_RAW_POST_DATA);
-        } else if ($firstChildName == 'BankConfirmationDetails')
-        {            
-            $BankConfirmationDetails = $epspChildren[0];
-            $t1 = $BankConfirmationDetails->children(XMLNS_eps); // Nescessary because of missing language feature in PHP 5.3
-            $PaymentConfirmationDetails = $t1[0];
-            $t2 = $PaymentConfirmationDetails->children(XMLNS_epi);
-            $remittanceIdentifier = null;
-            
-            if (isset($t2->RemittanceIdentifier))
-            {
-                $remittanceIdentifier = $t2->RemittanceIdentifier;
-            }
+            if (is_subclass_of($e, 'at\externet\eps_bank_transfer\ShopResponseException'))            
+                $shopResponseDetails->ErrorMsg = $e->GetShopResponseErrorMessage();
             else
-            {
-                $t3 = $PaymentConfirmationDetails->PaymentInitiatorDetails->children(XMLNS_epi);
-                $EpiDetails = $t3[0];            
-                $remittanceIdentifier = $EpiDetails->PaymentInstructionDetails->RemittanceIdentifier;                
-            }
+                $shopResponseDetails->ErrorMsg = 'An exception of type "' . get_class($e) . '" occurred during handling of the confirmation url';           
             
-            if ($remittanceIdentifier == null)
-            {
-                $message = 'Could not find RemittanceIdentifier in XML';
-                $this->ReturnShopResponseError($message, $outputStream);
-                throw new \LogicException($message);
-            }
-            
-            $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', array($HTTP_RAW_POST_DATA, $remittanceIdentifier), $outputStream);
+            file_put_contents($outputStream, $shopResponseDetails->GetSimpleXml()->asXml());
 
-            // Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
-            $shopResponseDetails = new ShopResponseDetails();
-            $shopResponseDetails->SessionId = $BankConfirmationDetails->SessionId;
-            $shopResponseDetails->StatusCode = $PaymentConfirmationDetails->StatusCode;
-            if (!empty($PaymentConfirmationDetails->PaymentReferenceIdentifier))
-                $shopResponseDetails->PaymentReferenceIdentifier = $PaymentConfirmationDetails->PaymentReferenceIdentifier;
-            file_put_contents($outputStream, $shopResponseDetails->GetSimpleXml()->asXml());            
-        } else
-        {        
-            // Should never be executed
-            $message = 'No implementation to handle the given value: ' . $firstChildName;
-            $this->ReturnShopResponseError($message, $outputStream);
-            throw new \UnexpectedValueException($message);
+            $this->WriteLog($e->getMessage());
+            throw $e;
         }
     }
     
     // Private functions
-
-    private function ReturnShopResponseError($message, $outputStream)
-    {            
-        $shopResponseDetails = new ShopResponseDetails();        
-        $shopResponseDetails->ErrorMsg = $message;
-        file_put_contents($outputStream, $shopResponseDetails->GetSimpleXml()->asXml());
-        $this->WriteLog($message);        
-    }
-    
-    private function ConfirmationUrlCallback($callback, $name, $args, $outputStream)
+   
+    private function ConfirmationUrlCallback($callback, $name, $args)
     {
         if (call_user_func_array($callback, $args) !== true)
         {
             $message = 'The given ' . $name . ' confirmation callback function did not return TRUE';
             $fullMessage = 'Cannot handle confirmation URL. ' . $message;
-            $this->ReturnShopResponseError($fullMessage, $outputStream);
-            throw new CallbackResponseException($message);
+            throw new CallbackResponseException($fullMessage);
         }
     }
     
-    private function TestCallability(&$callback, $name, $outputStream)
+    private function TestCallability(&$callback, $name)
     {
         if (!is_callable($callback))
         {
             $message = 'The given callback function for "' . $name . '" is not a callable';            
             $fullMessage = 'Cannot handle confirmation URL. ' . $message;                        
-            $this->ReturnShopResponseError($fullMessage, $outputStream);
-            throw new InvalidCallbackException($message);
+            throw new InvalidCallbackException($fullMessage);
         }
     }
 

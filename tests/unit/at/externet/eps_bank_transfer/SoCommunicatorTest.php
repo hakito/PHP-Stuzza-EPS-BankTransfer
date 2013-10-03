@@ -352,6 +352,29 @@ class SoCommunicatorTest extends BaseTest
         $this->assertContains('PaymentReferenceIdentifier>AT1234567890XYZ<', $actual);
     }    
     
+    public function testHandleConfirmationUrlReturnsErroResponseOnCallbackException()
+    {
+        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
+        $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
+        $catchedMessage = null;
+        try
+        {
+            $this->target->HandleConfirmationUrl(function() { throw new \Exception('Something failed'); }, null, $dataPath, $temp);
+        }
+        catch (\Exception $e)
+        {
+            $catchedMessage = $e->getMessage();
+        }
+        $this->assertEquals('Something failed', $catchedMessage);
+        
+        $actual = file_get_contents($temp);        
+        XmlValidator::ValidateEpsProtocol($actual);
+        $this->assertContains('ShopResponseDetails>', $actual);
+        $this->assertNotContains('Something failed', $actual);
+        $this->assertContains('ErrorMsg>An exception of type', $actual);
+    }
+    
+    
     // HELPER FUNCTIONS
 
     private function getMockedTransferInitiatorDetails()

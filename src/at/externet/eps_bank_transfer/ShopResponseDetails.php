@@ -31,7 +31,7 @@ class ShopResponseDetails
         if (!empty($this->SessionId))
             $ShopResponseDetails->addChildExt('SessionId', $this->SessionId, 'epsp');
 
-        if (empty($this->StatusCode))
+        if (!empty($this->ErrorMsg))
         {
             if (!empty($this->ErrorMsg))
                 $ShopResponseDetails->addChildExt('ErrorMsg', $this->ErrorMsg, 'epsp');
