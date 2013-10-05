@@ -36,7 +36,7 @@
     </epsp:WebshopDetails>
     <epsp:AuthenticationDetails>
       <epsp:UserId>AKLJS231534</epsp:UserId>
-      <epsp:MD5Fingerprint>dc4997ff00f6a969556979deaebdd899</epsp:MD5Fingerprint>
+      <epsp:MD5Fingerprint>e3f614025f0b91db8811b041f1f2ebfd</epsp:MD5Fingerprint>
     </epsp:AuthenticationDetails>
   </epsp:TransferInitiatorDetails>
 </epsp:EpsProtocolDetails>

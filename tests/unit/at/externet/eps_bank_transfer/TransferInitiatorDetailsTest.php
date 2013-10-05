@@ -4,7 +4,7 @@ namespace at\externet\eps_bank_transfer;
 
 class TransferInitiatorDetailsTest extends BaseTest
 {
-    public function testGenerateTransferIinitiatorDetails()
+    public function testGenerateTransferInitiatorDetails()
     {
         $webshopArticle = new WebshopArticle("Toaster", 1, 15000);
         $transferMsgDetails = new TransferMsgDetails("http://10.18.70.8:7001/vendorconfirmation", "http://10.18.70.8:7001/transactionok?danke.asp", "http://10.18.70.8:7001/transactionnok?fehler.asp");
@@ -19,6 +19,6 @@ class TransferInitiatorDetailsTest extends BaseTest
         $eDom->preserveWhiteSpace = false;
         $eDom->normalizeDocument();
 
-        $this->assertEquals($aSimpleXml->asXML(), $eDom->saveXML());
+        $this->assertEquals($eDom->saveXML(), $aSimpleXml->asXML());
     }
 }

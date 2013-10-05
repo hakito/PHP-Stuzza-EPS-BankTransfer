@@ -25,7 +25,7 @@ class TransferInitiatorDetails
      * Erstellungsdatum des Zahlungsauftrags (xsd::date)
      * @var string
      */
-    public $date;
+    public $Date;
 
     /**
      * ISO 9362 Bank Identifier Code (BIC), Bankcode zur Identifikation einer Bank
@@ -128,7 +128,7 @@ class TransferInitiatorDetails
 
     public function GetMD5Fingerprint()
     {
-        $input = $this->Secret . $this->date . $this->ReferenceIdentifier . $this->BeneficiaryAccountIdentifier
+        $input = $this->Secret . $this->Date . $this->ReferenceIdentifier . $this->BeneficiaryAccountIdentifier
                 . $this->RemittanceIdentifier . $this->InstructedAmount . $this->AmountCurrencyIdentifier
                 . $this->UserId;
 
@@ -194,14 +194,6 @@ class TransferInitiatorDetails
 
         return $xml;
     }
-
-    private static function GetMoneyValue($val)
-    {
-        if (is_string($amount))
-            return $amount;
-        return sprintf("%01.2f", $val);
-    }
-
 }
 
 ?>
