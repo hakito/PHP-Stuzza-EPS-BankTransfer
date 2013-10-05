@@ -23,6 +23,8 @@
 /**
  * Basic defines for timing functions.
  */
+if (!defined('SECOND'))
+{
 	define('SECOND', 1);
 	define('MINUTE', 60);
 	define('HOUR', 3600);
@@ -30,7 +32,7 @@
 	define('WEEK', 604800);
 	define('MONTH', 2592000);
 	define('YEAR', 31536000);
-
+}
 if (!function_exists('config')) {
 
 /**
