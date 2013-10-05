@@ -264,7 +264,7 @@ class SoCommunicator
     private function PostUrl($url, $data, $message)
     {
         $this->WriteLog($message);
-        $response = $this->HttpSocket->post($url, $data, array('header' => array('Content-Type' => 'text/plain; charset=UTF-8')));
+        $response = $this->HttpSocket->post($url, $data, array('header' => array('Content-Type' => 'text/xml; charset=UTF-8')));
 
         if ($response->code != 200)
         {
