@@ -82,6 +82,12 @@ class TransferInitiatorDetails
     public $TransferMsgDetails;
 
     /**
+     * Optional Angabe der Bankverbindung/BIC des Zahlungspflichtigen / Käufer
+     * @var string
+     */
+    public $OrderingCustomerOfiIdentifier;
+
+    /**
      *
      * @param string $userId
      * @param string $secret
@@ -172,6 +178,10 @@ class TransferInitiatorDetails
         $AuthenticationDetails = $TransferInitiatorDetails->addChildExt('AuthenticationDetails', '', 'epsp');
         $AuthenticationDetails->addChildExt('UserId', $this->UserId, 'epsp');
         $AuthenticationDetails->addChildExt('MD5Fingerprint', $this->GetMD5Fingerprint(), 'epsp');
+
+
+
+
         $EpiDetails = $PaymentInitiatorDetails->addChildExt('EpiDetails', '', 'epi');
         $IdentificationDetails = $EpiDetails->addChildExt("IdentificationDetails", '', 'epi');
         $PartyDetails = $EpiDetails->addChildExt('PartyDetails', '', 'epi');
@@ -188,6 +198,9 @@ class TransferInitiatorDetails
         $BeneficiaryPartyDetails->addChildExt('BeneficiaryAccountIdentifier', $this->BeneficiaryAccountIdentifier, 'epi');
         $IdentificationDetails->addChildExt('Date', $this->Date, 'epi');
         $IdentificationDetails->addChildExt('ReferenceIdentifier', $this->ReferenceIdentifier, 'epi');
+
+        if (!empty($this->OrderingCustomerOfiIdentifier))
+            $IdentificationDetails->addChildExt('OrderingCustomerOfiIdentifier', $this->OrderingCustomerOfiIdentifier, 'epi');
 
         $AustrianRulesDetails = $PaymentInitiatorDetails->addChildExt('AustrianRulesDetails', '', 'atrul');
         $AustrianRulesDetails->addChildExt('DigSig', 'SIG', 'atrul');
