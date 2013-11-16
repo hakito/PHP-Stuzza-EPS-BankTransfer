@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epsp:EpsProtocolDetails xmlns:epsp="http://www.stuzza.at/namespaces/eps/protocol/2011/11" xmlns:atrul="http://www.stuzza.at/namespaces/eps/austrianrules/2011/11" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:epi="http://www.stuzza.at/namespaces/eps/epi/2011/11" xmlns:eps="http://www.stuzza.at/namespaces/eps/payment/2011/11" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.stuzza.at/namespaces/eps/protocol/2011/11 EPSProtocol-V24.xsd" SessionLanguage="DE">
+  <epsp:TransferInitiatorDetails>
+    <eps:PaymentInitiatorDetails>
+      <epi:EpiDetails>
+        <epi:IdentificationDetails>
+          <epi:Date>2007-03-16</epi:Date>
+          <epi:ReferenceIdentifier>1234567890ABCDEFG</epi:ReferenceIdentifier>
+          <epi:OrderingCustomerOfiIdentifier>TESTBANKXXX</epi:OrderingCustomerOfiIdentifier>
+        </epi:IdentificationDetails>
+        <epi:PartyDetails>
+          <epi:BfiPartyDetails>
+            <epi:BfiBicIdentifier>GAWIATW1XXX</epi:BfiBicIdentifier>
+          </epi:BfiPartyDetails>
+          <epi:BeneficiaryPartyDetails>
+            <epi:BeneficiaryNameAddressText>Max Mustermann</epi:BeneficiaryNameAddressText>
+            <epi:BeneficiaryAccountIdentifier>AT611904300234573201</epi:BeneficiaryAccountIdentifier>
+          </epi:BeneficiaryPartyDetails>
+        </epi:PartyDetails>
+        <epi:PaymentInstructionDetails>
+          <epi:RemittanceIdentifier>AT1234567890XYZ</epi:RemittanceIdentifier>
+          <epi:InstructedAmount AmountCurrencyIdentifier="EUR">150.00</epi:InstructedAmount>
+          <epi:ChargeCode>SHA</epi:ChargeCode>
+        </epi:PaymentInstructionDetails>
+      </epi:EpiDetails>
+      <atrul:AustrianRulesDetails>
+        <atrul:DigSig>SIG</atrul:DigSig>
+      </atrul:AustrianRulesDetails>
+    </eps:PaymentInitiatorDetails>
+    <epsp:TransferMsgDetails>
+      <epsp:ConfirmationUrl>http://10.18.70.8:7001/vendorconfirmation</epsp:ConfirmationUrl>
+      <epsp:TransactionOkUrl TargetWindow="Mustershop">http://10.18.70.8:7001/transactionok?danke.asp</epsp:TransactionOkUrl>
+      <epsp:TransactionNokUrl TargetWindow="Mustershop">http://10.18.70.8:7001/transactionnok?fehler.asp</epsp:TransactionNokUrl>
+    </epsp:TransferMsgDetails>
+    <epsp:WebshopDetails>
+      <epsp:WebshopArticle ArticleName="Toaster" ArticleCount="1" ArticlePrice="150.00"/>
+    </epsp:WebshopDetails>
+    <epsp:AuthenticationDetails>
+      <epsp:UserId>AKLJS231534</epsp:UserId>
+      <epsp:MD5Fingerprint>e3f614025f0b91db8811b041f1f2ebfd</epsp:MD5Fingerprint>
+    </epsp:AuthenticationDetails>
+  </epsp:TransferInitiatorDetails>
+</epsp:EpsProtocolDetails>
