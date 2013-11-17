@@ -25,16 +25,16 @@ class SoCommunicator
     
     /** 
      * Number of hash chars to append to RemittanceIdentifier.
-     * If set greater as 0 you'll also have to set a SecuritySeed
+     * If set greater as 0 you'll also have to set a ObscuritySeed
      * @var int
      */
-    public $SecuritySuffixLength = 0;
+    public $ObscuritySuffixLength = 0;
     
     /**
      * Seed to be used by hash function for RemittanceIdentifier
      * @var string
      */
-    public $SecuritySeed;
+    public $ObscuritySeed;
 
     public function __construct()
     {
@@ -290,22 +290,22 @@ class SoCommunicator
 
     private function AppendHash($string)
     {
-        if ($this->SecuritySuffixLength == 0)
+        if ($this->ObscuritySuffixLength == 0)
             return $string;
         
-        if (empty($this->SecuritySeed))
+        if (empty($this->ObscuritySeed))
                 throw new \UnexpectedValueException('No security seed set when using security suffix.');
         
-        $hash = cakephp\Security::hash($string, null, $this->SecuritySeed);
-        return $string . substr($hash, 0, $this->SecuritySuffixLength);
+        $hash = cakephp\Security::hash($string, null, $this->ObscuritySeed);
+        return $string . substr($hash, 0, $this->ObscuritySuffixLength);
     }
     
     private function StripHash(&$suffixed)
     {
-        if ($this->SecuritySuffixLength == 0)
+        if ($this->ObscuritySuffixLength == 0)
             return;
         
-        $remittanceIdentifier = substr($suffixed, 0, -$this->SecuritySuffixLength);
+        $remittanceIdentifier = substr($suffixed, 0, -$this->ObscuritySuffixLength);
         if ($this->AppendHash($remittanceIdentifier) != $suffixed)
             throw new UnknownRemittanceIdentifierException('Unknown RemittanceIdentifier supplied');
         
