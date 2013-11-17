@@ -204,7 +204,9 @@ class SoCommunicator
                 $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', array($HTTP_RAW_POST_DATA, $remittanceIdentifier, $shopResponseDetails->StatusCode));
 
                 // Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
+                $this->WriteLog('III-8 Confirming payment receipt');
                 file_put_contents($outputStream, $shopResponseDetails->GetSimpleXml()->asXml());
+
             } else
             {
                 // Should never be executed
