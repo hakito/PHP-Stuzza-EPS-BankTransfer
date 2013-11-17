@@ -161,6 +161,7 @@ class SoCommunicator
 
             if ($firstChildName == 'VitalityCheckDetails')
             {
+                $this->WriteLog('Vitality Check');
                 if ($vitalityCheckCallback != null)
                 {
                     $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', array($HTTP_RAW_POST_DATA));
@@ -170,6 +171,7 @@ class SoCommunicator
             }
             else if ($firstChildName == 'BankConfirmationDetails')
             {
+                $this->WriteLog('Bank Confirmation');
                 $BankConfirmationDetails = $epspChildren[0];
                 $t1 = $BankConfirmationDetails->children(XMLNS_eps); // Nescessary because of missing language feature in PHP 5.3
                 $PaymentConfirmationDetails = $t1[0];
@@ -216,14 +218,15 @@ class SoCommunicator
         }
         catch (\Exception $e)
         {
+            $this->WriteLog($e->getMessage());
+
             if (is_subclass_of($e, 'at\externet\eps_bank_transfer\ShopResponseException'))            
                 $shopResponseDetails->ErrorMsg = $e->GetShopResponseErrorMessage();
             else
                 $shopResponseDetails->ErrorMsg = 'An exception of type "' . get_class($e) . '" occurred during handling of the confirmation url';           
             
             file_put_contents($outputStream, $shopResponseDetails->GetSimpleXml()->asXml());
-
-            $this->WriteLog($e->getMessage());
+            
             throw $e;
         }
     }
