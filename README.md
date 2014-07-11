@@ -24,7 +24,7 @@ $transferMsgDetails = new eps_bank_transfer\TransferMsgDetails(
   'https://yourdomain.example.com/Failure.html'     // Tge url the buyer will be redirected on cancel or failure
 );
 
-$transferMsgDetails = new eps_bank_transfer\TransferInitiatorDetails(
+$transferInitiatorDetails = new eps_bank_transfer\TransferInitiatorDetails(
   'AKLJS231534',            // Eps "Händler" id
   'topSecret',              // Secret for authentication
   'GAWIATW1XXX',            // BIC code of bank account where money will be sent to
