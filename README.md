@@ -1,7 +1,14 @@
 PHP-Stuzza-EPS-BankTransfer
 ===========================
 
-PHP Implementation of the Stuzza e-payment standard. See http://www.stuzza.at/11351_DE.pdf 
+PHP Implementation of the Stuzza e-payment standard. See http://www.stuzza.at/11351_DE.pdf
+
+Installation
+------------
+Copy these folders into any folder:
+* src
+* tests
+* XSD
 
 Usage
 -----
