@@ -1,4 +1,6 @@
 <?php
+// This handles the confirmation call from the scheme operator (after a payment was received):
+
 require_once('src/autoloader.php');
 use at\externet\eps_bank_transfer;
 
