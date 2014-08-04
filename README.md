@@ -5,10 +5,12 @@ PHP Implementation of the Stuzza e-payment standard. See http://www.stuzza.at/11
 
 Installation
 ------------
-Copy these folders into any folder:
+Copy these files & folders into any folder:
 * src
 * tests
 * XSD
+* eps_start.php
+* eps_confirm.php
 
 Usage
 -----
