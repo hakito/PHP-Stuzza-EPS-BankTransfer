@@ -1,5 +1,9 @@
 <?php
-// This handles the confirmation call from the scheme operator (after a payment was received):
+/*
+This file handles the confirmation call from the scheme operator (after a payment was received). It is called twice:
+1. for Vitality-Check, according to "Abbildung 6-11: epsp:VitalityCheckDetails" (eps Pflichtenheft 2.5)
+2. for the actual payment confirmation (Zahlungsbestätigung)
+*/
 
 require_once('src/autoloader.php');
 use at\externet\eps_bank_transfer;
@@ -25,8 +29,8 @@ $paymentConfirmationCallback = function($plainXml, $remittanceIdentifier, $statu
 $soCommunicator = new eps_bank_transfer\SoCommunicator();
 $soCommunicator->HandleConfirmationUrl(
   $paymentConfirmationCallback,
-  null,                         // optional callback for vitality check
-  'php://input',                // optional the input stream of post data received by the server
-  'php://output'                // optional the output stream to send to the scheme operator
+  null,                 // Optional: a callback function which is called in case of Vitality-Check
+  'php://input',        // This needs to be the raw post data received by the server. Change this only if you want to test this function with simulation data.
+  'php://output'        // This needs to be the raw output stream which is sent to the Scheme Operator. Change this only if you want to test this function with simulation data.
 );
 ?>
