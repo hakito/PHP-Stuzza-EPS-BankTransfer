@@ -11,6 +11,7 @@ Copy these files & folders into any folder:
 * XSD
 * eps_start.php
 * eps_confirm.php
+* eps_cronjob.php (optional)
 
 Remarks
 -------
