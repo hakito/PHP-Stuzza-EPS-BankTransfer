@@ -4,6 +4,12 @@
 require_once('src/autoloader.php');
 use at\externet\eps_bank_transfer;
 
+/**
+ * @param string $plainXml Raw XML message, according to "Abbildung 6-6: PaymentConfirmationDetails" (eps Pflichtenheft)
+ * @param string $remittanceIdentifier
+ * @param string $statusCode "eps:StatusCode": "OK" or "NOK" or "VOK" or "UNKNOWN"
+ * @return true
+ */
 $paymentConfirmationCallback = function($plainXml, $remittanceIdentifier, $statusCode)
 {
   if ($statusCode == 'OK')
