@@ -1,4 +1,6 @@
 <?php
+// This is the minimal set to start a payment request:
+
 require_once('src/autoloader.php');
 use at\externet\eps_bank_transfer;
 
