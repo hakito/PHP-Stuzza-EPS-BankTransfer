@@ -61,13 +61,14 @@ class SoCommunicator
     /**
      * Get associative array of banks from Scheme Operator. The bank name (bezeichnung)
      * will be used as key.
+     * @param string $url Scheme operator URL for the banks list
      * @throws cakephp\SocketException when communication with SO fails
      * @throws XmlValidationException when the returned BankList does not validate against XSD
      * @return array of banks
      */
-    public function GetBanksArray()
+    public function GetBanksArray($url = null)
     {
-        $xmlBanks = new \SimpleXMLElement($this->GetBanks());
+        $xmlBanks = new \SimpleXMLElement($this->GetBanks(true, $url));
         $banks = array();
         foreach ($xmlBanks as $xmlBank)
         {
@@ -86,13 +87,16 @@ class SoCommunicator
      * Get XML of banks from scheme operator.
      * Will throw an exception if data cannot be fetched, or XSD validation fails.
      * @param bool $validateXml validate against XSD
+     * @param string $url Scheme operator URL for the banks list
      * @throws cakephp\SocketException when communication with SO fails
      * @throws XmlValidationException when the returned BankList does not validate against XSD and $validateXSD is set to TRUE
      * @return string
      */
-    public function GetBanks($validateXml = true)
+    public function GetBanks($validateXml = true, $url = null)
     {
-        $url = 'https://routing.eps.or.at/appl/epsSO/data/haendler/v2_4';
+        if ($url == null)
+            $url = 'https://routing.eps.or.at/appl/epsSO/data/haendler/v2_4';
+
         $body = $this->GetUrl($url, 'Requesting bank list');
 
         if ($validateXml)
