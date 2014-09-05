@@ -25,7 +25,7 @@ class SoCommunicatorTest extends BaseTest
     {
         $this->target->HttpSocket->expects($this->once())
                 ->method('get')
-                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_4')
+                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5')
                 ->will($this->returnValue($this->httpResponseDummy));
         $banks = $this->target->GetBanks(false);
         $this->assertEquals('bar', $this->httpResponseDummy->body);
@@ -36,7 +36,7 @@ class SoCommunicatorTest extends BaseTest
         $this->httpResponseDummy->body = $this->GetEpsData('BankListSample.xml');
         $this->target->HttpSocket->expects($this->once())
                 ->method('get')
-                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_4')
+                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5')
                 ->will($this->returnValue($this->httpResponseDummy));
         
         $actual = $this->target->GetBanksArray();
@@ -45,7 +45,7 @@ class SoCommunicatorTest extends BaseTest
                 'bic'   => 'TESTBANKXXX',
                 'bezeichnung' => 'Testbank',
                 'land'  => 'AT',
-                'epsUrl' => 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4/23ea3d14-278c-4e81-a021-d7b77492b611'
+                'epsUrl' => 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611'
             )
         );
         $this->assertEquals($expected, $actual);
@@ -57,7 +57,7 @@ class SoCommunicatorTest extends BaseTest
         $this->httpResponseDummy->code = 404;
         $this->target->HttpSocket->expects($this->once())
                 ->method('get')
-                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_4')
+                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5')
                 ->will($this->returnValue($this->httpResponseDummy));
         $this->target->GetBanks();
     }
@@ -67,7 +67,7 @@ class SoCommunicatorTest extends BaseTest
     {
         $this->target->HttpSocket->expects($this->once())
                 ->method('get')
-                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_4')
+                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5')
                 ->will($this->returnValue($this->httpResponseDummy));
 
         $banks = $this->target->TryGetBanksArray();
@@ -79,7 +79,7 @@ class SoCommunicatorTest extends BaseTest
         $this->httpResponseDummy->body = $this->GetEpsData('BankListSample.xml');
         $this->target->HttpSocket->expects($this->once())
                 ->method('get')
-                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_4')
+                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5')
                 ->will($this->returnValue($this->httpResponseDummy));
 
         $actual = $this->target->TryGetBanksArray();
@@ -88,7 +88,7 @@ class SoCommunicatorTest extends BaseTest
                 'bic'   => 'TESTBANKXXX',
                 'bezeichnung' => 'Testbank',
                 'land'  => 'AT',
-                'epsUrl' => 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4/23ea3d14-278c-4e81-a021-d7b77492b611'
+                'epsUrl' => 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611'
             )
         );
         $this->assertEquals($expected, $actual);
@@ -100,7 +100,7 @@ class SoCommunicatorTest extends BaseTest
         $this->httpResponseDummy->body = 'invalidData';
         $this->target->HttpSocket->expects($this->once())
                 ->method('post')
-                ->with('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4')
+                ->with('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5')
                 ->will($this->returnValue($this->httpResponseDummy));
 
         $this->setExpectedException('at\externet\eps_bank_transfer\XmlValidationException');
@@ -113,7 +113,7 @@ class SoCommunicatorTest extends BaseTest
         $this->httpResponseDummy->body = $this->GetEpsData('BankResponseDetails004.xml');
         $this->target->HttpSocket->expects($this->once())
                 ->method('post')
-                ->with('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4')
+                ->with('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5')
                 ->will($this->returnValue($this->httpResponseDummy));
         $actual = $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
         $this->assertEquals($actual, $this->httpResponseDummy->body);
@@ -125,7 +125,7 @@ class SoCommunicatorTest extends BaseTest
         $this->httpResponseDummy->code = 404;
         $this->target->HttpSocket->expects($this->once())
                 ->method('post')
-                ->with('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4')
+                ->with('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5')
                 ->will($this->returnValue($this->httpResponseDummy));
         $this->setExpectedException('at\externet\eps_bank_transfer\HttpResponseException', "Could not load document. Server returned code: 404");
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
@@ -133,7 +133,7 @@ class SoCommunicatorTest extends BaseTest
 
     public function testSendTransferInitiatorDetailsWithPreselectedBank()
     {
-        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4/23ea3d14-278c-4e81-a021-d7b77492b611';
+        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611';
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
         $this->httpResponseDummy->body = $this->GetEpsData('BankResponseDetails000.xml');
         $this->target->HttpSocket->expects($this->once())
@@ -145,7 +145,7 @@ class SoCommunicatorTest extends BaseTest
     
     public function testSendTransferInitiatorDetailsWithSecurityThrowsExceptionOnEmptySalt()
     {
-        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4/23ea3d14-278c-4e81-a021-d7b77492b611';
+        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611';
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
         $this->httpResponseDummy->body = $this->GetEpsData('BankResponseDetails000.xml');
         $this->target->ObscuritySuffixLength = 8;
@@ -156,7 +156,7 @@ class SoCommunicatorTest extends BaseTest
     
     public function testSendTransferInitiatorDetailsWithSecurityAppendsHash()
     {
-        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4/23ea3d14-278c-4e81-a021-d7b77492b611';
+        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611';
         $t = new TransferMsgDetails('a', 'b', 'c');
         $transferInitiatorDetails = new TransferInitiatorDetails('a', 'b', 'c', 'd', 'e', 'f', 'g', 0, array(), $t);
         $transferInitiatorDetails->RemittanceIdentifier = 'Order1';
@@ -366,7 +366,7 @@ class SoCommunicatorTest extends BaseTest
         $this->assertContains('PaymentReferenceIdentifier>AT1234567890XYZ<', $actual);
     }    
     
-    public function testHandleConfirmationUrlReturnsErroResponseOnCallbackException()
+    public function testHandleConfirmationUrlReturnsErrorResponseOnCallbackException()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
         $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');

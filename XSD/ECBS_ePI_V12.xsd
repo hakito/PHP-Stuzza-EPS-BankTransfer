@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Mit XMLSpy v2011 (http://www.altova.com) von STUZZA (STUZZA) bearbeitet -->
+<!-- Mit XMLSpy v2011 rel. 2 (x64) (http://www.altova.com) von STUZZA (STUZZA) bearbeitet -->
 <!-- edited with XMLSPY v5 rel. 3 U (http://www.xmlspy.com) by Hendrik Muus (STUZZA GmbH) -->
 <!-- XML schema  for TC6 WG2 ePI electronic Payment Initiator datacontainer
     (c) 2003 TC6 WG2 ePI
@@ -8,7 +8,8 @@
 March 2012: ECBS_ePI_V11.xsd => update character definition (see pattern definition in data elements) according to SEPA requirements-->
 <!--Joachim Geisler, 13.11.2003: changes due to discussions on version control, BIC pattern-->
 <!--Datacontainer for Payment Initiator, based on ECBS ePI Bankstandard-->
-<xsd:schema xmlns:epi="http://www.stuzza.at/namespaces/eps/epi/2011/11" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.stuzza.at/namespaces/eps/epi/2011/11" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<!--July 2013: ECBS_ePI_V12.xsd => new data element UnstructuredRemittanceIdentifier; new namespace -->
+<xsd:schema xmlns:epi="http://www.stuzza.at/namespaces/eps/epi/2013/02" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.stuzza.at/namespaces/eps/epi/2013/02" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xsd:element name="EpiDetails">
 		<xsd:annotation>
 			<xsd:documentation>Electronic Payment Initiator (payment request) Datacontainer- rootelement</xsd:documentation>
@@ -87,7 +88,10 @@ March 2012: ECBS_ePI_V11.xsd => update character definition (see pattern definit
 				<xsd:element ref="epi:PaymentInstructionIdentifier" minOccurs="0"/>
 				<xsd:element ref="epi:TransactionTypeCode" minOccurs="0"/>
 				<xsd:element ref="epi:InstructionCode" minOccurs="0"/>
-				<xsd:element ref="epi:RemittanceIdentifier"/>
+				<xsd:choice>
+					<xsd:element ref="epi:RemittanceIdentifier"/>
+					<xsd:element ref="epi:UnstructuredRemittanceIdentifier"/>
+				</xsd:choice>
 				<xsd:element ref="epi:InstructedAmount"/>
 				<xsd:element ref="epi:ChargeCode"/>
 				<xsd:element ref="epi:DateOptionDetails" minOccurs="0"/>
@@ -247,11 +251,23 @@ March 2012: ECBS_ePI_V11.xsd => update character definition (see pattern definit
 	</xsd:element>
 	<xsd:element name="RemittanceIdentifier">
 		<xsd:annotation>
-			<xsd:documentation>A string of characters, to be forwarded with the payment throughout the payment chain in order to identify and reconcile the credit transfer upon receipt by the ultimate beneficiary</xsd:documentation>
+			<xsd:documentation>max35, A string of characters, to be forwarded with the payment throughout the payment chain in order to identify and reconcile the credit transfer upon receipt by the ultimate beneficiary</xsd:documentation>
 		</xsd:annotation>
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
 				<xsd:maxLength value="35"/>
+				<xsd:pattern value="[\-A-Za-z0-9\+/\?:\(\)\.,'&#x20;]*"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="UnstructuredRemittanceIdentifier">
+		<xsd:annotation>
+			<xsd:documentation>max140, unstructered remittance identifier</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="140"/>
+				<xsd:minLength value="1"/>
 				<xsd:pattern value="[\-A-Za-z0-9\+/\?:\(\)\.,'&#x20;]*"/>
 			</xsd:restriction>
 		</xsd:simpleType>

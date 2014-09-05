@@ -96,7 +96,7 @@ class SoCommunicator
     public function GetBanks($validateXml = true, $url = null)
     {
         if ($url == null)
-            $url = 'https://routing.eps.or.at/appl/epsSO/data/haendler/v2_4';
+            $url = 'https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5';
 
         $body = $this->GetUrl($url, 'Requesting bank list');
 
@@ -119,7 +119,7 @@ class SoCommunicator
         $transferInitiatorDetails->RemittanceIdentifier = $this->AppendHash($transferInitiatorDetails->RemittanceIdentifier);
         
         if ($targetUrl == null)
-            $targetUrl = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4';
+            $targetUrl = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5';
 
         $data = $transferInitiatorDetails->GetSimpleXml();
         $xmlData = $data->asXML();

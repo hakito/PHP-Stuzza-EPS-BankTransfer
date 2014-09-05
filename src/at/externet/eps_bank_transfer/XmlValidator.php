@@ -11,7 +11,7 @@ class XmlValidator
 
     public static function ValidateEpsProtocol($xml)
     {
-        return self::ValidateXml($xml, self::GetXSD('EPSProtocol-V24.xsd'));
+        return self::ValidateXml($xml, self::GetXSD('EPSProtocol-V25.xsd'));
     }
 
     // HELPER FUNCTIONS

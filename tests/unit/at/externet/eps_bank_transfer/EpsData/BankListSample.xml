@@ -4,7 +4,7 @@
 <bic>TESTBANKXXX</bic>
 <bezeichnung>Testbank</bezeichnung>
 <land>AT</land>
-<epsUrl>https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_4/23ea3d14-278c-4e81-a021-d7b77492b611</epsUrl>
+<epsUrl>https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611</epsUrl>
 <zahlungsweiseNat terminueberweisung="false">EPG</zahlungsweiseNat>
 </bank>
 </epsSOBankListProtocol>
