@@ -34,7 +34,7 @@ class TransferInitiatorDetails
     public $BfiBicIdentifier;
 
     /**
-     * Identifikation des Begünstigten (Name und Adresse) in unstruktu-rierter Form, wobei der Begünstigte nicht mit dem Kontoinhaber ident sein muss.
+     * Identifikation des Begünstigten (Name und Adresse) in unstrukturierter Form, wobei der Begünstigte nicht mit dem Kontoinhaber ident sein muss.
      * @var string
      */
     public $BeneficiaryNameAddressText;
@@ -46,7 +46,7 @@ class TransferInitiatorDetails
     public $BeneficiaryAccountIdentifier;
 
     /**
-     * Referenz der Zahlungsauftragsnachricht, z.B. für Nachforschungs-zwecke beim Händler
+     * Referenz der Zahlungsauftragsnachricht, z.B. für Nachforschungszwecke beim Händler
      * @var string
      */
     public $ReferenceIdentifier;
@@ -101,12 +101,11 @@ class TransferInitiatorDetails
      * @param string $beneficiaryNameAddressText
      * @param string $beneficiaryAccountIdentifier
      * @param string $referenceIdentifier
-     * @param string $remittanceIdentifier
      * @param string $instructedAmount in cents
      * @param TransferMsgDetails $transferMsgDetails
      * @param string $date
      */
-    public function __construct($userId, $secret, $bfiBicIdentifier, $beneficiaryNameAddressText, $beneficiaryAccountIdentifier, $referenceIdentifier, $remittanceIdentifier, $instructedAmount, $transferMsgDetails, $date = null)
+    public function __construct($userId, $secret, $bfiBicIdentifier, $beneficiaryNameAddressText, $beneficiaryAccountIdentifier, $referenceIdentifier, $instructedAmount, $transferMsgDetails, $date = null)
     {
         $this->UserId = $userId;
         $this->Secret = $secret;
@@ -114,7 +113,6 @@ class TransferInitiatorDetails
         $this->BeneficiaryNameAddressText = $beneficiaryNameAddressText;
         $this->BeneficiaryAccountIdentifier = $beneficiaryAccountIdentifier;
         $this->ReferenceIdentifier = $referenceIdentifier;
-        $this->RemittanceIdentifier = $remittanceIdentifier;
         $this->SetInstructedAmount($instructedAmount);
         $this->WebshopArticles = Array();
         $this->TransferMsgDetails = $transferMsgDetails;

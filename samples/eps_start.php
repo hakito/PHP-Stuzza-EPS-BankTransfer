@@ -17,9 +17,10 @@ $transferInitiatorDetails = new eps_bank_transfer\TransferInitiatorDetails(
   'John Q. Public',         // Name of the account owner where money will be sent to
   'AT611904300234573201',   // IBAN code of bank account where money will be sent to
   '12345',                  // Reference identifier. This identifies the payment message
-  'Order123',               // Remittance identifier. This value will be returned on payment confirmation
   '9999',                   // Total amount in EUR cent
   $transferMsgDetails);
+
+$transferInitiatorDetails->RemittanceIdentifier = 'Order123'; // This value will be returned on payment confirmation
 
 // optional:
 $transferInitiatorDetails->SetExpirationMinutes(60);     // Sets ExpirationTimeout. Value must be between 5 and 60

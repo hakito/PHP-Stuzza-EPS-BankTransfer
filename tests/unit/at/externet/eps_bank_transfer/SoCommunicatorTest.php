@@ -158,7 +158,7 @@ class SoCommunicatorTest extends BaseTest
     {
         $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611';
         $t = new TransferMsgDetails('a', 'b', 'c');
-        $transferInitiatorDetails = new TransferInitiatorDetails('a', 'b', 'c', 'd', 'e', 'f', 'g', 0, $t);
+        $transferInitiatorDetails = new TransferInitiatorDetails('a', 'b', 'c', 'd', 'e', 'f', 0, $t);
         $transferInitiatorDetails->RemittanceIdentifier = 'Order1';
         $this->httpResponseDummy->body = $this->GetEpsData('BankResponseDetails000.xml');
         $this->target->ObscuritySuffixLength = 8;
