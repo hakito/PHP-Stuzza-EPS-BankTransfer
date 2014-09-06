@@ -58,6 +58,12 @@ class TransferInitiatorDetails
     public $RemittanceIdentifier;
 
     /**
+     * min-/max. Durchführungszeitpunkt für eps Zahlung
+     * @var string
+     */
+    public $ExpirationTime;
+
+    /**
      * Bei Angabe von Cent-Werten müssen diese vom Euro-Betrag mit einem Punkt ge-trennt übermittelt werden, z.B. 150.55 (NICHT 150,55)!
      * @var string
      */
@@ -124,6 +130,22 @@ class TransferInitiatorDetails
     }
 
     /**
+     * Sets ExpirationTime by adding given amount of minutes to the current
+     * timestamp.
+     * @param int $minutes Must be between 5 and 60
+     * @throws \InvalidArgumentException if minutes not between 5 and 60
+     */
+    public function SetExpirationMinutes($minutes)
+    {
+        if ($minutes < 5 || $minutes > 60)
+            throw new \InvalidArgumentException('Expiration minutes value of "' . $minutes . '" is not between 5 and 60.');
+
+        $expires = new \DateTime();
+        $expires->add(new \DateInterval('PT' . $minutes . 'M'));
+        $this->ExpirationTime = $expires->format(DATE_RFC3339);
+    }
+
+    /**
      * 
      * @param int $amount in cents
      */
@@ -179,9 +201,6 @@ class TransferInitiatorDetails
         $AuthenticationDetails->addChildExt('UserId', $this->UserId, 'epsp');
         $AuthenticationDetails->addChildExt('MD5Fingerprint', $this->GetMD5Fingerprint(), 'epsp');
 
-
-
-
         $EpiDetails = $PaymentInitiatorDetails->addChildExt('EpiDetails', '', 'epi');
         $IdentificationDetails = $EpiDetails->addChildExt("IdentificationDetails", '', 'epi');
         $PartyDetails = $EpiDetails->addChildExt('PartyDetails', '', 'epi');
@@ -204,6 +223,9 @@ class TransferInitiatorDetails
 
         $AustrianRulesDetails = $PaymentInitiatorDetails->addChildExt('AustrianRulesDetails', '', 'atrul');
         $AustrianRulesDetails->addChildExt('DigSig', 'SIG', 'atrul');
+
+        if (!empty($this->ExpirationTime))
+            $AustrianRulesDetails->AddChildExt('ExpirationTime', $this->ExpirationTime, 'atrul');
 
         return $xml;
     }

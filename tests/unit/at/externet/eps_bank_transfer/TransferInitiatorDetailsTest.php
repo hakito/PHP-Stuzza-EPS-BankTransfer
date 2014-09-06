@@ -40,4 +40,32 @@ class TransferInitiatorDetailsTest extends BaseTest
 
         $this->assertEquals($eDom->saveXML(), $aSimpleXml->asXML());
     }
+
+    public function testTransferInitiatorDetailsInvalidExpirationMinutes()
+    {
+        $webshopArticle = new WebshopArticle("Toaster", 1, 15000);
+        $transferMsgDetails = new TransferMsgDetails("http://10.18.70.8:7001/vendorconfirmation", "http://10.18.70.8:7001/transactionok?danke.asp", "http://10.18.70.8:7001/transactionnok?fehler.asp");
+        $transferMsgDetails->TargetWindowNok = $transferMsgDetails->TargetWindowOk = 'Mustershop';
+
+        $data = new TransferInitiatorDetails('AKLJS231534', 'topSecret', 'GAWIATW1XXX', 'Max Mustermann', 'AT611904300234573201', '1234567890ABCDEFG', 'AT1234567890XYZ', 15000, $webshopArticle, $transferMsgDetails, '2007-03-16');
+
+        $this->setExpectedException('InvalidArgumentException', 'Expiration minutes value of "3" is not between 5 and 60.');
+        $data->SetExpirationMinutes(3);
+
+    }
+
+    public function testGenerateTransferInitiatorDetailsWithExpirationTime()
+    {
+        $webshopArticle = new WebshopArticle("Toaster", 1, 15000);
+        $transferMsgDetails = new TransferMsgDetails("http://10.18.70.8:7001/vendorconfirmation", "http://10.18.70.8:7001/transactionok?danke.asp", "http://10.18.70.8:7001/transactionnok?fehler.asp");
+        $transferMsgDetails->TargetWindowNok = $transferMsgDetails->TargetWindowOk = 'Mustershop';
+
+        $data = new TransferInitiatorDetails('AKLJS231534', 'topSecret', 'GAWIATW1XXX', 'Max Mustermann', 'AT611904300234573201', '1234567890ABCDEFG', 'AT1234567890XYZ', 15000, $webshopArticle, $transferMsgDetails, '2007-03-16');
+        $data->SetExpirationMinutes(5);
+        $aSimpleXml = $data->GetSimpleXml();
+
+        $actual = $aSimpleXml->asXML();
+        XmlValidator::ValidateEpsProtocol($actual);
+        $this->assertContains('ExpirationTime', $actual); 
+    }
 }

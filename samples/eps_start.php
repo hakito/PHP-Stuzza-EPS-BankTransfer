@@ -28,6 +28,9 @@ $transferInitiatorDetails = new eps_bank_transfer\TransferInitiatorDetails(
   $article,                 // Array or single webshop article
   $transferMsgDetails);
 
+// optional:
+$transferInitiatorDetails->SetExpirationMinutes(60); // Sets ExpirationTimeout. Value must be between 5 and 60
+
 $soCommunicator = new eps_bank_transfer\SoCommunicator();
 $plain = $soCommunicator->SendTransferInitiatorDetails($transferInitiatorDetails);
 $xml = new SimpleXMLElement($plain);
