@@ -4,12 +4,6 @@
 require_once('src/autoloader.php');
 use at\externet\eps_bank_transfer;
 
-$article = new eps_bank_transfer\WebshopArticle(
-  'ArticleName',  // Article name
-  1,              // Quantity
-  9999            // Price in EUR cents
-);
-
 $transferMsgDetails = new eps_bank_transfer\TransferMsgDetails(
   'https://yourdomain.example.com/eps_confirm.php', // The url where the EPS scheme operator will call on payment
   'https://yourdomain.example.com/ThankYou.html',   // The url the buyer will be redirected on succesful payment
@@ -25,12 +19,18 @@ $transferInitiatorDetails = new eps_bank_transfer\TransferInitiatorDetails(
   '12345',                  // Reference identifier. This identifies the payment message
   'Order123',               // Remittance identifier. This value will be returned on payment confirmation
   '9999',                   // Total amount in EUR cent
-  $article,                 // Array or single webshop article
   $transferMsgDetails);
 
 // optional:
-$transferInitiatorDetails->SetExpirationMinutes(60); // Sets ExpirationTimeout. Value must be between 5 and 60
+$transferInitiatorDetails->SetExpirationMinutes(60);     // Sets ExpirationTimeout. Value must be between 5 and 60
+$article = new eps_bank_transfer\WebshopArticle(
+  'ArticleName',  // Article name
+  1,              // Quantity
+  9999            // Price in EUR cents
+);
+$transferInitiatorDetails->WebshopArticles[] = $article;
 
+// Send TransferInitiatorDetails to scheme operator
 $soCommunicator = new eps_bank_transfer\SoCommunicator();
 $plain = $soCommunicator->SendTransferInitiatorDetails($transferInitiatorDetails);
 $xml = new SimpleXMLElement($plain);

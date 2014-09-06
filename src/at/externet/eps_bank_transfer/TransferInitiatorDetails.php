@@ -77,7 +77,7 @@ class TransferInitiatorDetails
 
     /**
      * Array of webshop articles
-     * @var WebshopArticle array
+     * @var WebshopArticle[]
      */
     public $WebshopArticles;
 
@@ -103,11 +103,10 @@ class TransferInitiatorDetails
      * @param string $referenceIdentifier
      * @param string $remittanceIdentifier
      * @param string $instructedAmount in cents
-     * @param WebshopArticle[] $webshopArticles
      * @param TransferMsgDetails $transferMsgDetails
      * @param string $date
      */
-    public function __construct($userId, $secret, $bfiBicIdentifier, $beneficiaryNameAddressText, $beneficiaryAccountIdentifier, $referenceIdentifier, $remittanceIdentifier, $instructedAmount, $webshopArticles, $transferMsgDetails, $date = null)
+    public function __construct($userId, $secret, $bfiBicIdentifier, $beneficiaryNameAddressText, $beneficiaryAccountIdentifier, $referenceIdentifier, $remittanceIdentifier, $instructedAmount, $transferMsgDetails, $date = null)
     {
         $this->UserId = $userId;
         $this->Secret = $secret;
@@ -117,13 +116,7 @@ class TransferInitiatorDetails
         $this->ReferenceIdentifier = $referenceIdentifier;
         $this->RemittanceIdentifier = $remittanceIdentifier;
         $this->SetInstructedAmount($instructedAmount);
-        if (is_array($webshopArticles))
-            $this->WebshopArticles = $webshopArticles;
-        else
-        {
-            $this->WebshopArticles = Array();
-            $this->WebshopArticles[] = $webshopArticles;
-        }
+        $this->WebshopArticles = Array();
         $this->TransferMsgDetails = $transferMsgDetails;
 
         $this->Date = $date == null ? date("Y-m-d") : $date;
@@ -187,14 +180,17 @@ class TransferInitiatorDetails
         if (!empty($this->TransferMsgDetails->TargetWindowNok))            
             $TransactionNokUrl->addAttribute('TargetWindow', $this->TransferMsgDetails->TargetWindowNok);
 
-        $WebshopDetails = $TransferInitiatorDetails->addChildExt('WebshopDetails', '', 'epsp');
-
-        foreach ($this->WebshopArticles as $article)
+        if (!empty($this->WebshopArticles))
         {
-            $WebshopArticle = $WebshopDetails->addChildExt('WebshopArticle', '', 'epsp');
-            $WebshopArticle->addAttribute('ArticleName', $article->Name);
-            $WebshopArticle->addAttribute('ArticleCount', $article->Count);
-            $WebshopArticle->addAttribute('ArticlePrice', $article->Price);
+            $WebshopDetails = $TransferInitiatorDetails->addChildExt('WebshopDetails', '', 'epsp');
+
+            foreach ($this->WebshopArticles as $article)
+            {
+                $WebshopArticle = $WebshopDetails->addChildExt('WebshopArticle', '', 'epsp');
+                $WebshopArticle->addAttribute('ArticleName', $article->Name);
+                $WebshopArticle->addAttribute('ArticleCount', $article->Count);
+                $WebshopArticle->addAttribute('ArticlePrice', $article->Price);
+            }
         }
 
         $AuthenticationDetails = $TransferInitiatorDetails->addChildExt('AuthenticationDetails', '', 'epsp');
