@@ -3,7 +3,7 @@
 	<epsp:BankConfirmationDetails>
 		<epsp:SessionId>13212452dea</epsp:SessionId>
 		<eps:PaymentConfirmationDetails>
-			<epi:RemittanceIdentifier>AT1234567890XYZ</epi:RemittanceIdentifier>
+			<epi:UnstructuredRemittanceIdentifier>AT1234567890XYZ</epi:UnstructuredRemittanceIdentifier>
 			<eps:PayConApprovingUnitDetails>
 				<eps:ApprovingUnitBankIdentifier>AAAAAAAAAAA</eps:ApprovingUnitBankIdentifier>
 			</eps:PayConApprovingUnitDetails>

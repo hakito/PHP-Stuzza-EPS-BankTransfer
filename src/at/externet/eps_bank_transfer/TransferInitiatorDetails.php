@@ -52,6 +52,12 @@ class TransferInitiatorDetails
     public $ReferenceIdentifier;
 
     /**
+     *
+     * @var string
+     */
+    public $UnstructuredRemittanceIdentifier;
+
+    /**
      * Zahlungsreferenz Eindeutige Referenz des Händlers (= Begünstigter) zu einem Geschäftsfall, der im Zahlungsverkehr unverändert wieder an den Händler zurückgeleitet werden muss 
      * @var string 
      */
@@ -199,7 +205,10 @@ class TransferInitiatorDetails
         $IdentificationDetails = $EpiDetails->addChildExt("IdentificationDetails", '', 'epi');
         $PartyDetails = $EpiDetails->addChildExt('PartyDetails', '', 'epi');
         $PaymentInstructionDetails = $EpiDetails->addChildExt('PaymentInstructionDetails', '', 'epi');
-        $PaymentInstructionDetails->addChildExt('RemittanceIdentifier', $this->RemittanceIdentifier, 'epi');
+        if ($this->UnstructuredRemittanceIdentifier == null)
+            $PaymentInstructionDetails->addChildExt('RemittanceIdentifier', $this->RemittanceIdentifier, 'epi');
+        else
+            $PaymentInstructionDetails->addChildExt('UnstructuredRemittanceIdentifier', $this->UnstructuredRemittanceIdentifier, 'epi');
         $InstructedAmount = $PaymentInstructionDetails->addChildExt('InstructedAmount', $this->InstructedAmount, 'epi');
         $InstructedAmount->addAttribute('AmountCurrencyIdentifier', $this->AmountCurrencyIdentifier);
         $PaymentInstructionDetails->addChildExt('ChargeCode', 'SHA', 'epi');

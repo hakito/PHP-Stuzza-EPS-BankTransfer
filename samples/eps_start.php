@@ -20,7 +20,9 @@ $transferInitiatorDetails = new eps_bank_transfer\TransferInitiatorDetails(
   '9999',                   // Total amount in EUR cent
   $transferMsgDetails);
 
-$transferInitiatorDetails->RemittanceIdentifier = 'Order123'; // This value will be returned on payment confirmation
+// conditional
+$transferInitiatorDetails->RemittanceIdentifier = 'Order123';             // This value will be returned on payment confirmation
+$transferInitiatorDetails->UnstructuredRemittanceIdentifier = 'Order123'; // This value will be returned on payment confirmation
 
 // optional:
 $transferInitiatorDetails->SetExpirationMinutes(60);     // Sets ExpirationTimeout. Value must be between 5 and 60

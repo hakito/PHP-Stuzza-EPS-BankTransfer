@@ -116,8 +116,12 @@ class SoCommunicator
      */
     public function SendTransferInitiatorDetails($transferInitiatorDetails, $targetUrl = null)
     {
-        $transferInitiatorDetails->RemittanceIdentifier = $this->AppendHash($transferInitiatorDetails->RemittanceIdentifier);
-        
+        if ($transferInitiatorDetails->RemittanceIdentifier != null)
+            $transferInitiatorDetails->RemittanceIdentifier = $this->AppendHash($transferInitiatorDetails->RemittanceIdentifier);
+
+        if ($transferInitiatorDetails->UnstructuredRemittanceIdentifier != null)
+            $transferInitiatorDetails->UnstructuredRemittanceIdentifier = $this->AppendHash($transferInitiatorDetails->UnstructuredRemittanceIdentifier);
+
         if ($targetUrl == null)
             $targetUrl = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5';
 
@@ -187,11 +191,23 @@ class SoCommunicator
                 {
                     $remittanceIdentifier = $t2->RemittanceIdentifier;
                 }
+                else if (isset($t2->UnstructuredRemittanceIdentifier))
+                {
+                    $remittanceIdentifier = $t2->UnstructuredRemittanceIdentifier;
+                }
                 else
                 {
                     $t3 = $PaymentConfirmationDetails->PaymentInitiatorDetails->children(XMLNS_epi);
                     $EpiDetails = $t3[0];
-                    $remittanceIdentifier = $EpiDetails->PaymentInstructionDetails->RemittanceIdentifier;
+                    $t4 = $EpiDetails->PaymentInstructionDetails;
+                    if (isset($t4->RemittanceIdentifier))
+                    {
+                        $remittanceIdentifier = $t4->RemittanceIdentifier;
+                    }
+                    else
+                    {
+                        $remittanceIdentifier = $t4->UnstructuredRemittanceIdentifier;
+                    }
                 }
 
                 if ($remittanceIdentifier == null)

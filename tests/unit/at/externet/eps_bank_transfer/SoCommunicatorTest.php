@@ -226,6 +226,21 @@ class SoCommunicatorTest extends BaseTest
         $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
     }
     
+    public function testHandleConfirmationUrlCallsCallbackWithUnstructuredRemittanceIdentifierWithGivenSignature()
+    {
+        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignatureUnstructuredRemittanceIdentifier.xml');
+        $remittanceIdentifier = 'Nothing';
+        $statusCode = 'Nothing';
+        $this->target->HandleConfirmationUrl(function($data, $ri, $sc) use (&$remittanceIdentifier, &$statusCode) {
+            $remittanceIdentifier = $ri;
+            $statusCode = $sc;
+            return true;
+            }, null, $dataPath, 'php://temp');
+        
+        $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
+        $this->assertEquals('OK', $statusCode);
+    }
+
     public function testHandleConfirmationUrlCallsCallbackWithRemittanceIdentifierWithGivenSignature()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
@@ -236,7 +251,22 @@ class SoCommunicatorTest extends BaseTest
             $statusCode = $sc;
             return true;
             }, null, $dataPath, 'php://temp');
-        
+
+        $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
+        $this->assertEquals('OK', $statusCode);
+    }
+
+    public function testHandleConfirmationUrlCallsCallbackWithUnstructuredRemittanceIdentifierWithoutSignature()
+    {
+        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignatureUnstructuredRemittanceIdentifier.xml');
+        $remittanceIdentifier = 'Nothing';
+        $statusCode = 'Nothing';
+        $this->target->HandleConfirmationUrl(function($data, $ri, $sc) use (&$remittanceIdentifier, &$statusCode) {
+            $remittanceIdentifier = $ri;
+            $statusCode = $sc;
+            return true;
+            }, null, $dataPath, 'php://temp');
+
         $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
         $this->assertEquals('OK', $statusCode);
     }
@@ -467,6 +497,9 @@ class SoCommunicatorTest extends BaseTest
         $transferInitiatorDetails->expects($this->any())
                 ->method('GetSimpleXml')
                 ->will($this->returnValue($simpleXml));
+
+        $transferInitiatorDetails->RemittanceIdentifier = 'orderid';
+
         return $transferInitiatorDetails;
     }
 }

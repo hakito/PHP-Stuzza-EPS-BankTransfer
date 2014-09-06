@@ -57,7 +57,7 @@ class TransferInitiatorDetailsTest extends BaseTest
 
     }
 
-    public function testGenerateTransferInitiatorDetailsWithExpirationTime()
+    public function testTransferInitiatorDetailsWithExpirationTime()
     {
         $transferMsgDetails = new TransferMsgDetails("http://10.18.70.8:7001/vendorconfirmation", "http://10.18.70.8:7001/transactionok?danke.asp", "http://10.18.70.8:7001/transactionnok?fehler.asp");
         $transferMsgDetails->TargetWindowNok = $transferMsgDetails->TargetWindowOk = 'Mustershop';
@@ -68,6 +68,21 @@ class TransferInitiatorDetailsTest extends BaseTest
 
         $actual = $aSimpleXml->asXML();
         XmlValidator::ValidateEpsProtocol($actual);
-        $this->assertContains('ExpirationTime', $actual); 
+        $this->assertContains('ExpirationTime', $actual);
+    }
+
+    public function testTransferInitiatorDetailsWithUnstructuredRemittanceIdentifier()
+    {
+        $transferMsgDetails = new TransferMsgDetails("http://10.18.70.8:7001/vendorconfirmation", "http://10.18.70.8:7001/transactionok?danke.asp", "http://10.18.70.8:7001/transactionnok?fehler.asp");
+        $transferMsgDetails->TargetWindowNok = $transferMsgDetails->TargetWindowOk = 'Mustershop';
+
+        $data = new TransferInitiatorDetails('AKLJS231534', 'topSecret', 'GAWIATW1XXX', 'Max Mustermann', 'AT611904300234573201', '1234567890ABCDEFG', 15000, $transferMsgDetails, '2007-03-16');
+        $data->UnstructuredRemittanceIdentifier = 'Foo is not Bar';
+        $data->SetExpirationMinutes(5);
+        $aSimpleXml = $data->GetSimpleXml();
+
+        $actual = $aSimpleXml->asXML();
+        XmlValidator::ValidateEpsProtocol($actual);
+        $this->assertContains('UnstructuredRemittanceIdentifier>Foo is not Bar', $actual);
     }
 }
