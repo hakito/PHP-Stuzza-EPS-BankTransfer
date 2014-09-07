@@ -1,6 +1,6 @@
 <?php
 /*
-This file handles the confirmation call from the scheme operator (after a payment was received). It is called twice:
+This file handles the confirmation call from the Scheme Operator (after a payment was received). It is called twice:
 1. for Vitality-Check, according to "Abbildung 6-11: epsp:VitalityCheckDetails" (eps Pflichtenheft 2.5)
 2. for the actual payment confirmation (Zahlungsbestätigung)
 */
@@ -21,8 +21,7 @@ $paymentConfirmationCallback = function($plainXml, $remittanceIdentifier, $statu
     // TODO: Do your payment completion handling here
   }
 
-  // True is expected to be returned, otherwise the scheme operator will be informed that
-  // the server could not accept the payment confirmation
+  // True is expected to be returned, otherwise the Scheme Operator will be informed that the server could not accept the payment confirmation
   return true; 
 };
 

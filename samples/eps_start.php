@@ -1,52 +1,64 @@
 <?php
-// This is the minimal set to start a payment request:
-
 require_once('src/autoloader.php');
 use at\externet\eps_bank_transfer;
 
+// Connection credentials. Override them for testing mode. 
+$userID = 'AKLJS231534',            // Eps "Händler-ID"/UserID = epsp:UserId
+$pin    = 'topSecret',              // Secret for authentication / PIN
+$bic    = 'GAWIATW1XXX',            // BIC code of receiving bank account = epi:BfiBicIdentifier
+$iban   = 'AT611904300234573201',   // IBAN code of receiving bank account = epi:BeneficiaryAccountIdentifier
+$targetUrl = null; // Target url to send TransferInitiatorDetails to. Default: https://routing.eps.or.at/appl/epsSO-test/transinit/eps/v2_5
+
+// Return urls
 $transferMsgDetails = new eps_bank_transfer\TransferMsgDetails(
-  'https://yourdomain.example.com/eps_confirm.php', // The url where the EPS scheme operator will call on payment
-  'https://yourdomain.example.com/ThankYou.html',   // The url the buyer will be redirected on succesful payment
-  'https://yourdomain.example.com/Failure.html'     // Tge url the buyer will be redirected on cancel or failure
+  'http(s)://yourdomain.example.com/eps_confirm.php', // The URL that the EPS Scheme Operator (=SO) will call on payment
+  'http(s)://yourdomain.example.com/ThankYou.html',   // The URL that the buyer will be redirected to on succesful payment
+  'http(s)://yourdomain.example.com/Failure.html'     // The URL that the buyer will be redirected to on cancel or failure
 );
 
 $transferInitiatorDetails = new eps_bank_transfer\TransferInitiatorDetails(
-  'AKLJS231534',            // Eps "Händler" id
-  'topSecret',              // Secret for authentication
-  'GAWIATW1XXX',            // BIC code of bank account where money will be sent to
-  'John Q. Public',         // Name of the account owner where money will be sent to
-  'AT611904300234573201',   // IBAN code of bank account where money will be sent to
-  '12345',                  // Reference identifier. This identifies the payment message
-  '9999',                   // Total amount in EUR cent
+  $userID,
+  $pin,
+  $bic,
+  'John Q. Public',         // Name of the receiving account owner = epi:BeneficiaryNameAddressText
+  $iban,
+  '12345',                  // Reference identifier. This identifies the actual payment = epi:ReferenceIdentifier
+  '9999',                   // Total amount in EUR cent ≈ epi:InstructedAmount
   $transferMsgDetails);
 
-// conditional
-$transferInitiatorDetails->RemittanceIdentifier = 'Order123';             // This value will be returned on payment confirmation
-$transferInitiatorDetails->UnstructuredRemittanceIdentifier = 'Order123'; // This value will be returned on payment confirmation
+// Optional: Include ONE (i.e. not both!) of the following two lines:
+$transferInitiatorDetails->RemittanceIdentifier = 'Order123';             // "Zahlungsreferenz". Will be returned on payment confirmation = epi:RemittanceIdentifier
+$transferInitiatorDetails->UnstructuredRemittanceIdentifier = 'Order123'; // "Verwendungszweck". Will be returned on payment confirmation = epi:UnstructuredRemittanceIdentifier
 
-// optional:
+// Optional:
 $transferInitiatorDetails->SetExpirationMinutes(60);     // Sets ExpirationTimeout. Value must be between 5 and 60
-$article = new eps_bank_transfer\WebshopArticle(
+
+// Optional: Include information about one or more articles = epsp:WebshopDetails
+$article = new eps_bank_transfer\WebshopArticle(  // = epsp:WebshopArticle
   'ArticleName',  // Article name
   1,              // Quantity
   9999            // Price in EUR cents
 );
 $transferInitiatorDetails->WebshopArticles[] = $article;
 
-// Send TransferInitiatorDetails to scheme operator
+// Send TransferInitiatorDetails to Scheme Operator
 $soCommunicator = new eps_bank_transfer\SoCommunicator();
-$plain = $soCommunicator->SendTransferInitiatorDetails($transferInitiatorDetails);
+
+// Send transfer initiator details to $targetUrl
+$plain = $soCommunicator->SendTransferInitiatorDetails($transferInitiatorDetails, $targetUrl);
 $xml = new SimpleXMLElement($plain);
 $soAnswer = $xml->children(eps_bank_transfer\XMLNS_epsp);
-$errorDetails = &$soAnswer->BankResponseDetails->ErrorDetails;
+$errorDetails = $soAnswer->BankResponseDetails->ErrorDetails;
 
 if (('' . $errorDetails->ErrorCode) != '000')
 {
   $errorCode = '' . $errorDetails->ErrorCode;
   $errorMsg = '' . $errorDetails->ErrorMsg;
 }
-
-// This is the url you have to redirect the client to.
-$redirectUrl = $soAnswer->BankResponseDetails->ClientRedirectUrl;
-header('Location: ' . $redirectUrl);
+else
+{
+  // This is the url you have to redirect the client to.
+  $redirectUrl = $soAnswer->BankResponseDetails->ClientRedirectUrl;
+  header('Location: ' . $redirectUrl);
+}
 ?>
