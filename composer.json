@@ -1,5 +1,5 @@
 {
-    "name": "hakito/PHP-Stuzza-EPS-BankTransfer",
+    "name": "hakito/php-stuzza-eps-banktransfer",
     "description": "Stuzza e-payment standard implementation for PHP",
     "keywords": ["eps", "payments", "stuzza", "bank transfer"],
     "type": "library",
