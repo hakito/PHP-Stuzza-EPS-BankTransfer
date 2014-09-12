@@ -1,7 +1,8 @@
+[![Build Status](https://travis-ci.org/hakito/PHP-Stuzza-EPS-BankTransfer.svg?branch=master)](https://travis-ci.org/hakito/PHP-Stuzza-EPS-BankTransfer) [![Coverage Status](https://coveralls.io/repos/hakito/PHP-Stuzza-EPS-BankTransfer/badge.png)](https://coveralls.io/r/hakito/PHP-Stuzza-EPS-BankTransfer)
+[![Latest Stable Version](https://poser.pugx.org/hakito/php-stuzza-eps-banktransfer/v/stable.svg)](https://packagist.org/packages/hakito/php-stuzza-eps-banktransfer) [![Total Downloads](https://poser.pugx.org/hakito/php-stuzza-eps-banktransfer/downloads.svg)](https://packagist.org/packages/hakito/php-stuzza-eps-banktransfer) [![Latest Unstable Version](https://poser.pugx.org/hakito/php-stuzza-eps-banktransfer/v/unstable.svg)](https://packagist.org/packages/hakito/php-stuzza-eps-banktransfer) [![License](https://poser.pugx.org/hakito/php-stuzza-eps-banktransfer/license.svg)](https://packagist.org/packages/hakito/php-stuzza-eps-banktransfer)
+
 PHP-Stuzza-EPS-BankTransfer
 ===========================
-
-[![Build Status](https://travis-ci.org/hakito/PHP-Stuzza-EPS-BankTransfer.svg?branch=master)](https://travis-ci.org/hakito/PHP-Stuzza-EPS-BankTransfer) [![Coverage Status](https://coveralls.io/repos/hakito/PHP-Stuzza-EPS-BankTransfer/badge.png)](https://coveralls.io/r/hakito/PHP-Stuzza-EPS-BankTransfer)
 
 PHP Implementation of the Stuzza e-payment standard. See http://www.stuzza.at/12872_DE.pdf?exp=24568045069672&12872
 
