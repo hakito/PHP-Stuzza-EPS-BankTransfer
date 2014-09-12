@@ -1,0 +1,28 @@
+{
+    "name": "hakito/PHP-Stuzza-EPS-BankTransfer",
+    "description": "Stuzza e-payment standard implementation for PHP",
+    "keywords": ["eps", "payments", "stuzza", "bank transfer"],
+    "type": "library",
+    "license": "GPL-2.0",
+    "homepage": "https://github.com/hakito/PHP-Stuzza-EPS-BankTransfer",
+    "authors": [
+        {
+            "name": "Hakito",
+            "homepage": "https://github.com/hakito/PHP-Stuzza-EPS-BankTransfer/graphs/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "ext-curl": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    },
+    "autoload": {
+    	"files": [ "lib/basics.php", "src/functions.php"],
+        "psr-4": {
+            "at\\externet\\eps_bank_transfer\\": "src/",
+            "org\\cakephp\\": "lib/"
+        }
+    }    
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="PHP-Stuzza-EPS-BankTransfer" basedir="." default="coverage">
+
+	<property name="basedir" value="." />
+	<property name="output.dir" value="${basedir}/build" />
+	<property name="coverage.dir" value="${output.dir}/coverage" />
+	<property name="coverage.out" value="${coverage.dir}/junit.xml" />
+	<property name="clover.out" value="${coverage.dir}/clover.xml" />
+
+	<target name="coverage">
+		<mkdir dir="${coverage.dir}"/>
+		<exec command="phpunit --coverage-html=${coverage.dir} --coverage-clover=${clover.out} --log-junit=${coverage.out} --exclude-group=PayPal\\Api\\*" />
+	</target>
+</project>

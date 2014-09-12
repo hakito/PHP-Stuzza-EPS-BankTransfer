@@ -5,7 +5,7 @@ This file handles the confirmation call from the Scheme Operator (after a paymen
 2. for the actual payment confirmation (Zahlungsbestätigung)
 */
 
-require_once('src/autoloader.php');
+require_once('../vendor/autoloader.php');
 use at\externet\eps_bank_transfer;
 
 /**

@@ -1,5 +1,5 @@
 <?php
-require_once('src/autoloader.php');
+require_once('../vendor/autoloader.php');
 use at\externet\eps_bank_transfer;
 
 // Connection credentials. Override them for testing mode. 

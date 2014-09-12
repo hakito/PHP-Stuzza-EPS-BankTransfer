@@ -4,3 +4,9 @@ php:
   - 5.4
   - 5.3
   - hhvm
+before_script:
+  - composer update satooshi/php-coveralls --dev
+script:
+    - ant coverage
+after_script:
+    - php vendor/bin/coveralls -v -c .coveralls.yml
