@@ -25,7 +25,7 @@ Look at the following files in the sample folder:
 To run the tests go to the parent folder of tests and execute:
 
 ```
-phpunit tests
+phpunit
 ```
 
 Remarks
