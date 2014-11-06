@@ -139,8 +139,8 @@ class SoCommunicator
      * BankConfirmationDetails.
      * 
      * @param callable $confirmationCallback a callable to send BankConfirmationDetails to.
-     * Will be called with the parameters BankConfirmationDetails as string, 
-     * RemittanceIdentifier as string and StatusCode as string. This callable must return TRUE.
+     * Will be called with the raw post data as first parameter and an Instance of
+     * BankConfirmationDetails as second parameter. This callable must return TRUE.
      * @param callable $vitalityCheckCallback an optional callable for the vitalityCheck
      * @param string $rawPostStream will read from this stream or file with file_get_contents
      * @param string $outputStream will write to this stream the expected responses for the
@@ -190,9 +190,8 @@ class SoCommunicator
                 $shopResponseDetails->StatusCode = $BankConfirmationDetails->GetStatusCode();                              
                 $shopResponseDetails->PaymentReferenceIdentifier = $BankConfirmationDetails->GetPaymentReferenceIdentifier();
 
-                $remittanceIdentifier = $BankConfirmationDetails->GetRemittanceIdentifier();
-                $this->WriteLog(sprintf('Calling confirmationUrlCallback for remittance identifier "%s" with status code %s', $remittanceIdentifier, $shopResponseDetails->StatusCode));
-                $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', array($HTTP_RAW_POST_DATA, $remittanceIdentifier, $shopResponseDetails->StatusCode));
+                $this->WriteLog(sprintf('Calling confirmationUrlCallback for remittance identifier "%s" with status code %s', $BankConfirmationDetails->GetRemittanceIdentifier(), $BankConfirmationDetails->GetStatusCode()));
+                $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', array($HTTP_RAW_POST_DATA, $BankConfirmationDetails));
 
                 // Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
                 $this->WriteLog('III-8 Confirming payment receipt');

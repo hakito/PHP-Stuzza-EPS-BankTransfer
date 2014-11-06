@@ -10,13 +10,13 @@ use at\externet\eps_bank_transfer;
 
 /**
  * @param string $plainXml Raw XML message, according to "Abbildung 6-6: PaymentConfirmationDetails" (eps Pflichtenheft 2.5)
- * @param string $remittanceIdentifier
- * @param string $statusCode "eps:StatusCode": "OK" or "NOK" or "VOK" or "UNKNOWN"
+ * @param BankConfirmationDetails $bankConfirmationDetails
  * @return true
  */
-$paymentConfirmationCallback = function($plainXml, $remittanceIdentifier, $statusCode)
+$paymentConfirmationCallback = function($plainXml, $bankConfirmationDetails)
 {
-  if ($statusCode == 'OK')
+  // Handle "eps:StatusCode": "OK" or "NOK" or "VOK" or "UNKNOWN"
+  if ($bankConfirmationDetails->GetStatusCode() == 'OK')
   {
     // TODO: Do your payment completion handling here
   }

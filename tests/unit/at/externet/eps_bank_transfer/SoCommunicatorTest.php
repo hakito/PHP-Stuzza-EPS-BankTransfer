@@ -214,32 +214,18 @@ class SoCommunicatorTest extends BaseTest
         $this->assertEquals($actual, $expected);
     }
     
-    public function testHandleConfirmationUrlCallsCallbackWithRemittanceIdentifier()
+    public function testHandleConfirmationUrlCallsCallbackWithBankConfirmationDetails()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignature.xml');
-        $remittanceIdentifier = 'Nothing';
-        $this->target->HandleConfirmationUrl(function($data, $ri) use (&$remittanceIdentifier) {
-            $remittanceIdentifier = $ri;
+        $bankConfirmationDetails = null;
+        $this->target->HandleConfirmationUrl(function($data, $bc) use (&$bankConfirmationDetails) {
+            $bankConfirmationDetails = $bc;
             return true;
             }, null, $dataPath, 'php://temp');
         
-        $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
-    }
-    
-    public function testHandleConfirmationUrlCallsCallbackWithRemittanceIdentifierWithGivenSignature()
-    {
-        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
-        $remittanceIdentifier = 'Nothing';
-        $statusCode = 'Nothing';
-        $this->target->HandleConfirmationUrl(function($data, $ri, $sc) use (&$remittanceIdentifier, &$statusCode) {
-            $remittanceIdentifier = $ri;
-            $statusCode = $sc;
-            return true;
-            }, null, $dataPath, 'php://temp');
-
-        $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
-        $this->assertEquals('OK', $statusCode);
-    }
+        $this->assertEquals('AT1234567890XYZ', $bankConfirmationDetails->GetRemittanceIdentifier());
+        $this->assertEquals('OK', $bankConfirmationDetails->GetStatusCode());
+    }  
 
     public function testHandleConfirmationUrlThrowsExceptionWhenCallbackDoesNotReturnTrue()
     {
@@ -440,14 +426,14 @@ class SoCommunicatorTest extends BaseTest
         $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
         $this->target->ObscuritySuffixLength = 3;
         $this->target->ObscuritySeed = 'Foo';
-        $remittanceIdentifier = null;
-        $this->target->HandleConfirmationUrl(function($raw, $ri) use (&$remittanceIdentifier)
+        $bankConfirmationDetails = null;
+        $this->target->HandleConfirmationUrl(function($raw, $bc) use (&$bankConfirmationDetails)
         { 
-            $remittanceIdentifier = $ri;
+            $bankConfirmationDetails = $bc;
             return true;
         }, null, $dataPath, $temp);
         
-        $this->assertSame($expected, $remittanceIdentifier);    
+        $this->assertSame($expected, $bankConfirmationDetails->GetRemittanceIdentifier());
     }
     
     // HELPER FUNCTIONS
