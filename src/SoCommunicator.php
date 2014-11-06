@@ -181,49 +181,16 @@ class SoCommunicator
             else if ($firstChildName == 'BankConfirmationDetails')
             {
                 $this->WriteLog('Bank Confirmation');
-                $BankConfirmationDetails = $epspChildren[0];
-                $t1 = $BankConfirmationDetails->children(XMLNS_eps); // Nescessary because of missing language feature in PHP 5.3
-                $PaymentConfirmationDetails = $t1[0];
-                $t2 = $PaymentConfirmationDetails->children(XMLNS_epi);
-                $remittanceIdentifier = null;
+                $BankConfirmationDetails = new BankConfirmationDetails($xml);
 
-                if (isset($t2->RemittanceIdentifier))
-                {
-                    $remittanceIdentifier = $t2->RemittanceIdentifier;
-                }
-                else if (isset($t2->UnstructuredRemittanceIdentifier))
-                {
-                    $remittanceIdentifier = $t2->UnstructuredRemittanceIdentifier;
-                }
-                else
-                {
-                    $t3 = $PaymentConfirmationDetails->PaymentInitiatorDetails->children(XMLNS_epi);
-                    $EpiDetails = $t3[0];
-                    $t4 = $EpiDetails->PaymentInstructionDetails;
-                    if (isset($t4->RemittanceIdentifier))
-                    {
-                        $remittanceIdentifier = $t4->RemittanceIdentifier;
-                    }
-                    else
-                    {
-                        $remittanceIdentifier = $t4->UnstructuredRemittanceIdentifier;
-                    }
-                }
+                // Strip security hash from remittance identifier
+                $BankConfirmationDetails->SetRemittanceIdentifier($this->StripHash($BankConfirmationDetails->GetRemittanceIdentifier()));
 
-                if ($remittanceIdentifier == null)
-                    throw new \LogicException('Could not find RemittanceIdentifier in XML');                
+                $shopResponseDetails->SessionId = $BankConfirmationDetails->GetSessionId();
+                $shopResponseDetails->StatusCode = $BankConfirmationDetails->GetStatusCode();                              
+                $shopResponseDetails->PaymentReferenceIdentifier = $BankConfirmationDetails->GetPaymentReferenceIdentifier();
 
-                $this->StripHash($remittanceIdentifier);
-                
-                $shopResponseDetails->SessionId = $BankConfirmationDetails->SessionId;
-                $shopResponseDetails->StatusCode = $PaymentConfirmationDetails->StatusCode;
-                
-                if (empty($shopResponseDetails->StatusCode))
-                    throw new \LogicException('Could not find StatusCode in XML');
-                
-                if (!empty($PaymentConfirmationDetails->PaymentReferenceIdentifier))
-                    $shopResponseDetails->PaymentReferenceIdentifier = $PaymentConfirmationDetails->PaymentReferenceIdentifier;
-                
+                $remittanceIdentifier = $BankConfirmationDetails->GetRemittanceIdentifier();
                 $this->WriteLog(sprintf('Calling confirmationUrlCallback for remittance identifier "%s" with status code %s', $remittanceIdentifier, $shopResponseDetails->StatusCode));
                 $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', array($HTTP_RAW_POST_DATA, $remittanceIdentifier, $shopResponseDetails->StatusCode));
 
@@ -325,15 +292,15 @@ class SoCommunicator
         return $string . substr($hash, 0, $this->ObscuritySuffixLength);
     }
     
-    private function StripHash(&$suffixed)
+    private function StripHash($suffixed)
     {
         if ($this->ObscuritySuffixLength == 0)
-            return;
+            return $suffixed;
         
         $remittanceIdentifier = substr($suffixed, 0, -$this->ObscuritySuffixLength);
         if ($this->AppendHash($remittanceIdentifier) != $suffixed)
             throw new UnknownRemittanceIdentifierException('Unknown RemittanceIdentifier supplied');
         
-        $suffixed = $remittanceIdentifier;
+        return $remittanceIdentifier;
     }
 }

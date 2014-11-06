@@ -226,21 +226,6 @@ class SoCommunicatorTest extends BaseTest
         $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
     }
     
-    public function testHandleConfirmationUrlCallsCallbackWithUnstructuredRemittanceIdentifierWithGivenSignature()
-    {
-        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignatureUnstructuredRemittanceIdentifier.xml');
-        $remittanceIdentifier = 'Nothing';
-        $statusCode = 'Nothing';
-        $this->target->HandleConfirmationUrl(function($data, $ri, $sc) use (&$remittanceIdentifier, &$statusCode) {
-            $remittanceIdentifier = $ri;
-            $statusCode = $sc;
-            return true;
-            }, null, $dataPath, 'php://temp');
-        
-        $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
-        $this->assertEquals('OK', $statusCode);
-    }
-
     public function testHandleConfirmationUrlCallsCallbackWithRemittanceIdentifierWithGivenSignature()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
@@ -256,21 +241,6 @@ class SoCommunicatorTest extends BaseTest
         $this->assertEquals('OK', $statusCode);
     }
 
-    public function testHandleConfirmationUrlCallsCallbackWithUnstructuredRemittanceIdentifierWithoutSignature()
-    {
-        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignatureUnstructuredRemittanceIdentifier.xml');
-        $remittanceIdentifier = 'Nothing';
-        $statusCode = 'Nothing';
-        $this->target->HandleConfirmationUrl(function($data, $ri, $sc) use (&$remittanceIdentifier, &$statusCode) {
-            $remittanceIdentifier = $ri;
-            $statusCode = $sc;
-            return true;
-            }, null, $dataPath, 'php://temp');
-
-        $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
-        $this->assertEquals('OK', $statusCode);
-    }
-    
     public function testHandleConfirmationUrlThrowsExceptionWhenCallbackDoesNotReturnTrue()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignature.xml');
@@ -393,7 +363,7 @@ class SoCommunicatorTest extends BaseTest
         $this->assertContains(':ShopResponseDetails', $actual);        
         $this->assertContains('SessionId>String<', $actual);   
         $this->assertContains('StatusCode>OK<', $actual);
-        $this->assertContains('PaymentReferenceIdentifier>AT1234567890XYZ<', $actual);
+        $this->assertContains('PaymentReferenceIdentifier>RIAT1234567890XYZ<', $actual);
     }    
     
     public function testHandleConfirmationUrlReturnsErrorResponseOnCallbackException()

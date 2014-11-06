@@ -37,7 +37,7 @@
 				<eps:ApprovingUnitBankIdentifier>AAAAAAAAAAA</eps:ApprovingUnitBankIdentifier>
 			</eps:PayConApprovingUnitDetails>
 			<eps:PayConApprovalTime>2007-03-16T14:30:47-05:00</eps:PayConApprovalTime>
-			<eps:PaymentReferenceIdentifier>AT1234567890XYZ</eps:PaymentReferenceIdentifier>
+			<eps:PaymentReferenceIdentifier>RIAT1234567890XYZ</eps:PaymentReferenceIdentifier>
 			<eps:StatusCode>OK</eps:StatusCode>
 			<dsig:Signature Id="hotVault" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
 				<dsig:SignedInfo>
