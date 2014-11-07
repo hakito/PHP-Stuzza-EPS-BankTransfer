@@ -175,6 +175,7 @@ class SoCommunicator
                 {
                     $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', array($HTTP_RAW_POST_DATA));
                 }
+                
                 // 7.1.9 Schritt III-3: Bestätigung Vitality Check Händler-eps SO
                 file_put_contents($outputStream, $HTTP_RAW_POST_DATA);
             }
@@ -196,12 +197,6 @@ class SoCommunicator
                 // Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
                 $this->WriteLog('III-8 Confirming payment receipt');
                 file_put_contents($outputStream, $shopResponseDetails->GetSimpleXml()->asXml());
-
-            } else
-            {
-                // Should never be executed
-                $message = 'No implementation to handle the given value: ' . $firstChildName;        
-                throw new \UnexpectedValueException($message);;
             }
         }
         catch (\Exception $e)
