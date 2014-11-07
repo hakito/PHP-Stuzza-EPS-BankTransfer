@@ -441,6 +441,52 @@ class SoCommunicatorTest extends BaseTest
         
         $this->assertSame($expected, $bankConfirmationDetails->GetRemittanceIdentifier());
     }
+
+    public function testWriteLog()
+    {
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');
+        $message = null;
+        $this->target->LogCallback = function($m) use (&$message){ $message = $m; };
+        $this->target->HandleConfirmationUrl(function() {}, function($data) {return true;}, $dataPath, 'php://temp');
+        $this->assertEquals('Vitality Check', $message);
+    }
+
+    public function testWriteLogSendTransferInitiatorDetailsSuccess()
+    {
+        $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
+        $this->httpResponseDummy->body = $this->GetEpsData('BankResponseDetails000.xml');
+        $this->target->HttpSocket->expects($this->once())
+                ->method('post')
+                ->with('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5')
+                ->will($this->returnValue($this->httpResponseDummy));
+        $message = null;
+        $this->target->LogCallback = function($m) use (&$message){ $message = $m; };
+
+        $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
+
+        $this->assertEquals('SUCCESS: Send payment order', $message);
+    }
+
+    public function testWriteLogSendTransferInitiatorDetailsFailed()
+    {
+        $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
+        $this->httpResponseDummy->code = 400;
+        $this->target->HttpSocket->expects($this->once())
+                ->method('post')
+                ->with('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5')
+                ->will($this->returnValue($this->httpResponseDummy));
+        $message = null;
+        $this->target->LogCallback = function($m) use (&$message){ print_r($message); $message = $m; };
+
+        try
+        {
+            $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
+        }
+        catch (HttpResponseException $e)
+        {}
+        
+        $this->assertEquals('FAILED: Send payment order', $message);
+    }
     
     // HELPER FUNCTIONS
 

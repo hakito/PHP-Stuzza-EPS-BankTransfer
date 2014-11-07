@@ -268,8 +268,9 @@ class SoCommunicator
     {
         if (is_callable($this->LogCallback))
         {
-            if ($success != null)
-                $message = ($success ? "SUCCESS" : "FAIL") . ' ' . $message;
+            if ($success !== null)            
+                $message = ($success ? "SUCCESS:" : "FAILED:") . ' ' . $message;
+
             call_user_func($this->LogCallback, $message);
         }
     }
