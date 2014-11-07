@@ -298,6 +298,12 @@ class SoCommunicatorTest extends BaseTest
         $this->setExpectedException('at\externet\eps_bank_transfer\CallbackResponseException');
         $this->target->HandleConfirmationUrl(function() {}, function($data) {}, $dataPath, 'php://temp'); 
     }
+
+    public function testHandleConfirmationUrlVitalityWithoutCallback()
+    {
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');
+        $this->target->HandleConfirmationUrl(function() {}, null, $dataPath, 'php://temp');
+    }
     
     public function testHandleConfirmationUrlVitalityWritesInputToOutputstream()
     {
