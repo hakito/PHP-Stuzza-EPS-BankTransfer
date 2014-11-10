@@ -476,7 +476,7 @@ class SoCommunicatorTest extends BaseTest
                 ->with('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5')
                 ->will($this->returnValue($this->httpResponseDummy));
         $message = null;
-        $this->target->LogCallback = function($m) use (&$message){ print_r($message); $message = $m; };
+        $this->target->LogCallback = function($m) use (&$message){ $message = $m; };
 
         try
         {
