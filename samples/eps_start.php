@@ -22,7 +22,7 @@ $transferInitiatorDetails = new eps_bank_transfer\TransferInitiatorDetails(
   $bic,
   'John Q. Public',         // Name of the receiving account owner = epi:BeneficiaryNameAddressText
   $iban,
-  '12345',                  // Reference identifier. This identifies the actual payment = epi:ReferenceIdentifier
+  '12345',                  // Reference identifier. Don't show it to the client! This identifies the actual payment = epi:ReferenceIdentifier
   '9999',                   // Total amount in EUR cent ≈ epi:InstructedAmount
   $transferMsgDetails);
 

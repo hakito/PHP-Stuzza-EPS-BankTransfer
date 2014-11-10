@@ -10,7 +10,7 @@ use at\externet\eps_bank_transfer;
 
 /**
  * @param string $plainXml Raw XML message, according to "Abbildung 6-6: PaymentConfirmationDetails" (eps Pflichtenheft 2.5)
- * @param BankConfirmationDetails $bankConfirmationDetails
+ * @param at\externet\eps_bank_transfer\BankConfirmationDetails $bankConfirmationDetails
  * @return true
  */
 $paymentConfirmationCallback = function($plainXml, $bankConfirmationDetails)
@@ -19,6 +19,8 @@ $paymentConfirmationCallback = function($plainXml, $bankConfirmationDetails)
   if ($bankConfirmationDetails->GetStatusCode() == 'OK')
   {
     // TODO: Do your payment completion handling here
+    // You should use the reference identifier which isn't shown to the client
+    // $bankConfirmationDetails->GetReferenceIdentifier();
   }
 
   // True is expected to be returned, otherwise the Scheme Operator will be informed that the server could not accept the payment confirmation

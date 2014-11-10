@@ -68,4 +68,11 @@ class BankConfirmationDetailsTest extends BaseTest
         $actual = $t->GetStatusCode();
         $this->assertEquals('OK', $actual);
     }
+
+    public function testGetReferenceIdentifier()
+    {
+        $t = new BankConfirmationDetails($this->simpleXmls['WithSignature']);
+        $actual = $t->GetReferenceIdentifier();
+        $this->assertEquals('1234567890ABCDEFG', $actual);
+    }
 }

@@ -10,6 +10,7 @@ class BankConfirmationDetails
 
     private $remittanceIdentifier;
     private $paymentReferenceIdentifier;
+    private $referenceIdentifier;
     private $sessionId;
     private $statusCode;
 
@@ -31,11 +32,11 @@ class BankConfirmationDetails
         $PaymentConfirmationDetails = $t1[0];
         $t2 = $PaymentConfirmationDetails->children(XMLNS_epi);
         $this->remittanceIdentifier = null;
-        
+
         $this->SetPaymentReferenceIdentifier($PaymentConfirmationDetails->PaymentReferenceIdentifier);
         $this->SetSessionId($BankConfirmationDetails->SessionId);
         $this->SetStatusCode($PaymentConfirmationDetails->StatusCode);
-        
+
         if (isset($t2->RemittanceIdentifier))
         {
             $this->SetRemittanceIdentifier($t2->RemittanceIdentifier);
@@ -57,6 +58,10 @@ class BankConfirmationDetails
             {
                 $this->SetRemittanceIdentifier($t4->UnstructuredRemittanceIdentifier);
             }
+
+            // ReferenceIdentifier used in TransferInitiatorDetails as $internalReferenceId
+            $t5 = $EpiDetails->IdentificationDetails;
+            $this->SetReferenceIdentifier($t5->ReferenceIdentifier);
         }
 
         if ($this->remittanceIdentifier == null)
@@ -85,6 +90,17 @@ class BankConfirmationDetails
     public function GetPaymentReferenceIdentifier()
     {
         return $this->paymentReferenceIdentifier;
+    }
+
+
+    public function SetReferenceIdentifier($a)
+    {
+    	$this->referenceIdentifier = (string) $a;
+    }
+
+    public function GetReferenceIdentifier()
+    {
+    	return $this->referenceIdentifier;
     }
 
     public function SetSessionId($a)
