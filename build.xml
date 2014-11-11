@@ -9,6 +9,6 @@
 
 	<target name="coverage">
 		<mkdir dir="${coverage.dir}"/>
-		<exec command="phpunit --coverage-html=${coverage.dir} --coverage-clover=${clover.out} --log-junit=${coverage.out} --exclude-group=PayPal\\Api\\*" />
+		<exec failonerror="true" command="phpunit --coverage-html=${coverage.dir} --coverage-clover=${clover.out} --log-junit=${coverage.out} --exclude-group=PayPal\\Api\\*" />
 	</target>
 </project>
