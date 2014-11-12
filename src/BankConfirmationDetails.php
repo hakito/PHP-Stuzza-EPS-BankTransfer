@@ -41,7 +41,7 @@ class BankConfirmationDetails
         {
             $this->SetRemittanceIdentifier($t2->RemittanceIdentifier);
         }
-        else if (isset($t2->UnstructuredRemittanceIdentifier))
+        elseif (isset($t2->UnstructuredRemittanceIdentifier))
         {
             $this->SetRemittanceIdentifier($t2->UnstructuredRemittanceIdentifier);
         }
