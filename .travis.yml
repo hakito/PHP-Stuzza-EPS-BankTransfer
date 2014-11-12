@@ -1,12 +1,17 @@
 language: php
 php:
   - 5.5
-  - 5.4
-  - 5.3
-  - hhvm
 before_script:
   - composer install --dev
   - composer update satooshi/php-coveralls --dev
+  - ls -l /home/travis/build/hakito
+  - ls -l /home/travis/build/hakito/PHP-Stuzza-EPS-BankTransfer
+  - ls -l /home/travis/build/hakito/PHP-Stuzza-EPS-BankTransfer/tests
+  - ls -l /home/travis/build/hakito/PHP-Stuzza-EPS-BankTransfer/tests/unit
+  - ls -l /home/travis/build/hakito/PHP-Stuzza-EPS-BankTransfer/tests/unit/at
+  - ls -l /home/travis/build/hakito/PHP-Stuzza-EPS-BankTransfer/tests/unit/at/externet 
+  - ls -l /home/travis/build/hakito/PHP-Stuzza-EPS-BankTransfer/tests/unit/at/externet/eps_bank_transfer
+  - ls -l /home/travis/build/hakito/PHP-Stuzza-EPS-BankTransfer/tests/unit/at/externet/eps_bank_transfer/EpsData
 script:
     - ant coverage
 after_script:
