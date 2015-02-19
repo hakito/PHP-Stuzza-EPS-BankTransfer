@@ -147,7 +147,7 @@ class SoCommunicatorTest extends BaseTest
         
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails, $url);
         $this->assertEquals('string', gettype($this->mTransport->lastPostBody));
-        $this->assertContains('>'. 'Order1SoxmdwbL' . '<', $this->mTransport->lastPostBody);
+        $this->assertContains('>'. 'Order1U294bWR3' . '<', $this->mTransport->lastPostBody);
     }
     
     public function testHandleConfirmationUrlThrowsExceptionOnMissingCallback()
@@ -403,7 +403,7 @@ class SoCommunicatorTest extends BaseTest
     {
         $original = $this->GetEpsData('BankConfirmationDetailsWithoutSignature.xml');
         $expected = 'AT1234567890XYZ';
-        $data = str_replace($expected, $expected . 'Fo7', $original);
+        $data = str_replace($expected, $expected . 'Rm8', $original);
         $dataPath = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
         file_put_contents($dataPath, $data);
         

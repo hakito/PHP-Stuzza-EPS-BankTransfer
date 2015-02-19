@@ -291,7 +291,7 @@ class SoCommunicator
         if (empty($this->ObscuritySeed))
                 throw new \UnexpectedValueException('No security seed set when using security suffix.');
         
-        $hash = crypt($string, $this->ObscuritySeed);
+        $hash = base64_encode(crypt($string, $this->ObscuritySeed));
         return $string . substr($hash, 0, $this->ObscuritySuffixLength);
     }
     
