@@ -2,8 +2,6 @@
 
 namespace at\externet\eps_bank_transfer;
 
-use org\cakephp;
-
 /**
  * Handles the communication with the EPS scheme operator
  */
@@ -17,11 +15,11 @@ class SoCommunicator
     public $LogCallback;
 
     /**
-     * http socket 
+     * requests transport
      * @internal
-     * @var cakephp\HttpSocket     * 
+     * @var \Requests_Transport     *
      */
-    public $HttpSocket;
+    public $Transport;
     
     /** 
      * Number of hash chars to append to RemittanceIdentifier.
@@ -35,11 +33,6 @@ class SoCommunicator
      * @var string
      */
     public $ObscuritySeed;
-
-    public function __construct()
-    {
-        $this->HttpSocket = new cakephp\HttpSocket();
-    }
 
     /**
      * Failsafe version of GetBanksArray(). All Exceptions will be swallowed
@@ -63,7 +56,6 @@ class SoCommunicator
      * Get associative array of banks from Scheme Operator. The bank name (bezeichnung)
      * will be used as key.
      * @param string $url Scheme operator URL for the banks list
-     * @throws cakephp\SocketException when communication with SO fails
      * @throws XmlValidationException when the returned BankList does not validate against XSD
      * @return array of banks
      */
@@ -89,7 +81,6 @@ class SoCommunicator
      * Will throw an exception if data cannot be fetched, or XSD validation fails.
      * @param bool $validateXml validate against XSD
      * @param string $url Scheme operator URL for the banks list
-     * @throws cakephp\SocketException when communication with SO fails
      * @throws XmlValidationException when the returned BankList does not validate against XSD and $validateXSD is set to TRUE
      * @return string
      */
@@ -110,7 +101,6 @@ class SoCommunicator
      * @param TransferInitiatorDetails $transferInitiatorDetails
      * @param string $targetUrl url with preselected bank identifier
      * @throws XmlValidationException when the returned BankResponseDetails does not validate against XSD
-     * @throws cakephp\SocketException when communication with SO fails
      * @throws \UnexpectedValueException when using security suffix without security seed
      * @return string BankResponseDetails
      */
@@ -148,7 +138,6 @@ class SoCommunicator
      * @throws InvalidCallbackException when callback is not callable
      * @throws CallbackResponseException when callback does not return TRUE
      * @throws XmlValidationException when $rawInputStream does not validate against XSD
-     * @throws cakephp\SocketException when communication with SO fails
      * @throws \UnexpectedValueException when using security suffix without security seed
      * @throws UnknownRemittanceIdentifierException when security suffix does not match
      */
@@ -236,32 +225,51 @@ class SoCommunicator
         }
     }
 
+    /**
+     * @param $url target url
+     * @param $logMessage log message
+     * @return string response body
+     * @throws HttpResponseException if returned status code is not 200
+     */
     private function GetUrl($url, $logMessage)
     {
         $this->WriteLog($logMessage);
-        $response = $this->HttpSocket->get($url);
-        if ($response->code != 200)
+        $options = $this->Transport === null ? array() : array(
+            'transport' => $this->Transport
+        );
+        $response = \Requests::get($url, array(), $options);
+        if ($response->status_code != 200)
         {
             $this->WriteLog($logMessage, false);
-            throw new HttpResponseException('Could not load document. Server returned code: ' . $response->code);
+            throw new HttpResponseException('Could not load document. Server returned code: ' . $response->status_code);
         }
         $this->WriteLog($logMessage, true);
         return $response->body;
     }
 
+    /**
+     * @param $url target url
+     * @param $data post parameters
+     * @param $message log message
+     * @return string response body
+     * @throws HttpResponseException if returned status code is not 200
+     */
     private function PostUrl($url, $data, $message)
     {
         $this->WriteLog($message);
-        $response = $this->HttpSocket->post($url, $data, array('header' => array('Content-Type' => 'text/xml; charset=UTF-8')));
+        $options = $this->Transport === null ? array() : array(
+            'transport' => $this->Transport
+        );
+        $response = \Requests::post($url, array('Content-Type' => 'text/xml; charset=UTF-8'), $data, $options);
 
-        if ($response->code != 200)
+        if ($response->status_code != 200)
         {
             $this->WriteLog($message, false);
-            throw new HttpResponseException('Could not load document. Server returned code: ' . $response->code);
+            throw new HttpResponseException('Could not load document. Server returned code: ' . $response->status_code);
         }
 
         $this->WriteLog($message, true);
-        return $response;
+        return $response->body;
     }
 
     private function WriteLog($message, $success = null)
@@ -283,7 +291,7 @@ class SoCommunicator
         if (empty($this->ObscuritySeed))
                 throw new \UnexpectedValueException('No security seed set when using security suffix.');
         
-        $hash = cakephp\Security::hash($string, null, $this->ObscuritySeed);
+        $hash = crypt($string, $this->ObscuritySeed);
         return $string . substr($hash, 0, $this->ObscuritySuffixLength);
     }
     
@@ -294,7 +302,7 @@ class SoCommunicator
         
         $remittanceIdentifier = substr($suffixed, 0, -$this->ObscuritySuffixLength);
         if ($this->AppendHash($remittanceIdentifier) != $suffixed)
-            throw new UnknownRemittanceIdentifierException('Unknown RemittanceIdentifier supplied');
+            throw new UnknownRemittanceIdentifierException('Unknown RemittanceIdentifier supplied: ' . $suffixed);
         
         return $remittanceIdentifier;
     }
