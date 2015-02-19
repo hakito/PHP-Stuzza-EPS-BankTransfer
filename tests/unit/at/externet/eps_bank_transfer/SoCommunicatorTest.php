@@ -10,7 +10,7 @@ class SoCommunicatorTest extends BaseTest
     /** @var SoCommunicator */
     private $target;
 
-    /** @var \MockTransport */
+    /** @var MockTransport */
     private $mTransport;
 
     /** @var RequestMock */
@@ -19,7 +19,7 @@ class SoCommunicatorTest extends BaseTest
     public function setUp()
     {
         parent::setUp();
-        $this->mTransport = new \MockTransport();
+        $this->mTransport = new MockTransport();
         $this->mTransport->body = 'bar';
         $this->target = new SoCommunicator();
         $this->target->Transport = $this->mTransport;
