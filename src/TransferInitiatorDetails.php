@@ -153,8 +153,10 @@ class TransferInitiatorDetails
 
     public function GetMD5Fingerprint()
     {
+        $remittanceIdentifier = $this->UnstructuredRemittanceIdentifier ?: $this->RemittanceIdentifier;
+
         $input = $this->Secret . $this->Date . $this->ReferenceIdentifier . $this->BeneficiaryAccountIdentifier
-                . $this->RemittanceIdentifier . $this->InstructedAmount . $this->AmountCurrencyIdentifier
+                . $remittanceIdentifier . $this->InstructedAmount . $this->AmountCurrencyIdentifier
                 . $this->UserId;
 
         return md5($input);
