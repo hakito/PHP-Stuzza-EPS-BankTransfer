@@ -4,7 +4,7 @@
 PHP-Stuzza-EPS-BankTransfer
 ===========================
 
-PHP Implementation of the Stuzza e-payment standard. See http://www.stuzza.at/de/component/k2/item/23-eps-ueberweisung.html
+PHP implementation of the Austrian e-payment standard "eps", specified by Stuzza. See http://www.stuzza.at/de/component/k2/item/23-eps-ueberweisung.html or http://www.eps-ueberweisung.at/
 
 Installation
 ------------
@@ -15,6 +15,12 @@ Create a copy of these folders in your project:
 * tests
 * XSD
 
+Or use composer:
+```
+composer require hakito/php-stuzza-eps-banktransfer
+```
+
+
 Usage
 -----
 
@@ -23,7 +29,7 @@ Look at the following files in the sample folder:
 * eps_start.php
 * eps_confirm.php
 
-To run the tests go to the parent folder of tests and execute:
+To run the tests, go to the parent folder of tests and execute:
 
 ```
 phpunit
