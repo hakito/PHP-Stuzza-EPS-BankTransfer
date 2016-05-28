@@ -46,7 +46,7 @@ $soCommunicator = new eps_bank_transfer\SoCommunicator();
 
 // Send transfer initiator details to $targetUrl
 $plain = $soCommunicator->SendTransferInitiatorDetails($transferInitiatorDetails, $targetUrl);
-$xml = new SimpleXMLElement($plain);
+$xml = new \SimpleXMLElement($plain);
 $soAnswer = $xml->children(eps_bank_transfer\XMLNS_epsp);
 $errorDetails = $soAnswer->BankResponseDetails->ErrorDetails;
 
