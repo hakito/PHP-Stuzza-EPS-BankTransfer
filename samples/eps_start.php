@@ -4,7 +4,7 @@ use at\externet\eps_bank_transfer;
 
 // Connection credentials. Override them for testing mode. 
 $userID = 'AKLJS231534';            // Eps "Händler-ID"/UserID = epsp:UserId
-$pin    = 'topSecret';              // Secret for authentication / PIN
+$pin    = 'topSecret';              // Secret for authentication / PIN = part of epsp:MD5Fingerprint
 $bic    = 'GAWIATW1XXX';            // BIC code of receiving bank account = epi:BfiBicIdentifier
 $iban   = 'AT611904300234573201';   // IBAN code of receiving bank account = epi:BeneficiaryAccountIdentifier
 $targetUrl = null; // Target url to send TransferInitiatorDetails to. Default: https://routing.eps.or.at/appl/epsSO-test/transinit/eps/v2_5
