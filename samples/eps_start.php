@@ -11,9 +11,9 @@ $targetUrl = null; // Target url to send TransferInitiatorDetails to. Default: h
 
 // Return urls
 $transferMsgDetails = new eps_bank_transfer\TransferMsgDetails(
-  'http(s)://yourdomain.example.com/eps_confirm.php', // The URL that the EPS Scheme Operator (=SO) will call before (= VitaliyCheck) and after payment. Use samples/eps_confirm.php as a starting point.
-  'http(s)://yourdomain.example.com/ThankYou.html',   // The URL that the buyer will be redirected to on succesful payment
-  'http(s)://yourdomain.example.com/Failure.html'     // The URL that the buyer will be redirected to on cancel or failure
+  'http(s)://yourdomain.example.com/eps_confirm.php', // The URL that the EPS Scheme Operator (=SO) will call before (= VitaliyCheck) and after payment. Use samples/eps_confirm.php as a starting point. = epsp:ConfirmationUrl
+  'http(s)://yourdomain.example.com/ThankYou.html',   // The URL that the buyer will be redirected to on succesful payment = epsp:TransactionOkUrl
+  'http(s)://yourdomain.example.com/Failure.html'     // The URL that the buyer will be redirected to on cancel or failure = epsp:TransactionNokUrl
 );
 
 $transferInitiatorDetails = new eps_bank_transfer\TransferInitiatorDetails(
