@@ -123,7 +123,7 @@ class BankConfirmationDetails
     }
 
     /**
-     * Die von der Bank generierte Ersterfasserreferenz
+     * Status Code
      * @return string
      */
     public function GetStatusCode()
