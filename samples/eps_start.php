@@ -61,4 +61,3 @@ else
   $redirectUrl = $soAnswer->BankResponseDetails->ClientRedirectUrl;
   header('Location: ' . $redirectUrl);
 }
-?>
