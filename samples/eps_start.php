@@ -22,7 +22,7 @@ $transferInitiatorDetails = new eps_bank_transfer\TransferInitiatorDetails(
   $bic,
   'John Q. Public',         // Name (and optional address) of the receiving account owner = epi:BeneficiaryNameAddressText. In theory, this can be 140 characters; but in practice, Austrian banks only guarantee 70 characters. Line breaks are not allowed (EPS-Pflichtenheft is ambiguous about this).
   $iban,
-  '12345',                  // Reference identifier = epi:ReferenceIdentifier. Almost useless, since you will never (!) get to see this number again - not upon payment confirmation and not at the bank statement (Kontoauszug). It's also not displayed to the customer. Best guess: Use your order number.
+  '12345',                  // epi:ReferenceIdentifier. Mandatory but useless, since you will never (!) get to see this number again - not upon payment confirmation and not at the bank statement (Kontoauszug). It's also not displayed to the customer. Best guess: Use your order number, i.e. same as epi:RemittanceIdentifier.
   '9999',                   // Total amount in EUR cent ≈ epi:InstructedAmount
   $transferMsgDetails);
 
