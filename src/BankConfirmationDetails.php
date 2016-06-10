@@ -73,6 +73,9 @@ class BankConfirmationDetails
         $this->remittanceIdentifier = (string) $a;
     }
 
+    /**
+     * Gets epi:RemittanceIdentifier or epi:UnstructuredRemittanceIdentifier - depending on which one is present in the XML file
+     */
     public function GetRemittanceIdentifier()
     {
         return $this->remittanceIdentifier;
