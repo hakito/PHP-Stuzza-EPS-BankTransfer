@@ -24,7 +24,8 @@ $transferInitiatorDetails = new eps_bank_transfer\TransferInitiatorDetails(
   $iban,
   '12345',                  // epi:ReferenceIdentifier. Mandatory but useless, since you will never (!) get to see this number again - not upon payment confirmation and not at the bank statement (Kontoauszug). It's also not displayed to the customer. Best guess: Use your order number, i.e. same as epi:RemittanceIdentifier.
   '9999',                   // Total amount in EUR cent ≈ epi:InstructedAmount
-  $transferMsgDetails);
+  $transferMsgDetails
+);
 
 // Optional: Include ONE (i.e. not both!) of the following two lines:
 $transferInitiatorDetails->RemittanceIdentifier = 'Order123';             // "Zahlungsreferenz". Will be returned on payment confirmation = epi:RemittanceIdentifier
