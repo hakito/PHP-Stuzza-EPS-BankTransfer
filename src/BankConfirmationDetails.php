@@ -28,7 +28,7 @@ class BankConfirmationDetails
     {
         $epspChildren = $simpleXml->children(XMLNS_epsp);
         $BankConfirmationDetails = $epspChildren[0];
-        $t1 = $BankConfirmationDetails->children(XMLNS_eps); // Nescessary because of missing language feature in PHP 5.3
+        $t1 = $BankConfirmationDetails->children(XMLNS_eps); // Necessary because of missing language feature in PHP 5.3
         $PaymentConfirmationDetails = $t1[0];
         $t2 = $PaymentConfirmationDetails->children(XMLNS_epi);
         $this->remittanceIdentifier = null;
