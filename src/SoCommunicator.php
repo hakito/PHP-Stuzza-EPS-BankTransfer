@@ -2,8 +2,6 @@
 
 namespace at\externet\eps_bank_transfer;
 
-use org\cakephp;
-
 /**
  * Handles the communication with the EPS scheme operator
  */
@@ -17,11 +15,11 @@ class SoCommunicator
     public $LogCallback;
 
     /**
-     * http socket 
+     * requests transport
      * @internal
-     * @var cakephp\HttpSocket     * 
+     * @var \Requests_Transport     *
      */
-    public $HttpSocket;
+    public $Transport;
     
     /** 
      * Number of hash chars to append to RemittanceIdentifier.
@@ -35,11 +33,6 @@ class SoCommunicator
      * @var string
      */
     public $ObscuritySeed;
-
-    public function __construct()
-    {
-        $this->HttpSocket = new cakephp\HttpSocket();
-    }
 
     /**
      * Failsafe version of GetBanksArray(). All Exceptions will be swallowed
@@ -63,7 +56,6 @@ class SoCommunicator
      * Get associative array of banks from Scheme Operator. The bank name (bezeichnung)
      * will be used as key.
      * @param string $url Scheme operator URL for the banks list
-     * @throws cakephp\SocketException when communication with SO fails
      * @throws XmlValidationException when the returned BankList does not validate against XSD
      * @return array of banks
      */
@@ -89,7 +81,6 @@ class SoCommunicator
      * Will throw an exception if data cannot be fetched, or XSD validation fails.
      * @param bool $validateXml validate against XSD
      * @param string $url Scheme operator URL for the banks list
-     * @throws cakephp\SocketException when communication with SO fails
      * @throws XmlValidationException when the returned BankList does not validate against XSD and $validateXSD is set to TRUE
      * @return string
      */
@@ -110,7 +101,6 @@ class SoCommunicator
      * @param TransferInitiatorDetails $transferInitiatorDetails
      * @param string $targetUrl url with preselected bank identifier
      * @throws XmlValidationException when the returned BankResponseDetails does not validate against XSD
-     * @throws cakephp\SocketException when communication with SO fails
      * @throws \UnexpectedValueException when using security suffix without security seed
      * @return string BankResponseDetails
      */
@@ -139,8 +129,8 @@ class SoCommunicator
      * BankConfirmationDetails.
      * 
      * @param callable $confirmationCallback a callable to send BankConfirmationDetails to.
-     * Will be called with the parameters BankConfirmationDetails as string, 
-     * RemittanceIdentifier as string and StatusCode as string. This callable must return TRUE.
+     * Will be called with the raw post data as first parameter and an Instance of
+     * BankConfirmationDetails as second parameter. This callable must return TRUE.
      * @param callable $vitalityCheckCallback an optional callable for the vitalityCheck
      * @param string $rawPostStream will read from this stream or file with file_get_contents
      * @param string $outputStream will write to this stream the expected responses for the
@@ -148,7 +138,6 @@ class SoCommunicator
      * @throws InvalidCallbackException when callback is not callable
      * @throws CallbackResponseException when callback does not return TRUE
      * @throws XmlValidationException when $rawInputStream does not validate against XSD
-     * @throws cakephp\SocketException when communication with SO fails
      * @throws \UnexpectedValueException when using security suffix without security seed
      * @throws UnknownRemittanceIdentifierException when security suffix does not match
      */
@@ -173,69 +162,31 @@ class SoCommunicator
                 $this->WriteLog('Vitality Check');
                 if ($vitalityCheckCallback != null)
                 {
-                    $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', array($HTTP_RAW_POST_DATA));
+                    $VitalityCheckDetails = new VitalityCheckDetails($xml);
+                    $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', array($HTTP_RAW_POST_DATA, $VitalityCheckDetails));
                 }
+                
                 // 7.1.9 Schritt III-3: Bestätigung Vitality Check Händler-eps SO
                 file_put_contents($outputStream, $HTTP_RAW_POST_DATA);
             }
             else if ($firstChildName == 'BankConfirmationDetails')
             {
                 $this->WriteLog('Bank Confirmation');
-                $BankConfirmationDetails = $epspChildren[0];
-                $t1 = $BankConfirmationDetails->children(XMLNS_eps); // Nescessary because of missing language feature in PHP 5.3
-                $PaymentConfirmationDetails = $t1[0];
-                $t2 = $PaymentConfirmationDetails->children(XMLNS_epi);
-                $remittanceIdentifier = null;
+                $BankConfirmationDetails = new BankConfirmationDetails($xml);
 
-                if (isset($t2->RemittanceIdentifier))
-                {
-                    $remittanceIdentifier = $t2->RemittanceIdentifier;
-                }
-                else if (isset($t2->UnstructuredRemittanceIdentifier))
-                {
-                    $remittanceIdentifier = $t2->UnstructuredRemittanceIdentifier;
-                }
-                else
-                {
-                    $t3 = $PaymentConfirmationDetails->PaymentInitiatorDetails->children(XMLNS_epi);
-                    $EpiDetails = $t3[0];
-                    $t4 = $EpiDetails->PaymentInstructionDetails;
-                    if (isset($t4->RemittanceIdentifier))
-                    {
-                        $remittanceIdentifier = $t4->RemittanceIdentifier;
-                    }
-                    else
-                    {
-                        $remittanceIdentifier = $t4->UnstructuredRemittanceIdentifier;
-                    }
-                }
+                // Strip security hash from remittance identifier
+                $BankConfirmationDetails->SetRemittanceIdentifier($this->StripHash($BankConfirmationDetails->GetRemittanceIdentifier()));
 
-                if ($remittanceIdentifier == null)
-                    throw new \LogicException('Could not find RemittanceIdentifier in XML');                
+                $shopResponseDetails->SessionId = $BankConfirmationDetails->GetSessionId();
+                $shopResponseDetails->StatusCode = $BankConfirmationDetails->GetStatusCode();                              
+                $shopResponseDetails->PaymentReferenceIdentifier = $BankConfirmationDetails->GetPaymentReferenceIdentifier();
 
-                $this->StripHash($remittanceIdentifier);
-                
-                $shopResponseDetails->SessionId = $BankConfirmationDetails->SessionId;
-                $shopResponseDetails->StatusCode = $PaymentConfirmationDetails->StatusCode;
-                
-                if (empty($shopResponseDetails->StatusCode))
-                    throw new \LogicException('Could not find StatusCode in XML');
-                
-                if (!empty($PaymentConfirmationDetails->PaymentReferenceIdentifier))
-                    $shopResponseDetails->PaymentReferenceIdentifier = $PaymentConfirmationDetails->PaymentReferenceIdentifier;
-                
-                $this->WriteLog(sprintf('Calling confirmationUrlCallback for remittance identifier "%s" with status code %s', $remittanceIdentifier, $shopResponseDetails->StatusCode));
-                $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', array($HTTP_RAW_POST_DATA, $remittanceIdentifier, $shopResponseDetails->StatusCode));
+                $this->WriteLog(sprintf('Calling confirmationUrlCallback for remittance identifier "%s" with status code %s', $BankConfirmationDetails->GetRemittanceIdentifier(), $BankConfirmationDetails->GetStatusCode()));
+                $this->ConfirmationUrlCallback($confirmationCallback, 'confirmation', array($HTTP_RAW_POST_DATA, $BankConfirmationDetails));
 
                 // Schritt III-8: Bestätigung Erhalt eps Zahlungsbestätigung Händler-eps SO
                 $this->WriteLog('III-8 Confirming payment receipt');
                 file_put_contents($outputStream, $shopResponseDetails->GetSimpleXml()->asXml());
-
-            } else
-            {
-                // Should never be executed
-                $message = 'No implementation to handle the given value: ' . $firstChildName;        
-                throw new \UnexpectedValueException($message);;
             }
         }
         catch (\Exception $e)
@@ -275,40 +226,60 @@ class SoCommunicator
         }
     }
 
+    /**
+     * @param $url target url
+     * @param $logMessage log message
+     * @return string response body
+     * @throws HttpResponseException if returned status code is not 200
+     */
     private function GetUrl($url, $logMessage)
     {
         $this->WriteLog($logMessage);
-        $response = $this->HttpSocket->get($url);
-        if ($response->code != 200)
+        $options = $this->Transport === null ? array() : array(
+            'transport' => $this->Transport
+        );
+        $response = \Requests::get($url, array(), $options);
+        if ($response->status_code != 200)
         {
             $this->WriteLog($logMessage, false);
-            throw new HttpResponseException('Could not load document. Server returned code: ' . $response->code);
+            throw new HttpResponseException('Could not load document. Server returned code: ' . $response->status_code);
         }
         $this->WriteLog($logMessage, true);
         return $response->body;
     }
 
+    /**
+     * @param $url target url
+     * @param $data post parameters
+     * @param $message log message
+     * @return string response body
+     * @throws HttpResponseException if returned status code is not 200
+     */
     private function PostUrl($url, $data, $message)
     {
         $this->WriteLog($message);
-        $response = $this->HttpSocket->post($url, $data, array('header' => array('Content-Type' => 'text/xml; charset=UTF-8')));
+        $options = $this->Transport === null ? array() : array(
+            'transport' => $this->Transport
+        );
+        $response = \Requests::post($url, array('Content-Type' => 'text/xml; charset=UTF-8'), $data, $options);
 
-        if ($response->code != 200)
+        if ($response->status_code != 200)
         {
             $this->WriteLog($message, false);
-            throw new HttpResponseException('Could not load document. Server returned code: ' . $response->code);
+            throw new HttpResponseException('Could not load document. Server returned code: ' . $response->status_code);
         }
 
         $this->WriteLog($message, true);
-        return $response;
+        return $response->body;
     }
 
     private function WriteLog($message, $success = null)
     {
         if (is_callable($this->LogCallback))
         {
-            if ($success != null)
-                $message = ($success ? "SUCCESS" : "FAIL") . ' ' . $message;
+            if ($success !== null)            
+                $message = ($success ? "SUCCESS:" : "FAILED:") . ' ' . $message;
+
             call_user_func($this->LogCallback, $message);
         }
     }
@@ -321,19 +292,19 @@ class SoCommunicator
         if (empty($this->ObscuritySeed))
                 throw new \UnexpectedValueException('No security seed set when using security suffix.');
         
-        $hash = cakephp\Security::hash($string, null, $this->ObscuritySeed);
+        $hash = base64_encode(crypt($string, $this->ObscuritySeed));
         return $string . substr($hash, 0, $this->ObscuritySuffixLength);
     }
     
-    private function StripHash(&$suffixed)
+    private function StripHash($suffixed)
     {
         if ($this->ObscuritySuffixLength == 0)
-            return;
+            return $suffixed;
         
         $remittanceIdentifier = substr($suffixed, 0, -$this->ObscuritySuffixLength);
         if ($this->AppendHash($remittanceIdentifier) != $suffixed)
-            throw new UnknownRemittanceIdentifierException('Unknown RemittanceIdentifier supplied');
+            throw new UnknownRemittanceIdentifierException('Unknown RemittanceIdentifier supplied: ' . $suffixed);
         
-        $suffixed = $remittanceIdentifier;
+        return $remittanceIdentifier;
     }
 }

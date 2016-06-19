@@ -2,43 +2,46 @@
 
 namespace at\externet\eps_bank_transfer;
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'MockTransport.php';
+
 class SoCommunicatorTest extends BaseTest
 {
 
     /** @var SoCommunicator */
     private $target;
 
-    /** @var \org\cakephp\HttpSocketResponse */
+    /** @var MockTransport */
+    private $mTransport;
+
+    /** @var RequestMock */
     private $httpResponseDummy;
 
     public function setUp()
     {
         parent::setUp();
+        $this->mTransport = new MockTransport();
+        $this->mTransport->body = 'bar';
         $this->target = new SoCommunicator();
-        $this->target->HttpSocket = $this->getMock('org\cakephp\HttpSocket');
-        $this->httpResponseDummy = new \org\cakephp\HttpSocketResponse();
-        $this->httpResponseDummy->code = 200;
-        $this->httpResponseDummy->body = 'bar';
+        $this->target->Transport = $this->mTransport;
+        date_default_timezone_set('UTC');
     }
 
     public function testGetBanksNoExceptionWhenNoValidation()
     {
-        $this->target->HttpSocket->expects($this->once())
-                ->method('get')
-                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5')
-                ->will($this->returnValue($this->httpResponseDummy));
         $banks = $this->target->GetBanks(false);
-        $this->assertEquals('bar', $this->httpResponseDummy->body);
+        $this->assertEquals('bar', $banks);
+    }
+
+    public function testGetBanksCallsCorrectUrl()
+    {
+        $this->target->GetBanks(false);
+        $this->assertEquals('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5', $this->mTransport->lastUrl);
     }
 
     public function testGetBanksArray()
     {
-        $this->httpResponseDummy->body = $this->GetEpsData('BankListSample.xml');
-        $this->target->HttpSocket->expects($this->once())
-                ->method('get')
-                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5')
-                ->will($this->returnValue($this->httpResponseDummy));
-        
+        $this->mTransport->body = $this->GetEpsData('BankListSample.xml');
+
         $actual = $this->target->GetBanksArray();
         $expected = array(
             'Testbank' => array(
@@ -48,39 +51,26 @@ class SoCommunicatorTest extends BaseTest
                 'epsUrl' => 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611'
             )
         );
+
         $this->assertEquals($expected, $actual);
     }
 
     public function testGetBanklistReadError()
     {
         $this->setExpectedException('at\externet\eps_bank_transfer\HttpResponseException', 'Could not load document. Server returned code: 404');
-        $this->httpResponseDummy->code = 404;
-        $this->target->HttpSocket->expects($this->once())
-                ->method('get')
-                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5')
-                ->will($this->returnValue($this->httpResponseDummy));
+        $this->mTransport->code = 404;
         $this->target->GetBanks();
-    }
-
-
-    public function testTryGetBanksArrayReturnsBanks()
-    {
-        $this->target->HttpSocket->expects($this->once())
-                ->method('get')
-                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5')
-                ->will($this->returnValue($this->httpResponseDummy));
-
-        $banks = $this->target->TryGetBanksArray();
-        $this->assertEquals($banks, null);
     }
 
     public function testTryGetBanksArrayReturnsNull()
     {
-        $this->httpResponseDummy->body = $this->GetEpsData('BankListSample.xml');
-        $this->target->HttpSocket->expects($this->once())
-                ->method('get')
-                ->with('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5')
-                ->will($this->returnValue($this->httpResponseDummy));
+        $banks = $this->target->TryGetBanksArray();
+        $this->assertEquals($banks, null);
+    }
+
+    public function testTryGetBanksArrayReturnsBanks()
+    {
+        $this->mTransport->body = $this->GetEpsData('BankListSample.xml');
 
         $actual = $this->target->TryGetBanksArray();
         $expected = array(
@@ -91,43 +81,35 @@ class SoCommunicatorTest extends BaseTest
                 'epsUrl' => 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611'
             )
         );
+
         $this->assertEquals($expected, $actual);
     }
 
     public function testSendTransferInitiatorDetailsThrowsValidationException()
     {
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
-        $this->httpResponseDummy->body = 'invalidData';
-        $this->target->HttpSocket->expects($this->once())
-                ->method('post')
-                ->with('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5')
-                ->will($this->returnValue($this->httpResponseDummy));
+        $this->mTransport->body = 'invalidData';
 
         $this->setExpectedException('at\externet\eps_bank_transfer\XmlValidationException');
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
     }
 
-    public function testSendTransferInitiatorDetailsCallsHttpPost()
+    public function testSendTransferInitiatorDetailsToCorrectUrl()
     {
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
-        $this->httpResponseDummy->body = $this->GetEpsData('BankResponseDetails004.xml');
-        $this->target->HttpSocket->expects($this->once())
-                ->method('post')
-                ->with('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5')
-                ->will($this->returnValue($this->httpResponseDummy));
-        $actual = $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
-        $this->assertEquals($actual, $this->httpResponseDummy->body);
+        $this->mTransport->body = $this->GetEpsData('BankResponseDetails004.xml');
+
+        $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
+
+        $this->assertEquals('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5', $this->mTransport->lastUrl);
     }
 
     public function testSendTransferInitiatorDetailsThrowsExceptionOn404()
     {
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
-        $this->httpResponseDummy->code = 404;
-        $this->target->HttpSocket->expects($this->once())
-                ->method('post')
-                ->with('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5')
-                ->will($this->returnValue($this->httpResponseDummy));
+        $this->mTransport->code = 404;
         $this->setExpectedException('at\externet\eps_bank_transfer\HttpResponseException', "Could not load document. Server returned code: 404");
+
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
     }
 
@@ -135,22 +117,21 @@ class SoCommunicatorTest extends BaseTest
     {
         $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611';
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
-        $this->httpResponseDummy->body = $this->GetEpsData('BankResponseDetails000.xml');
-        $this->target->HttpSocket->expects($this->once())
-                ->method('post')
-                ->with($url)
-                ->will($this->returnValue($this->httpResponseDummy));
+        $this->mTransport->body = $this->GetEpsData('BankResponseDetails000.xml');
+
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails, $url);
+
+        $this->assertEquals($url, $this->mTransport->lastUrl);
     }
     
     public function testSendTransferInitiatorDetailsWithSecurityThrowsExceptionOnEmptySalt()
     {
         $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611';
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
-        $this->httpResponseDummy->body = $this->GetEpsData('BankResponseDetails000.xml');
+        $this->mTransport->body = $this->GetEpsData('BankResponseDetails000.xml');
         $this->target->ObscuritySuffixLength = 8;
-
         $this->setExpectedException('UnexpectedValueException', 'No security seed set when using security suffix.');
+
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails, $url);
     }
     
@@ -160,16 +141,13 @@ class SoCommunicatorTest extends BaseTest
         $t = new TransferMsgDetails('a', 'b', 'c');
         $transferInitiatorDetails = new TransferInitiatorDetails('a', 'b', 'c', 'd', 'e', 'f', 0, $t);
         $transferInitiatorDetails->RemittanceIdentifier = 'Order1';
-        $this->httpResponseDummy->body = $this->GetEpsData('BankResponseDetails000.xml');
+        $this->mTransport->body = $this->GetEpsData('BankResponseDetails000.xml');
         $this->target->ObscuritySuffixLength = 8;
         $this->target->ObscuritySeed = 'Some seed';
         
-        $this->target->HttpSocket->expects($this->once())
-                ->method('post')
-                ->with($url, $this->stringContains('>'. $transferInitiatorDetails->RemittanceIdentifier . 'cca2ef99' . '<'))
-                ->will($this->returnValue($this->httpResponseDummy));
-        
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails, $url);
+        $this->assertEquals('string', gettype($this->mTransport->lastPostBody));
+        $this->assertContains('>'. 'Order1U294bWR3' . '<', $this->mTransport->lastPostBody);
     }
     
     public function testHandleConfirmationUrlThrowsExceptionOnMissingCallback()
@@ -214,63 +192,19 @@ class SoCommunicatorTest extends BaseTest
         $this->assertEquals($actual, $expected);
     }
     
-    public function testHandleConfirmationUrlCallsCallbackWithRemittanceIdentifier()
+    public function testHandleConfirmationUrlCallsCallbackWithBankConfirmationDetails()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignature.xml');
-        $remittanceIdentifier = 'Nothing';
-        $this->target->HandleConfirmationUrl(function($data, $ri) use (&$remittanceIdentifier) {
-            $remittanceIdentifier = $ri;
+        $bankConfirmationDetails = null;
+        $this->target->HandleConfirmationUrl(function($data, $bc) use (&$bankConfirmationDetails) {
+            $bankConfirmationDetails = $bc;
             return true;
             }, null, $dataPath, 'php://temp');
         
-        $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
-    }
-    
-    public function testHandleConfirmationUrlCallsCallbackWithUnstructuredRemittanceIdentifierWithGivenSignature()
-    {
-        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignatureUnstructuredRemittanceIdentifier.xml');
-        $remittanceIdentifier = 'Nothing';
-        $statusCode = 'Nothing';
-        $this->target->HandleConfirmationUrl(function($data, $ri, $sc) use (&$remittanceIdentifier, &$statusCode) {
-            $remittanceIdentifier = $ri;
-            $statusCode = $sc;
-            return true;
-            }, null, $dataPath, 'php://temp');
-        
-        $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
-        $this->assertEquals('OK', $statusCode);
-    }
+        $this->assertEquals('AT1234567890XYZ', $bankConfirmationDetails->GetRemittanceIdentifier());
+        $this->assertEquals('OK', $bankConfirmationDetails->GetStatusCode());
+    }  
 
-    public function testHandleConfirmationUrlCallsCallbackWithRemittanceIdentifierWithGivenSignature()
-    {
-        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
-        $remittanceIdentifier = 'Nothing';
-        $statusCode = 'Nothing';
-        $this->target->HandleConfirmationUrl(function($data, $ri, $sc) use (&$remittanceIdentifier, &$statusCode) {
-            $remittanceIdentifier = $ri;
-            $statusCode = $sc;
-            return true;
-            }, null, $dataPath, 'php://temp');
-
-        $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
-        $this->assertEquals('OK', $statusCode);
-    }
-
-    public function testHandleConfirmationUrlCallsCallbackWithUnstructuredRemittanceIdentifierWithoutSignature()
-    {
-        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignatureUnstructuredRemittanceIdentifier.xml');
-        $remittanceIdentifier = 'Nothing';
-        $statusCode = 'Nothing';
-        $this->target->HandleConfirmationUrl(function($data, $ri, $sc) use (&$remittanceIdentifier, &$statusCode) {
-            $remittanceIdentifier = $ri;
-            $statusCode = $sc;
-            return true;
-            }, null, $dataPath, 'php://temp');
-
-        $this->assertEquals('AT1234567890XYZ', $remittanceIdentifier);
-        $this->assertEquals('OK', $statusCode);
-    }
-    
     public function testHandleConfirmationUrlThrowsExceptionWhenCallbackDoesNotReturnTrue()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignature.xml');
@@ -342,6 +276,12 @@ class SoCommunicatorTest extends BaseTest
         $this->setExpectedException('at\externet\eps_bank_transfer\CallbackResponseException');
         $this->target->HandleConfirmationUrl(function() {}, function($data) {}, $dataPath, 'php://temp'); 
     }
+
+    public function testHandleConfirmationUrlVitalityWithoutCallback()
+    {
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');
+        $this->target->HandleConfirmationUrl(function() {}, null, $dataPath, 'php://temp');
+    }
     
     public function testHandleConfirmationUrlVitalityWritesInputToOutputstream()
     {
@@ -393,7 +333,7 @@ class SoCommunicatorTest extends BaseTest
         $this->assertContains(':ShopResponseDetails', $actual);        
         $this->assertContains('SessionId>String<', $actual);   
         $this->assertContains('StatusCode>OK<', $actual);
-        $this->assertContains('PaymentReferenceIdentifier>AT1234567890XYZ<', $actual);
+        $this->assertContains('PaymentReferenceIdentifier>RIAT1234567890XYZ<', $actual);
     }    
     
     public function testHandleConfirmationUrlReturnsErrorResponseOnCallbackException()
@@ -463,21 +403,59 @@ class SoCommunicatorTest extends BaseTest
     {
         $original = $this->GetEpsData('BankConfirmationDetailsWithoutSignature.xml');
         $expected = 'AT1234567890XYZ';
-        $data = str_replace($expected, $expected . 'd33', $original);
+        $data = str_replace($expected, $expected . 'Rm8', $original);
         $dataPath = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
         file_put_contents($dataPath, $data);
         
         $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
         $this->target->ObscuritySuffixLength = 3;
         $this->target->ObscuritySeed = 'Foo';
-        $remittanceIdentifier = null;
-        $this->target->HandleConfirmationUrl(function($raw, $ri) use (&$remittanceIdentifier)
+        $bankConfirmationDetails = null;
+        $this->target->HandleConfirmationUrl(function($raw, $bc) use (&$bankConfirmationDetails)
         { 
-            $remittanceIdentifier = $ri;
+            $bankConfirmationDetails = $bc;
             return true;
         }, null, $dataPath, $temp);
         
-        $this->assertSame($expected, $remittanceIdentifier);    
+        $this->assertSame($expected, $bankConfirmationDetails->GetRemittanceIdentifier());
+    }
+
+    public function testWriteLog()
+    {
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');
+        $message = null;
+        $this->target->LogCallback = function($m) use (&$message){ $message = $m; };
+        $this->target->HandleConfirmationUrl(function() {}, function($data) {return true;}, $dataPath, 'php://temp');
+        $this->assertEquals('Vitality Check', $message);
+    }
+
+    public function testWriteLogSendTransferInitiatorDetailsSuccess()
+    {
+        $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
+        $this->mTransport->body = $this->GetEpsData('BankResponseDetails000.xml');
+        $message = null;
+        $this->target->LogCallback = function($m) use (&$message){ $message = $m; };
+
+        $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
+
+        $this->assertEquals('SUCCESS: Send payment order', $message);
+    }
+
+    public function testWriteLogSendTransferInitiatorDetailsFailed()
+    {
+        $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
+        $this->mTransport->code = 400;
+        $message = null;
+        $this->target->LogCallback = function($m) use (&$message){ $message = $m; };
+
+        try
+        {
+            $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
+        }
+        catch (HttpResponseException $e)
+        {}
+        
+        $this->assertEquals('FAILED: Send payment order', $message);
     }
     
     // HELPER FUNCTIONS

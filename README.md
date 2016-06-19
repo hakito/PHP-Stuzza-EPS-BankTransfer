@@ -1,7 +1,10 @@
+[![Build Status](https://travis-ci.org/hakito/PHP-Stuzza-EPS-BankTransfer.svg?branch=master)](https://travis-ci.org/hakito/PHP-Stuzza-EPS-BankTransfer) [![Coverage Status](https://coveralls.io/repos/hakito/PHP-Stuzza-EPS-BankTransfer/badge.png)](https://coveralls.io/r/hakito/PHP-Stuzza-EPS-BankTransfer)
+[![Latest Stable Version](https://poser.pugx.org/hakito/php-stuzza-eps-banktransfer/v/stable.svg)](https://packagist.org/packages/hakito/php-stuzza-eps-banktransfer) [![Total Downloads](https://poser.pugx.org/hakito/php-stuzza-eps-banktransfer/downloads.svg)](https://packagist.org/packages/hakito/php-stuzza-eps-banktransfer) [![Latest Unstable Version](https://poser.pugx.org/hakito/php-stuzza-eps-banktransfer/v/unstable.svg)](https://packagist.org/packages/hakito/php-stuzza-eps-banktransfer) [![License](https://poser.pugx.org/hakito/php-stuzza-eps-banktransfer/license.svg)](https://packagist.org/packages/hakito/php-stuzza-eps-banktransfer)
+
 PHP-Stuzza-EPS-BankTransfer
 ===========================
 
-PHP Implementation of the Stuzza e-payment standard. See http://www.stuzza.at/12872_DE.pdf?exp=24568045069672&12872
+PHP implementation of the Austrian e-payment standard "eps", specified by Stuzza. See http://www.stuzza.at/de/component/k2/item/23-eps-ueberweisung.html or http://www.eps-ueberweisung.at/
 
 Installation
 ------------
@@ -12,6 +15,12 @@ Create a copy of these folders in your project:
 * tests
 * XSD
 
+Or use composer:
+```
+composer require hakito/php-stuzza-eps-banktransfer
+```
+
+
 Usage
 -----
 
@@ -20,10 +29,10 @@ Look at the following files in the sample folder:
 * eps_start.php
 * eps_confirm.php
 
-To run the tests go to the parent folder of tests and execute:
+To run the tests, go to the parent folder of tests and execute:
 
 ```
-phpunit tests
+phpunit
 ```
 
 Remarks

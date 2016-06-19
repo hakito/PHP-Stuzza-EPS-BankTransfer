@@ -18,7 +18,7 @@ class XmlValidator
 
     private static function GetXSD($filename)
     {
-        return dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR . 'XSD' . DIRECTORY_SEPARATOR . $filename;
+        return dirname(__DIR__) . DIRECTORY_SEPARATOR . 'XSD' . DIRECTORY_SEPARATOR . $filename;
     }
 
     private static function ValidateXml($xml, $xsd)
