@@ -13,10 +13,10 @@ class BankConfirmationDetailsTest extends BaseTest
     {
         parent::setUp();
         $this->simpleXmls = array();
-        $this->simpleXmls['WithSignature'] = new \SimpleXMLElement($this->GetEpsData('BankConfirmationDetailsWithSignature.xml'));
+        $this->simpleXmls['WithSignature']                = new \SimpleXMLElement($this->GetEpsData('BankConfirmationDetailsWithSignature.xml'));
         $this->simpleXmls['UnstructuredWithoutSignature'] = new \SimpleXMLElement($this->GetEpsData('BankConfirmationDetailsWithoutSignatureUnstructuredRemittanceIdentifier.xml'));
-        $this->simpleXmls['WithoutSignature'] = new \SimpleXMLElement($this->GetEpsData('BankConfirmationDetailsWithoutSignature.xml'));
-        $this->simpleXmls['UnstructuredWithSignature'] = new \SimpleXMLElement($this->GetEpsData('BankConfirmationDetailsWithSignatureUnstructuredRemittanceIdentifier.xml'));
+        $this->simpleXmls['WithoutSignature']             = new \SimpleXMLElement($this->GetEpsData('BankConfirmationDetailsWithoutSignature.xml'));
+        $this->simpleXmls['UnstructuredWithSignature']    = new \SimpleXMLElement($this->GetEpsData('BankConfirmationDetailsWithSignatureUnstructuredRemittanceIdentifier.xml'));
     }
 
     public function testGetRemittanceIdentifier()

@@ -19,8 +19,7 @@ $paymentConfirmationCallback = function($plainXml, $bankConfirmationDetails)
   if ($bankConfirmationDetails->GetStatusCode() == 'OK')
   {
     // TODO: Do your payment completion handling here
-    // You should use the reference identifier which isn't shown to the client
-    // $bankConfirmationDetails->GetReferenceIdentifier();
+    // You should use $bankConfirmationDetails->GetRemittanceIdentifier();
   }
 
   // True is expected to be returned, otherwise the Scheme Operator will be informed that the server could not accept the payment confirmation

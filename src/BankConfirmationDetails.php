@@ -28,7 +28,7 @@ class BankConfirmationDetails
     {
         $epspChildren = $simpleXml->children(XMLNS_epsp);
         $BankConfirmationDetails = $epspChildren[0];
-        $t1 = $BankConfirmationDetails->children(XMLNS_eps); // Nescessary because of missing language feature in PHP 5.3
+        $t1 = $BankConfirmationDetails->children(XMLNS_eps); // Necessary because of missing language feature in PHP 5.3
         $PaymentConfirmationDetails = $t1[0];
         $t2 = $PaymentConfirmationDetails->children(XMLNS_epi);
         $this->remittanceIdentifier = null;
@@ -73,6 +73,9 @@ class BankConfirmationDetails
         $this->remittanceIdentifier = (string) $a;
     }
 
+    /**
+     * Gets epi:RemittanceIdentifier or epi:UnstructuredRemittanceIdentifier - depending on which one is present in the XML file
+     */
     public function GetRemittanceIdentifier()
     {
         return $this->remittanceIdentifier;
@@ -123,7 +126,7 @@ class BankConfirmationDetails
     }
 
     /**
-     * Die von der Bank generierte Ersterfasserreferenz
+     * Status Code
      * @return string
      */
     public function GetStatusCode()

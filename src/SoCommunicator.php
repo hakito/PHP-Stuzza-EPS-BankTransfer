@@ -162,7 +162,8 @@ class SoCommunicator
                 $this->WriteLog('Vitality Check');
                 if ($vitalityCheckCallback != null)
                 {
-                    $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', array($HTTP_RAW_POST_DATA));
+                    $VitalityCheckDetails = new VitalityCheckDetails($xml);
+                    $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', array($HTTP_RAW_POST_DATA, $VitalityCheckDetails));
                 }
                 
                 // 7.1.9 Schritt III-3: Bestätigung Vitality Check Händler-eps SO
