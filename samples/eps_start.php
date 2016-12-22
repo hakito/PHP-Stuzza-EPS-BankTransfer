@@ -59,6 +59,6 @@ if (('' . $errorDetails->ErrorCode) != '000')
 else
 {
   // This is the url you have to redirect the client to.
-  $redirectUrl = $soAnswer->BankResponseDetails->ClientRedirectUrl;
+  $redirectUrl = $soAnswer->BankResponseDetails->ClientRedirectUrl->__toString();
   header('Location: ' . $redirectUrl);
 }
