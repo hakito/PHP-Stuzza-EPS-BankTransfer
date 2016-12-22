@@ -132,6 +132,8 @@ class SoCommunicator
      * Will be called with the raw post data as first parameter and an Instance of
      * BankConfirmationDetails as second parameter. This callable must return TRUE.
      * @param callable $vitalityCheckCallback an optional callable for the vitalityCheck
+     * Will be called with the raw post data as first parameter and an Instance of
+     * VitalityCheckDetails as second parameter. This callable must return TRUE.     
      * @param string $rawPostStream will read from this stream or file with file_get_contents
      * @param string $outputStream will write to this stream the expected responses for the
      * Scheme Operator
