@@ -8,6 +8,9 @@ php:
   - 5.3
   - hhvm
   - nightly
+matrix:
+  allow_failures:
+    - php: nightly
 before_script:
   - composer install --dev
   - composer update satooshi/php-coveralls --dev
