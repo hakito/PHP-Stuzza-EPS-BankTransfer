@@ -1,7 +1,4 @@
 language: php
-sudo: required
-dist: trusty
-group: edge
 php:
   - 7.1
   - 7.0
@@ -9,11 +6,13 @@ php:
   - 5.5
   - 5.4
   - 5.3
+  - hhvm-3.6
   - hhvm
   - nightly
 matrix:
   allow_failures:
     - php: nightly
+    - php: hhvm
 before_script:
   - composer install --dev
   - composer update satooshi/php-coveralls --dev
