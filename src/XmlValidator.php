@@ -23,6 +23,10 @@ class XmlValidator
 
     private static function ValidateXml($xml, $xsd)
     {
+        if (empty($xml))
+        {
+            throw new XmlValidationException('No XML file passed to `php://input`');
+        }
         $doc = new \DOMDocument();
         $doc->loadXml($xml);
         $prevState = libxml_use_internal_errors(true);
