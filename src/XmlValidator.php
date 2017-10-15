@@ -25,7 +25,7 @@ class XmlValidator
     {
         if (empty($xml))
         {
-            throw new XmlValidationException('No XML file passed to `php://input`');
+            throw new XmlValidationException('XML is empty');
         }
         $doc = new \DOMDocument();
         $doc->loadXml($xml);
