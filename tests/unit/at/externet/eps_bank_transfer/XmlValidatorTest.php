@@ -13,9 +13,9 @@ class XmlValidatorTest extends BaseTest
         $this->target = new XmlValidator();
     }
 
-    public function testBanksThrowsDomWarningOnEmptyData()
+    public function testBanksThrowsExceptionOnEmptyData()
     {
-        $this->setExpectedException('PHPUnit_Framework_Error_Warning');
+        $this->setExpectedException('at\externet\eps_bank_transfer\XmlValidationException');
         XmlValidator::ValidateBankList('');
     }
 
