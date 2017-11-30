@@ -11,6 +11,9 @@ class BankConfirmationDetails
     private $remittanceIdentifier;
     private $paymentReferenceIdentifier;
     private $referenceIdentifier;
+    private $orderingCustomerName;
+    private $orderingCustomerIdentifier;
+    private $orderingCustomerBIC;
     private $sessionId;
     private $statusCode;
 
@@ -62,10 +65,24 @@ class BankConfirmationDetails
             // ReferenceIdentifier used in TransferInitiatorDetails as $internalReferenceId
             $t5 = $EpiDetails->IdentificationDetails;
             $this->SetReferenceIdentifier($t5->ReferenceIdentifier);
+
+            //The following 3 data elements could be used e.g. for routing information within additional business scenarios (e.g. EBPP).
+            //These are optional data elements
+            if(isset($t5->OrderingCustomerNameAddressText) && !empty($t5->OrderingCustomerNameAddressText)){
+                $this->SetOrderingCustomerName($t5->OrderingCustomerNameAddressText);
+            }
+
+            if(isset($t5->OrderingCustomerIdentifier) && !empty($t5->OrderingCustomerIdentifier)){
+                $this->SetOrderingCustomerIdentifier($t5->OrderingCustomerIdentifier);
+            }
+
+            if(isset($t5->OrderingCustomerOfiIdentifier) && !empty($t5->OrderingCustomerOfiIdentifier)){
+                $this->SetOrderingCustomerBIC($t5->OrderingCustomerOfiIdentifier);
+            }
         }
 
         if ($this->remittanceIdentifier == null)
-                    throw new \LogicException('Could not find RemittanceIdentifier in XML');
+            throw new \LogicException('Could not find RemittanceIdentifier in XML');
     }
 
     public function SetRemittanceIdentifier($a)
@@ -98,13 +115,68 @@ class BankConfirmationDetails
 
     public function SetReferenceIdentifier($a)
     {
-    	$this->referenceIdentifier = (string) $a;
+        $this->referenceIdentifier = (string) $a;
     }
 
     public function GetReferenceIdentifier()
     {
-    	return $this->referenceIdentifier;
+        return $this->referenceIdentifier;
     }
+
+
+    /**
+     * Set the identification of ordering customer (name and/or address of the buyer) in non-coded form
+     * @param $customerName
+     */
+    public function SetOrderingCustomerName($customerName)
+    {
+        $this->orderingCustomerName = (string) $customerName;
+    }
+
+    /**
+     * Get the identification of ordering customer (name and/or address of the buyer) in non-coded form
+     * @return mixed
+     */
+    public function GetOrderingCustomerName()
+    {
+        return $this->orderingCustomerName;
+    }
+
+
+    /**
+     * Set the identification of the customer’s (buyer’s) account identification by e.g. IBAN, BBAN, etc.
+     * @param $iban
+     */
+    public function SetOrderingCustomerIdentifier($iban){
+        $this->orderingCustomerIdentifier = (string) $iban;
+    }
+
+    /**
+     * Get the identification of the customer’s (buyer’s) account identification by e.g. IBAN, BBAN, etc.
+     * @return mixed
+     */
+    public function GetOrderingCustomerIdentifier(){
+        return $this->orderingCustomerIdentifier;
+    }
+
+
+    /**
+     * Set the identification of the customer’s (buyer’s) financial institution by a BIC
+     * @param $bic
+     */
+    public function SetOrderingCustomerBIC($bic){
+        $this->orderingCustomerBIC = (string) $bic;
+    }
+
+    /**
+     * Get the identification of the customer’s (buyer’s) financial institution by a BIC
+     * @return mixed
+     */
+    public function GetOrderingCustomerBIC(){
+        return $this->orderingCustomerBIC;
+    }
+
+
 
     public function SetSessionId($a)
     {
