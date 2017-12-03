@@ -11,7 +11,7 @@ class BankConfirmationDetails
     private $remittanceIdentifier;
     private $paymentReferenceIdentifier;
     private $referenceIdentifier;
-    private $orderingCustomerName;
+    private $orderingCustomerNameAddress;
     private $orderingCustomerIdentifier;
     private $orderingCustomerBIC;
     private $sessionId;
@@ -68,15 +68,15 @@ class BankConfirmationDetails
 
             //The following 3 data elements could be used e.g. for routing information within additional business scenarios (e.g. EBPP).
             //These are optional data elements
-            if(isset($t5->OrderingCustomerNameAddressText) && !empty($t5->OrderingCustomerNameAddressText)){
-                $this->SetOrderingCustomerName($t5->OrderingCustomerNameAddressText);
+            if(isset($t5->OrderingCustomerNameAddressText)){
+                $this->SetOrderingCustomerNameAddressText($t5->OrderingCustomerNameAddressText);
             }
 
-            if(isset($t5->OrderingCustomerIdentifier) && !empty($t5->OrderingCustomerIdentifier)){
+            if(isset($t5->OrderingCustomerIdentifier)){
                 $this->SetOrderingCustomerIdentifier($t5->OrderingCustomerIdentifier);
             }
 
-            if(isset($t5->OrderingCustomerOfiIdentifier) && !empty($t5->OrderingCustomerOfiIdentifier)){
+            if(isset($t5->OrderingCustomerOfiIdentifier)){
                 $this->SetOrderingCustomerBIC($t5->OrderingCustomerOfiIdentifier);
             }
         }
@@ -128,18 +128,18 @@ class BankConfirmationDetails
      * Set the identification of ordering customer (name and/or address of the buyer) in non-coded form
      * @param $customerName
      */
-    public function SetOrderingCustomerName($customerName)
+    public function SetOrderingCustomerNameAddressText($customerName)
     {
-        $this->orderingCustomerName = (string) $customerName;
+        $this->orderingCustomerNameAddress = (string) $customerName;
     }
 
     /**
      * Get the identification of ordering customer (name and/or address of the buyer) in non-coded form
      * @return mixed
      */
-    public function GetOrderingCustomerName()
+    public function GetOrderingCustomerNameAddress()
     {
-        return $this->orderingCustomerName;
+        return $this->orderingCustomerNameAddress;
     }
 
 
