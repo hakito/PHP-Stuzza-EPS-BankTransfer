@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epsp:EpsProtocolDetails SessionLanguage="DE" xsi:schemaLocation="http://www.stuzza.at/namespaces/eps/protocol/2013/02 EPSProtocol-V25.xsd" xmlns:atrul="http://www.stuzza.at/namespaces/eps/austrianrules/2013/02" xmlns:epi="http://www.stuzza.at/namespaces/eps/epi/2013/02" xmlns:eps="http://www.stuzza.at/namespaces/eps/payment/2013/02" xmlns:epsp="http://www.stuzza.at/namespaces/eps/protocol/2013/02" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<epsp:BankConfirmationDetails>
+		<epsp:SessionId>13212452dea</epsp:SessionId>
+		<eps:PaymentConfirmationDetails>
+			<eps:PaymentInitiatorDetails>
+				<epi:EpiDetails>
+					<epi:IdentificationDetails>
+						<epi:Date>2013-02-28</epi:Date>
+						<epi:ReferenceIdentifier>1234567890ABCDEFG</epi:ReferenceIdentifier>
+						<epi:OrderingCustomerOfiIdentifier>GERMAN2A</epi:OrderingCustomerOfiIdentifier>
+						<epi:OrderingCustomerIdentifier>DE0815</epi:OrderingCustomerIdentifier>
+						<epi:OrderingCustomerNameAddressText>Customer Name</epi:OrderingCustomerNameAddressText>
+					</epi:IdentificationDetails>
+					<epi:PartyDetails>
+						<epi:BfiPartyDetails>
+							<epi:BfiBicIdentifier>GAWIATW1XXX</epi:BfiBicIdentifier>
+						</epi:BfiPartyDetails>
+						<epi:BeneficiaryPartyDetails>
+							<epi:BeneficiaryNameAddressText>Max Mustermann</epi:BeneficiaryNameAddressText>
+							<epi:BeneficiaryAccountIdentifier>AT611904300234573201</epi:BeneficiaryAccountIdentifier>
+						</epi:BeneficiaryPartyDetails>
+					</epi:PartyDetails>
+					<epi:PaymentInstructionDetails>
+						<epi:RemittanceIdentifier>AT1234567890XYZ</epi:RemittanceIdentifier>
+						<epi:InstructedAmount AmountCurrencyIdentifier="EUR">150.00</epi:InstructedAmount>
+						<epi:ChargeCode>SHA</epi:ChargeCode>
+						<epi:DateOptionDetails DateSpecificationCode="CRD">
+							<epi:OptionDate>2013-02-28</epi:OptionDate>
+							<epi:OptionTime>11:00:00-05:00</epi:OptionTime>
+						</epi:DateOptionDetails>
+					</epi:PaymentInstructionDetails>
+				</epi:EpiDetails>
+				<atrul:AustrianRulesDetails>
+					<atrul:DigSig>SIG</atrul:DigSig>
+					<atrul:ExpirationTime>2013-02-28T09:30:47Z</atrul:ExpirationTime>
+				</atrul:AustrianRulesDetails>
+			</eps:PaymentInitiatorDetails>
+			<eps:PayConApprovingUnitDetails>
+				<eps:ApprovingUnitBankIdentifier>AAAAAAAAAAA</eps:ApprovingUnitBankIdentifier>
+			</eps:PayConApprovingUnitDetails>
+			<eps:PayConApprovalTime>2007-03-19T11:11:00-05:00</eps:PayConApprovalTime>
+			<eps:PaymentReferenceIdentifier>120000302122320812201106461</eps:PaymentReferenceIdentifier>
+			<eps:StatusCode>OK</eps:StatusCode>
+		</eps:PaymentConfirmationDetails>
+	</epsp:BankConfirmationDetails>
+</epsp:EpsProtocolDetails>

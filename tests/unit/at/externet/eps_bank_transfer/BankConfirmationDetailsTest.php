@@ -17,6 +17,7 @@ class BankConfirmationDetailsTest extends BaseTest
         $this->simpleXmls['UnstructuredWithoutSignature'] = new \SimpleXMLElement($this->GetEpsData('BankConfirmationDetailsWithoutSignatureUnstructuredRemittanceIdentifier.xml'));
         $this->simpleXmls['WithoutSignature']             = new \SimpleXMLElement($this->GetEpsData('BankConfirmationDetailsWithoutSignature.xml'));
         $this->simpleXmls['UnstructuredWithSignature']    = new \SimpleXMLElement($this->GetEpsData('BankConfirmationDetailsWithSignatureUnstructuredRemittanceIdentifier.xml'));
+        $this->simpleXmls['WithPaymentInititatorDetails'] = new \SimpleXMLElement($this->GetEpsData('BankConfirmationDetailsWithPaymentInitiatorDetailsWithoutSignature.xml'));
     }
 
     public function testGetRemittanceIdentifier()
@@ -74,5 +75,26 @@ class BankConfirmationDetailsTest extends BaseTest
         $t = new BankConfirmationDetails($this->simpleXmls['WithSignature']);
         $actual = $t->GetReferenceIdentifier();
         $this->assertEquals('1234567890ABCDEFG', $actual);
+    }
+
+    public function testGetOrderingCustomerNameAddress()
+    {
+        $t = new BankConfirmationDetails($this->simpleXmls['WithPaymentInititatorDetails']);
+        $actual = $t->GetOrderingCustomerNameAddress();
+        $this->assertEquals('Customer Name', $actual);
+    }
+
+    public function testGetOrderingCustomerIdentifier()
+    {
+        $t = new BankConfirmationDetails($this->simpleXmls['WithPaymentInititatorDetails']);
+        $actual = $t->GetOrderingCustomerIdentifier();
+        $this->assertEquals('DE0815', $actual);
+    }
+
+    public function testGetOrderingCustomerBIC()
+    {
+        $t = new BankConfirmationDetails($this->simpleXmls['WithPaymentInititatorDetails']);
+        $actual = $t->GetOrderingCustomerBIC();
+        $this->assertEquals('GERMAN2A', $actual);
     }
 }
