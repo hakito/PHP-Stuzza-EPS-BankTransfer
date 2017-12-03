@@ -10,13 +10,8 @@ matrix:
     - dist: trusty
       sudo: required
       php: hhvm
-    - php: 5.2
-      dist: precise
     - php: 5.3
       dist: precise
-    - php: nightly
-      script:
-      after_script:
 before_script:
   - composer install --dev
   - composer update satooshi/php-coveralls --dev
