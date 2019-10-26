@@ -6,6 +6,6 @@ before_script:
   - composer install
   - composer update satooshi/php-coveralls
 script:
-    - ant coverage
+  - phpunit --coverage-clover build/coverage/clover.xml
 after_script:
-    - php vendor/bin/coveralls -v -c .coveralls.yml
+  - php vendor/bin/coveralls -v
