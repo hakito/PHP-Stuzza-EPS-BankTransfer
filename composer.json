@@ -16,7 +16,8 @@
         "rmccue/requests": ">=1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.*",
+        "php": ">=7.2",
+        "phpunit/phpunit": "8.*",
         "satooshi/php-coveralls": "0.6.1"
     },
     "autoload": {

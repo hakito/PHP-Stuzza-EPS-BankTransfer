@@ -7,7 +7,7 @@ class XmlValidatorTest extends BaseTest
     /** @var \at\externet\eps_bank_transfer\XmlValidator validator */
     public $target;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->target = new XmlValidator();
@@ -15,19 +15,19 @@ class XmlValidatorTest extends BaseTest
 
     public function testBanksThrowsExceptionOnEmptyData()
     {
-        $this->setExpectedException('at\externet\eps_bank_transfer\XmlValidationException');
+        $this->expectException(XmlValidationException::class);
         XmlValidator::ValidateBankList('');
     }
 
     public function testBanksThrowsExceptionOnInvalidData()
     {
-        $this->setExpectedException('at\externet\eps_bank_transfer\XmlValidationException');
+        $this->expectException(XmlValidationException::class);
         XmlValidator::ValidateBankList('bar');
     }
 
     public function testBanksThrowsExceptionOnInvalidXml()
     {
-        $this->setExpectedException('at\externet\eps_bank_transfer\XmlValidationException');
+        $this->expectException(XmlValidationException::class);
         XmlValidator::ValidateBankList($this->GetEpsData('BankListInvalid.xml'));
     }
 

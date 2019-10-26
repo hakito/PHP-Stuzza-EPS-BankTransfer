@@ -9,7 +9,7 @@ class VitalityCheckDetailsTest extends BaseTest
     /** @var \SimpleXMLElement[] */
     public $simpleXmls;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->simpleXmls = new \SimpleXMLElement($this->GetEpsData('VitalityCheckDetails.xml'));

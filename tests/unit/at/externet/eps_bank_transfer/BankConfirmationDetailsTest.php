@@ -9,7 +9,7 @@ class BankConfirmationDetailsTest extends BaseTest
     /** @var \SimpleXMLElement[] */
     public $simpleXmls;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->simpleXmls = array();

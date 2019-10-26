@@ -52,7 +52,7 @@ class TransferInitiatorDetailsTest extends BaseTest
 
         $data = new TransferInitiatorDetails('AKLJS231534', 'topSecret', 'GAWIATW1XXX', 'Max Mustermann', 'AT611904300234573201', '1234567890ABCDEFG', 15000, $transferMsgDetails, '2007-03-16');
 
-        $this->setExpectedException('InvalidArgumentException', 'Expiration minutes value of "3" is not between 5 and 60.');
+        $this->expectException(\InvalidArgumentException::class, 'Expiration minutes value of "3" is not between 5 and 60.');
         $data->SetExpirationMinutes(3);
 
     }
@@ -68,7 +68,7 @@ class TransferInitiatorDetailsTest extends BaseTest
 
         $actual = $aSimpleXml->asXML();
         XmlValidator::ValidateEpsProtocol($actual);
-        $this->assertContains('ExpirationTime', $actual);
+        $this->assertStringContainsString('ExpirationTime', $actual);
     }
 
     public function testTransferInitiatorDetailsWithUnstructuredRemittanceIdentifier()
@@ -83,7 +83,7 @@ class TransferInitiatorDetailsTest extends BaseTest
 
         $actual = $aSimpleXml->asXML();
         XmlValidator::ValidateEpsProtocol($actual);
-        $this->assertContains('UnstructuredRemittanceIdentifier>Foo is not Bar', $actual);
+        $this->assertStringContainsString('UnstructuredRemittanceIdentifier>Foo is not Bar', $actual);
     }
 
     public function testMD5FingerprintIsCalculatedCorrectly()

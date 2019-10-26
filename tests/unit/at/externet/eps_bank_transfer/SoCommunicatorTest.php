@@ -16,7 +16,7 @@ class SoCommunicatorTest extends BaseTest
     /** @var RequestMock */
     private $httpResponseDummy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mTransport = new MockTransport();
@@ -57,7 +57,7 @@ class SoCommunicatorTest extends BaseTest
 
     public function testGetBanklistReadError()
     {
-        $this->setExpectedException('at\externet\eps_bank_transfer\HttpResponseException', 'Could not load document. Server returned code: 404');
+        $this->expectException(HttpResponseException::class, 'Could not load document. Server returned code: 404');        
         $this->mTransport->code = 404;
         $this->target->GetBanks();
     }
@@ -90,7 +90,7 @@ class SoCommunicatorTest extends BaseTest
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
         $this->mTransport->body = 'invalidData';
 
-        $this->setExpectedException('at\externet\eps_bank_transfer\XmlValidationException');
+        $this->expectException(XmlValidationException::class);        
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
     }
 
@@ -108,7 +108,7 @@ class SoCommunicatorTest extends BaseTest
     {
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
         $this->mTransport->code = 404;
-        $this->setExpectedException('at\externet\eps_bank_transfer\HttpResponseException', "Could not load document. Server returned code: 404");
+        $this->expectException(HttpResponseException::class, "Could not load document. Server returned code: 404");        
 
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
     }
@@ -130,7 +130,7 @@ class SoCommunicatorTest extends BaseTest
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
         $this->mTransport->body = $this->GetEpsData('BankResponseDetails000.xml');
         $this->target->ObscuritySuffixLength = 8;
-        $this->setExpectedException('UnexpectedValueException', 'No security seed set when using security suffix.');
+        $this->expectException(\UnexpectedValueException::class, 'No security seed set when using security suffix.');
 
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails, $url);
     }
@@ -147,12 +147,12 @@ class SoCommunicatorTest extends BaseTest
         
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails, $url);
         $this->assertEquals('string', gettype($this->mTransport->lastPostBody));
-        $this->assertContains('>'. 'Order1U294bWR3' . '<', $this->mTransport->lastPostBody);
+        $this->assertStringContainsString('>'. 'Order1U294bWR3' . '<', $this->mTransport->lastPostBody);
     }
     
     public function testHandleConfirmationUrlThrowsExceptionOnMissingCallback()
     {
-        $this->setExpectedException('at\externet\eps_bank_transfer\InvalidCallbackException');
+        $this->expectException(InvalidCallbackException::class);
         $this->target->HandleConfirmationUrl(null, null, null, 'php://temp');
     }
     
@@ -170,13 +170,13 @@ class SoCommunicatorTest extends BaseTest
         $actual = file_get_contents($temp);
         XmlValidator::ValidateEpsProtocol($actual);
         $this->assertNotEmpty($message);
-        $this->assertContains($message, $actual);        
+        $this->assertStringContainsString($message, $actual);        
     }
 
     public function testHandleConfirmationUrlThrowsExceptionOnInvalidXml()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsInvalid.xml');
-        $this->setExpectedException('at\externet\eps_bank_transfer\XmlValidationException');
+        $this->expectException(XmlValidationException::class);
         $this->target->HandleConfirmationUrl(function(){}, null, $dataPath, 'php://temp');
     }
 
@@ -208,7 +208,7 @@ class SoCommunicatorTest extends BaseTest
     public function testHandleConfirmationUrlThrowsExceptionWhenCallbackDoesNotReturnTrue()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignature.xml');
-        $this->setExpectedException('at\externet\eps_bank_transfer\CallbackResponseException');
+        $this->expectException(CallbackResponseException::class);
         $this->target->HandleConfirmationUrl(function($data) {}, null, $dataPath, 'php://temp');
     }
 
@@ -229,9 +229,9 @@ class SoCommunicatorTest extends BaseTest
         XmlValidator::ValidateEpsProtocol($actual);
         
         $this->assertNotEmpty($message);
-        $this->assertContains('ShopResponseDetails>', $actual);
-        $this->assertContains('ErrorMsg>', $actual);        
-        $this->assertContains($message, $actual);
+        $this->assertStringContainsString('ShopResponseDetails>', $actual);
+        $this->assertStringContainsString('ErrorMsg>', $actual);        
+        $this->assertStringContainsString($message, $actual);
     }
     
     public function testHandleConfirmationUrlVitalityCheckDoesNotCallBankConfirmationCallback()
@@ -249,7 +249,7 @@ class SoCommunicatorTest extends BaseTest
     public function testHandleConfirmationUrlVitalityThrowsExceptionOnInvalidValidationCallback()
     {
         $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
-        $this->setExpectedException('at\externet\eps_bank_transfer\InvalidCallbackException');
+        $this->expectException(InvalidCallbackException::class);
         $this->target->HandleConfirmationUrl(function($data) {}, "invalid", $dataPath, 'php://temp');       
     }
     
@@ -267,19 +267,19 @@ class SoCommunicatorTest extends BaseTest
         $actual = file_get_contents($temp);
         XmlValidator::ValidateEpsProtocol($actual);
         $this->assertNotEmpty($message);
-        $this->assertContains($message, $actual);        
+        $this->assertStringContainsString($message, $actual);        
     }    
     
     public function testHandleConfirmationUrlVitalityThrowsExceptionWhenCallbackDoesNotReturnTrue()
     {
         $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
-        $this->setExpectedException('at\externet\eps_bank_transfer\CallbackResponseException');
+        $this->expectException(CallbackResponseException::class);
         $this->target->HandleConfirmationUrl(function() {}, function($data) {}, $dataPath, 'php://temp'); 
     }
 
     public function testHandleConfirmationUrlVitalityWithoutCallback()
     {
-        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
         $this->target->HandleConfirmationUrl(function() {}, null, $dataPath, 'php://temp');
     }
     
@@ -306,8 +306,8 @@ class SoCommunicatorTest extends BaseTest
         }
         $actual = file_get_contents($temp);
         XmlValidator::ValidateEpsProtocol($actual);
-        $this->assertContains('ShopResponseDetails>', $actual);
-        $this->assertContains('ErrorMsg>Error occured during XML validation</', $actual);
+        $this->assertStringContainsString('ShopResponseDetails>', $actual);
+        $this->assertStringContainsString('ErrorMsg>Error occured during XML validation</', $actual);
     }
     
     public function testHandleConfirmationUrlReturnsShopResponse()
@@ -317,10 +317,10 @@ class SoCommunicatorTest extends BaseTest
         $this->target->HandleConfirmationUrl(function() { return true; }, null, $dataPath, $temp);
         
         $actual = file_get_contents($temp);        
-        $this->assertContains(':ShopResponseDetails', $actual);        
-        $this->assertContains('SessionId>13212452dea<', $actual);   
-        $this->assertContains('StatusCode>OK<', $actual);
-        $this->assertContains('PaymentReferenceIdentifier>120000302122320812201106461<', $actual);
+        $this->assertStringContainsString(':ShopResponseDetails', $actual);        
+        $this->assertStringContainsString('SessionId>13212452dea<', $actual);   
+        $this->assertStringContainsString('StatusCode>OK<', $actual);
+        $this->assertStringContainsString('PaymentReferenceIdentifier>120000302122320812201106461<', $actual);
     }
     
     public function testHandleConfirmationUrlReturnsShopResponseOnConfirmationWithSignature()
@@ -330,10 +330,10 @@ class SoCommunicatorTest extends BaseTest
         $this->target->HandleConfirmationUrl(function() { return true; }, null, $dataPath, $temp);
         
         $actual = file_get_contents($temp);        
-        $this->assertContains(':ShopResponseDetails', $actual);        
-        $this->assertContains('SessionId>String<', $actual);   
-        $this->assertContains('StatusCode>OK<', $actual);
-        $this->assertContains('PaymentReferenceIdentifier>RIAT1234567890XYZ<', $actual);
+        $this->assertStringContainsString(':ShopResponseDetails', $actual);        
+        $this->assertStringContainsString('SessionId>String<', $actual);   
+        $this->assertStringContainsString('StatusCode>OK<', $actual);
+        $this->assertStringContainsString('PaymentReferenceIdentifier>RIAT1234567890XYZ<', $actual);
     }    
     
     public function testHandleConfirmationUrlReturnsErrorResponseOnCallbackException()
@@ -353,9 +353,9 @@ class SoCommunicatorTest extends BaseTest
         
         $actual = file_get_contents($temp);        
         XmlValidator::ValidateEpsProtocol($actual);
-        $this->assertContains('ShopResponseDetails>', $actual);
-        $this->assertNotContains('Something failed', $actual);
-        $this->assertContains('ErrorMsg>An exception of type', $actual);
+        $this->assertStringContainsString('ShopResponseDetails>', $actual);
+        $this->assertStringNotContainsString('Something failed', $actual);
+        $this->assertStringContainsString('ErrorMsg>An exception of type', $actual);
     }
     
     public function testHandleConfirmationUrlThrowsExceptionOnInvalidSecuritySuffix()
@@ -375,8 +375,8 @@ class SoCommunicatorTest extends BaseTest
         
         $actual = file_get_contents($temp);        
         XmlValidator::ValidateEpsProtocol($actual);
-        $this->assertContains('ShopResponseDetails>', $actual);        
-        $this->assertContains('ErrorMsg>Unknown RemittanceIdentifier supplied', $actual);
+        $this->assertStringContainsString('ShopResponseDetails>', $actual);        
+        $this->assertStringContainsString('ErrorMsg>Unknown RemittanceIdentifier supplied', $actual);
     }
     
     public function testHandleConfirmationUrlThrowsExceptionOnInvalidSecuritySetup()
@@ -395,8 +395,8 @@ class SoCommunicatorTest extends BaseTest
         
         $actual = file_get_contents($temp);        
         XmlValidator::ValidateEpsProtocol($actual);
-        $this->assertContains('ShopResponseDetails>', $actual);        
-        $this->assertContains('ErrorMsg>An exception of type "UnexpectedValueException" occurred during handling of the confirmation url', $actual);
+        $this->assertStringContainsString('ShopResponseDetails>', $actual);        
+        $this->assertStringContainsString('ErrorMsg>An exception of type "UnexpectedValueException" occurred during handling of the confirmation url', $actual);
     }
     
     public function testHandleConfirmationUrlStripsSecurityHashFromRemittanceIdentifier()            
@@ -466,12 +466,16 @@ class SoCommunicatorTest extends BaseTest
      */
     private function getMockedTransferInitiatorDetails()
     {
-        $simpleXml = $this->getMock('at\externet\eps_bank_transfer\EpsXmlElement', null, array('<xml/>'));
+        $simpleXml = $this->getMockBuilder(EpsXmlElement::class)
+            ->setConstructorArgs(array('<xml/>'))
+            ->getMock();
         $simpleXml->expects($this->any())
                 ->method('asXML')
                 ->will($this->returnValue('<xml>Mocked Data'));
 
-        $transferInitiatorDetails = $this->getMockBuilder('at\externet\eps_bank_transfer\TransferInitiatorDetails')->disableOriginalConstructor()->getMock();
+        $transferInitiatorDetails = $this->getMockBuilder(TransferInitiatorDetails::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $transferInitiatorDetails->expects($this->any())
                 ->method('GetSimpleXml')
                 ->will($this->returnValue($simpleXml));
