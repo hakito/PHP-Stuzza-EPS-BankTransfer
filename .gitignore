@@ -3,3 +3,4 @@ composer.lock
 junit.xml
 build/
 .phpunit.result.cache
+.vscode/
