@@ -276,13 +276,7 @@ class SoCommunicatorTest extends BaseTest
         $this->expectException(CallbackResponseException::class);
         $this->target->HandleConfirmationUrl(function() {}, function($data) {}, $dataPath, 'php://temp'); 
     }
-
-    public function testHandleConfirmationUrlVitalityWithoutCallback()
-    {
-        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
-        $this->target->HandleConfirmationUrl(function() {}, null, $dataPath, 'php://temp');
-    }
-    
+   
     public function testHandleConfirmationUrlVitalityWritesInputToOutputstream()
     {
         $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
