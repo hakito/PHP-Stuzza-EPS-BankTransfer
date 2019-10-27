@@ -14,9 +14,6 @@
         </testsuite>
     </testsuites>
 
-    <logging>
-    </logging>
-
     <filter>
         <whitelist>
             <directory suffix=".php">./src</directory>
