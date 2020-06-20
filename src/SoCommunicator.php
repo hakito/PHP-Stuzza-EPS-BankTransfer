@@ -7,6 +7,8 @@ namespace at\externet\eps_bank_transfer;
  */
 class SoCommunicator
 {
+    const TEST_MODE_URL = 'https://routing.eps.or.at/appl/epsSO-test';
+    const LIVE_MODE_URL = 'https://routing.eps.or.at/appl/epsSO';
 
     /**
      * Optional function to send log messages to
@@ -35,15 +37,29 @@ class SoCommunicator
     public $ObscuritySeed;
 
     /**
+     * The base url SoCommunicator sends requests to
+     * Defaults to SoCommunicator::LIVE_MODE_URL when constructor is called with $testMode == false
+     * Defaults to SoCommunicator::TEST_MODE_URL when constructor is called with $testMode == true
+     */
+    public $BaseUrl;
+
+    /**
+     * Creates new Instance of SoCommunicator
+     */
+    public function __construct($testMode = false)
+    {
+        $this->BaseUrl = $testMode ? self::TEST_MODE_URL : self::LIVE_MODE_URL;
+    }
+
+    /**
      * Failsafe version of GetBanksArray(). All Exceptions will be swallowed
-     * @param string $url Scheme operator URL for the banks list
      * @return null or result of GetBanksArray()
      */
-    public function TryGetBanksArray($url = null)
+    public function TryGetBanksArray()
     {
         try
         {
-            return $this->GetBanksArray($url);
+            return $this->GetBanksArray();
         }
         catch (\Exception $e)
         {
@@ -55,13 +71,12 @@ class SoCommunicator
     /**
      * Get associative array of banks from Scheme Operator. The bank name (bezeichnung)
      * will be used as key.
-     * @param string $url Scheme operator URL for the banks list
      * @throws XmlValidationException when the returned BankList does not validate against XSD
-     * @return array of banks
+     * @return array of banks with bank name as key. The values are arrays with: bic, bezeichnung, land, epsUrl
      */
-    public function GetBanksArray($url = null)
+    public function GetBanksArray()
     {
-        $xmlBanks = new \SimpleXMLElement($this->GetBanks(true, $url));
+        $xmlBanks = new \SimpleXMLElement($this->GetBanks(true));
         $banks = array();
         foreach ($xmlBanks as $xmlBank)
         {
@@ -80,15 +95,12 @@ class SoCommunicator
      * Get XML of banks from scheme operator.
      * Will throw an exception if data cannot be fetched, or XSD validation fails.
      * @param bool $validateXml validate against XSD
-     * @param string $url Scheme operator URL for the banks list
      * @throws XmlValidationException when the returned BankList does not validate against XSD and $validateXSD is set to TRUE
      * @return string
      */
-    public function GetBanks($validateXml = true, $url = null)
+    public function GetBanks($validateXml = true)
     {
-        if ($url == null)
-            $url = 'https://routing.eps.or.at/appl/epsSO/data/haendler/v2_6';
-
+        $url = $this->BaseUrl . '/data/haendler/v2_6';
         $body = $this->GetUrl($url, 'Requesting bank list');
 
         if ($validateXml)
@@ -112,8 +124,8 @@ class SoCommunicator
         if ($transferInitiatorDetails->UnstructuredRemittanceIdentifier != null)
             $transferInitiatorDetails->UnstructuredRemittanceIdentifier = $this->AppendHash($transferInitiatorDetails->UnstructuredRemittanceIdentifier);
 
-        if ($targetUrl == null)
-            $targetUrl = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_6';
+        if ($targetUrl === null)
+            $targetUrl = $this->BaseUrl . '/transinit/eps/v2_6';
 
         $data = $transferInitiatorDetails->GetSimpleXml();
         $xmlData = $data->asXML();

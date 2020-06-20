@@ -104,6 +104,34 @@ class SoCommunicatorTest extends BaseTest
         $this->assertEquals('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_6', $this->mTransport->lastUrl);
     }
 
+    public function testSendTransferInitiatorDetailsToTestUrl()
+    {
+        $this->target = new SoCommunicator(true);
+        $this->target->Transport = $this->mTransport;
+        $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
+        $this->mTransport->body = $this->GetEpsData('BankResponseDetails004.xml');
+
+        $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
+
+        $this->assertEquals('https://routing.eps.or.at/appl/epsSO-test/transinit/eps/v2_6', $this->mTransport->lastUrl);
+    }
+
+    public function testOverrideDefaultBaseUrl()
+    {
+        $this->target->BaseUrl = 'http://example.com';
+
+        $this->mTransport->body = $this->GetEpsData('BankListSample.xml');
+        $this->target->GetBanksArray();
+        $this->assertEquals('http://example.com/data/haendler/v2_6', $this->mTransport->lastUrl);
+
+        $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
+        $this->mTransport->body = $this->GetEpsData('BankResponseDetails004.xml');
+
+        $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
+        $this->assertEquals('http://example.com/transinit/eps/v2_6', $this->mTransport->lastUrl);
+
+    }
+
     public function testSendTransferInitiatorDetailsThrowsExceptionOn404()
     {
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();

@@ -2,12 +2,11 @@
 require_once('../vendor/autoloader.php');
 use at\externet\eps_bank_transfer;
 
-// Connection credentials. Override them for test mode. 
+// Connection credentials. Override them for test mode.
 $userID = 'AKLJS231534';            // Eps "Händler-ID"/UserID = epsp:UserId
 $pin    = 'topSecret';              // Secret for authentication / PIN = part of epsp:MD5Fingerprint
 $bic    = 'GAWIATW1XXX';            // BIC code of receiving bank account = epi:BfiBicIdentifier
 $iban   = 'AT611904300234573201';   // IBAN code of receiving bank account = epi:BeneficiaryAccountIdentifier
-$targetUrl = null; // Target URL to send TransferInitiatorDetails to. 'null' means: Use default URL. For test mode, insert: https://routing.eps.or.at/appl/epsSO-test/transinit/eps/v2_6
 
 // Return urls
 $transferMsgDetails = new eps_bank_transfer\TransferMsgDetails(
@@ -43,10 +42,20 @@ $article = new eps_bank_transfer\WebshopArticle(  // = epsp:WebshopArticle
 $transferInitiatorDetails->WebshopArticles[] = $article;
 
 // Send TransferInitiatorDetails to Scheme Operator
-$soCommunicator = new eps_bank_transfer\SoCommunicator();
+$testMode = true; // To use live mode call the SoCommunicator constructor with $testMode = false
+$soCommunicator = new eps_bank_transfer\SoCommunicator($testMode);
 
-// Send transfer initiator details to $targetUrl
-$plain = $soCommunicator->SendTransferInitiatorDetails($transferInitiatorDetails, $targetUrl);
+// Optional: You can provide a bank selection on your payment site
+// $bankList = $soCommunicator->GetBanksArray(); // Alternative: TryGetBanksArray
+
+// Optional: You can override the default URLs for test and live mode and specify your custom base URL
+// $soCommunicator->BaseUrl = 'http://examplel.com/My/Eps/Test/Environment';
+
+// Send transfer initiator details to default URL
+$plain = $soCommunicator->SendTransferInitiatorDetails($transferInitiatorDetails);
+// Optional: When using a preselected bank you can provide this URL as second parameter
+// $plain = $soCommunicator->SendTransferInitiatorDetails($transferInitiatorDetails, $epsUrlFromGetBanksArray);
+
 $xml = new \SimpleXMLElement($plain);
 $soAnswer = $xml->children(eps_bank_transfer\XMLNS_epsp);
 $errorDetails = $soAnswer->BankResponseDetails->ErrorDetails;
