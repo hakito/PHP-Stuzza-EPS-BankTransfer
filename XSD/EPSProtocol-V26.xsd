@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Schema zu eps Zahlungsanforderung und Zahlungsbestätigung/Schema for eps payment initiation and confirmation message
+    (c) 2001-2004 STUZZA und Stabsstelle IKT-Strategie des Bundes, BMÖLS
+    Die freie Verwendung dieses Schemas in Applikationen (kommerziell, privat, behördenintern) ist erlaubt.-->
+<!--Joachim Geisler, 13.11.2003: changes on version control, BIC pattern-->
+<!--Joachim Geisler, 9.7.2004: delete BasketUrl + PaymentModeUrl; change prefix of XMLDSig Schema from ds: to dsig:; WebShopArticle now minOcc=1; ClientRedirectUrl now minOcc=0-->
+<!-- Version 2.2 - Christian Matschi, 09.10.2006: delete minInclusive value="0.1" in ArticlePrice; new attribute TargetWindow in element TransactionOkUrl and TransactionNokUrl -->
+<!-- Version 2.4 - Joachim Geisler, November 2011: update of namespace in  ECBS_ePI_V11.xsd => http://www.stuzza.at/namespaces/eps/epi/11-2011; update of all eps.xsd namespaces; XML version now inline with updated eps implementation guide version 2.4;
+March 2012: ECBS_ePI_V11.xsd => update character definition (see pattern definition in data elements) according to SEPA requirements -->
+<!--Version 2.5 - Joachim Geisler, March 2013: new data element in AustrianRules (<DurationTime>, optional); change of <eps:PaymentReferenceIdentifier> to mandatory; restrict URL length to 250; added UnstructuredRemittanceIdentifier; new Namespace-->
+<!--Version 2.6 - Thomas Pircher, October 2014: protocol extended to enable eps4mobile workflows -->
+<xsd:schema xmlns:eps="http://www.stuzza.at/namespaces/eps/payment/2014/10" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:epsp="http://www.stuzza.at/namespaces/eps/protocol/2014/10" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:epi="http://www.stuzza.at/namespaces/eps/epi/2013/02" xmlns:atrul="http://www.stuzza.at/namespaces/eps/austrianrules/2014/10" targetNamespace="http://www.stuzza.at/namespaces/eps/protocol/2014/10" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.stuzza.at/namespaces/eps/payment/2014/10" schemaLocation="EPSPayment-V26.xsd"/>
+	<xsd:import namespace="http://www.stuzza.at/namespaces/eps/epi/2013/02" schemaLocation="ECBS_ePI_V12.xsd"/>
+	<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="W3C-XMLDSig.xsd"/>
+	<xsd:element name="EpsProtocolDetails">
+		<xsd:complexType>
+			<xsd:choice>
+				<xsd:element ref="epsp:TransferInitiatorDetails"/>
+				<xsd:element ref="epsp:BankResponseDetails"/>
+				<xsd:element ref="epsp:VitalityCheckDetails"/>
+				<xsd:element ref="epsp:BankConfirmationDetails"/>
+				<xsd:element ref="epsp:ShopResponseDetails"/>
+				<xsd:element ref="epsp:TransactionDetailsRequest"/>
+				<xsd:element ref="epsp:TransactionDetailsResponse"/>
+				<xsd:element ref="epsp:ConfirmationStatusRequest"/>
+				<xsd:element ref="epsp:ConfirmationStatusResponse"/>
+				<xsd:element ref="epsp:StatusMsg"/>
+			</xsd:choice>
+			<xsd:attribute name="SessionLanguage" use="optional" default="DE">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="2"/>
+						<xsd:minLength value="2"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="TransferInitiatorDetails">
+		<xsd:annotation>
+			<xsd:documentation>beneficiary sends XML data to bank</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="eps:PaymentInitiatorDetails"/>
+				<xsd:element ref="epsp:TransferMsgDetails"/>
+				<xsd:element ref="epsp:WebshopDetails" minOccurs="0"/>
+				<xsd:element name="TransactionId" type="epsp:TrxId" minOccurs="0"/>
+				<xsd:element name="QRCodeUrl" type="epsp:anyURI512" minOccurs="0"/>
+				<xsd:element ref="epsp:AuthenticationDetails"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="BankResponseDetails">
+		<xsd:annotation>
+			<xsd:documentation>bank response with clientsessionid for redirect to customer</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epsp:ClientRedirectUrl" minOccurs="0"/>
+				<xsd:element ref="epsp:ErrorDetails"/>
+				<xsd:element name="TransactionId" type="epsp:TrxId" minOccurs="0"/>
+				<xsd:element name="QRCodeUrl" type="epsp:anyURI512" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="VitalityCheckDetails">
+		<xsd:annotation>
+			<xsd:documentation>check if beneficiary still available / connected</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:choice>
+					<xsd:element ref="epi:RemittanceIdentifier"/>
+					<xsd:element ref="epi:UnstructuredRemittanceIdentifier"/>
+				</xsd:choice>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="BankConfirmationDetails">
+		<xsd:annotation>
+			<xsd:documentation>payment confirmation from bank to beneficiary</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epsp:SessionId"/>
+				<xsd:element ref="eps:PaymentConfirmationDetails"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ShopResponseDetails">
+		<xsd:annotation>
+			<xsd:documentation>Shop response to payment confirmation</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:choice>
+				<xsd:sequence>
+					<xsd:element ref="epsp:SessionId"/>
+					<xsd:element ref="eps:ShopConfirmationDetails"/>
+				</xsd:sequence>
+				<xsd:sequence>
+					<xsd:element ref="epsp:ErrorMsg"/>
+					<xsd:element ref="epsp:SessionId" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="TransactionDetailsRequest">
+		<xsd:annotation>
+			<xsd:documentation>request transfer initiation details by bank</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="TransactionId" type="epsp:TrxId"/>
+				<xsd:element name="BankId" type="epsp:BIC"/>
+				<xsd:element ref="dsig:Signature" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="TransactionDetailsResponse">
+		<xsd:annotation>
+			<xsd:documentation>send transfer initiation details to bank</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:choice>
+				<xsd:sequence>
+					<xsd:element ref="eps:PaymentInitiatorDetails"/>
+					<xsd:element ref="epsp:TransferMsgDetails"/>
+					<xsd:element ref="epsp:WebshopDetails" minOccurs="0"/>
+					<xsd:element ref="dsig:Signature" minOccurs="0"/>
+				</xsd:sequence>
+				<xsd:sequence>
+					<xsd:element ref="epsp:ErrorDetails"/>
+				</xsd:sequence>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ConfirmationStatusRequest">
+		<xsd:annotation>
+			<xsd:documentation>request confirmation-status by merchant</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="TransactionId" type="epsp:TrxId"/>
+				<xsd:element ref="epsp:AuthenticationDetails"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ConfirmationStatusResponse">
+		<xsd:annotation>
+			<xsd:documentation>send confirmation-status to merchant</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:choice>
+				<xsd:sequence>
+					<xsd:element ref="epsp:SessionId"/>
+					<xsd:element ref="eps:PaymentConfirmationDetails"/>
+				</xsd:sequence>
+				<xsd:sequence>
+					<xsd:element ref="epsp:ErrorDetails"/>
+				</xsd:sequence>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="StatusMsg">
+		<xsd:annotation>
+			<xsd:documentation>push-message for transaction-status</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="TransactionId" type="epsp:TrxId"/>
+				<xsd:element ref="epsp:Status"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Status">
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="PAYMENT_IN_PROCESS" />
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="ErrorDetails">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epsp:ErrorCode"/>
+				<xsd:element ref="epsp:ErrorMsg"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ErrorCode">
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="3"/>
+				<xsd:minLength value="3"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="ErrorMsg">
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="255"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="SessionId">
+		<xsd:annotation>
+			<xsd:documentation>SessionID for confirmation stream</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="512"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="ClientRedirectUrl" type="xsd:anyURI">
+		<xsd:annotation>
+			<xsd:documentation>URL and SessionID for redirect to internet banking</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!--Datacontainer for Webshops-->
+	<xsd:element name="WebshopDetails">
+		<xsd:annotation>
+			<xsd:documentation>Datacontainer for Webshops </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epsp:WebshopArticle" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="WebshopArticle">
+		<xsd:complexType>
+			<xsd:attribute name="ArticleName" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="255"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="ArticleCount" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:maxLength value="5"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="ArticlePrice" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:decimal">
+						<xsd:totalDigits value="15"/>
+						<xsd:fractionDigits value="3"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<!--Datacontainer epsTransfer Messages-->
+	<xsd:element name="TransferMsgDetails">
+		<xsd:annotation>
+			<xsd:documentation>TransferMsg Datacontainer</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epsp:ConfirmationUrl"/>
+				<xsd:element ref="epsp:TransactionOkUrl"/>
+				<xsd:element ref="epsp:TransactionNokUrl"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ConfirmationUrl">
+		<xsd:annotation>
+			<xsd:documentation>URL to which PaymentConfirmation will be forwarded</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="epsp:anyURI512"/>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="TransactionOkUrl">
+		<xsd:annotation>
+			<xsd:documentation>URL if credit transfer succeeded (default URL)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="epsp:anyURI512">
+					<xsd:attribute name="TargetWindow" use="optional">
+						<xsd:annotation>
+							<xsd:documentation>Browser window in which the OkUrl will be opened</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="TransactionNokUrl">
+		<xsd:annotation>
+			<xsd:documentation>URL if credit transfer failed (Austrian eps Version 1: Homepage)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="epsp:anyURI512">
+					<xsd:attribute name="TargetWindow" use="optional">
+						<xsd:annotation>
+							<xsd:documentation>Browser window in which the NokUrl will be opened</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+	<!--Datacontainer for Authentication-->
+	<xsd:element name="AuthenticationDetails">
+		<xsd:annotation>
+			<xsd:documentation>Authentication Datacontainer</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epsp:UserId"/>
+				<xsd:choice>
+					<xsd:element ref="epsp:MD5Fingerprint"/>
+					<xsd:element ref="dsig:Signature"/>
+				</xsd:choice>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="UserId">
+		<xsd:annotation>
+			<xsd:documentation>UserID provided by bank to beneficiary</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="25"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="MD5Fingerprint">
+		<xsd:annotation>
+			<xsd:documentation>MD5 Fingerprint to UserID created by beneficiary</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="255"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:simpleType name="TrxId">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-zA-Z0-9\-\._~]{1,36}" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BIC">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="anyURI512">
+		<xsd:restriction base="xsd:anyURI">
+			<xsd:maxLength value="512"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

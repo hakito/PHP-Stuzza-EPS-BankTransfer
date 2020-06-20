@@ -35,7 +35,7 @@ class SoCommunicatorTest extends BaseTest
     public function testGetBanksCallsCorrectUrl()
     {
         $this->target->GetBanks(false);
-        $this->assertEquals('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5', $this->mTransport->lastUrl);
+        $this->assertEquals('https://routing.eps.or.at/appl/epsSO/data/haendler/v2_6', $this->mTransport->lastUrl);
     }
 
     public function testGetBanksArray()
@@ -48,7 +48,7 @@ class SoCommunicatorTest extends BaseTest
                 'bic'   => 'TESTBANKXXX',
                 'bezeichnung' => 'Testbank',
                 'land'  => 'AT',
-                'epsUrl' => 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611'
+                'epsUrl' => 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_6/23ea3d14-278c-4e81-a021-d7b77492b611'
             )
         );
 
@@ -57,7 +57,7 @@ class SoCommunicatorTest extends BaseTest
 
     public function testGetBanklistReadError()
     {
-        $this->expectException(HttpResponseException::class, 'Could not load document. Server returned code: 404');        
+        $this->expectException(HttpResponseException::class, 'Could not load document. Server returned code: 404');
         $this->mTransport->code = 404;
         $this->target->GetBanks();
     }
@@ -78,7 +78,7 @@ class SoCommunicatorTest extends BaseTest
                 'bic'   => 'TESTBANKXXX',
                 'bezeichnung' => 'Testbank',
                 'land'  => 'AT',
-                'epsUrl' => 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611'
+                'epsUrl' => 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_6/23ea3d14-278c-4e81-a021-d7b77492b611'
             )
         );
 
@@ -90,7 +90,7 @@ class SoCommunicatorTest extends BaseTest
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
         $this->mTransport->body = 'invalidData';
 
-        $this->expectException(XmlValidationException::class);        
+        $this->expectException(XmlValidationException::class);
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
     }
 
@@ -101,21 +101,21 @@ class SoCommunicatorTest extends BaseTest
 
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
 
-        $this->assertEquals('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5', $this->mTransport->lastUrl);
+        $this->assertEquals('https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_6', $this->mTransport->lastUrl);
     }
 
     public function testSendTransferInitiatorDetailsThrowsExceptionOn404()
     {
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
         $this->mTransport->code = 404;
-        $this->expectException(HttpResponseException::class, "Could not load document. Server returned code: 404");        
+        $this->expectException(HttpResponseException::class, "Could not load document. Server returned code: 404");
 
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails);
     }
 
     public function testSendTransferInitiatorDetailsWithPreselectedBank()
     {
-        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611';
+        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_6/23ea3d14-278c-4e81-a021-d7b77492b611';
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
         $this->mTransport->body = $this->GetEpsData('BankResponseDetails000.xml');
 
@@ -123,10 +123,10 @@ class SoCommunicatorTest extends BaseTest
 
         $this->assertEquals($url, $this->mTransport->lastUrl);
     }
-    
+
     public function testSendTransferInitiatorDetailsWithSecurityThrowsExceptionOnEmptySalt()
     {
-        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611';
+        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_6/23ea3d14-278c-4e81-a021-d7b77492b611';
         $transferInitiatorDetails = $this->getMockedTransferInitiatorDetails();
         $this->mTransport->body = $this->GetEpsData('BankResponseDetails000.xml');
         $this->target->ObscuritySuffixLength = 8;
@@ -134,28 +134,28 @@ class SoCommunicatorTest extends BaseTest
 
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails, $url);
     }
-    
+
     public function testSendTransferInitiatorDetailsWithSecurityAppendsHash()
     {
-        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5/23ea3d14-278c-4e81-a021-d7b77492b611';
+        $url = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_6/23ea3d14-278c-4e81-a021-d7b77492b611';
         $t = new TransferMsgDetails('a', 'b', 'c');
         $transferInitiatorDetails = new TransferInitiatorDetails('a', 'b', 'c', 'd', 'e', 'f', 0, $t);
         $transferInitiatorDetails->RemittanceIdentifier = 'Order1';
         $this->mTransport->body = $this->GetEpsData('BankResponseDetails000.xml');
         $this->target->ObscuritySuffixLength = 8;
         $this->target->ObscuritySeed = 'Some seed';
-        
+
         $this->target->SendTransferInitiatorDetails($transferInitiatorDetails, $url);
         $this->assertEquals('string', gettype($this->mTransport->lastPostBody));
         $this->assertStringContainsString('>'. 'Order1U294bWR3' . '<', $this->mTransport->lastPostBody);
     }
-    
+
     public function testHandleConfirmationUrlThrowsExceptionOnMissingCallback()
     {
         $this->expectException(InvalidCallbackException::class);
         $this->target->HandleConfirmationUrl(null, null, null, 'php://temp');
     }
-    
+
     public function testHandleConfirmationUrlReturnsErrorOnMissingCallback()
     {
         $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
@@ -170,7 +170,7 @@ class SoCommunicatorTest extends BaseTest
         $actual = file_get_contents($temp);
         XmlValidator::ValidateEpsProtocol($actual);
         $this->assertNotEmpty($message);
-        $this->assertStringContainsString($message, $actual);        
+        $this->assertStringContainsString($message, $actual);
     }
 
     public function testHandleConfirmationUrlThrowsExceptionOnInvalidXml()
@@ -191,7 +191,7 @@ class SoCommunicatorTest extends BaseTest
         $expected = file_get_contents($dataPath);
         $this->assertEquals($actual, $expected);
     }
-    
+
     public function testHandleConfirmationUrlCallsCallbackWithBankConfirmationDetails()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignature.xml');
@@ -200,10 +200,10 @@ class SoCommunicatorTest extends BaseTest
             $bankConfirmationDetails = $bc;
             return true;
             }, null, $dataPath, 'php://temp');
-        
+
         $this->assertEquals('AT1234567890XYZ', $bankConfirmationDetails->GetRemittanceIdentifier());
         $this->assertEquals('OK', $bankConfirmationDetails->GetStatusCode());
-    }  
+    }
 
     public function testHandleConfirmationUrlThrowsExceptionWhenCallbackDoesNotReturnTrue()
     {
@@ -224,19 +224,19 @@ class SoCommunicatorTest extends BaseTest
         {
             $message = $e->getMessage();
         }
-        
+
         $actual = file_get_contents($temp);
         XmlValidator::ValidateEpsProtocol($actual);
-        
+
         $this->assertNotEmpty($message);
         $this->assertStringContainsString('ShopResponseDetails>', $actual);
-        $this->assertStringContainsString('ErrorMsg>', $actual);        
+        $this->assertStringContainsString('ErrorMsg>', $actual);
         $this->assertStringContainsString($message, $actual);
     }
-    
+
     public function testHandleConfirmationUrlVitalityCheckDoesNotCallBankConfirmationCallback()
     {
-        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');
         $actual = true;
         $this->target->HandleConfirmationUrl(function($data) use (&$actual)
                 {
@@ -245,14 +245,14 @@ class SoCommunicatorTest extends BaseTest
                 }, null, $dataPath, 'php://temp');
         $this->assertTrue($actual);
     }
-    
+
     public function testHandleConfirmationUrlVitalityThrowsExceptionOnInvalidValidationCallback()
     {
-        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');
         $this->expectException(InvalidCallbackException::class);
-        $this->target->HandleConfirmationUrl(function($data) {}, "invalid", $dataPath, 'php://temp');       
+        $this->target->HandleConfirmationUrl(function($data) {}, "invalid", $dataPath, 'php://temp');
     }
-    
+
     public function testHandleConfirmationUrlVitalityReturnsErrorOnInvalidValidationCallback()
     {
         $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
@@ -267,29 +267,29 @@ class SoCommunicatorTest extends BaseTest
         $actual = file_get_contents($temp);
         XmlValidator::ValidateEpsProtocol($actual);
         $this->assertNotEmpty($message);
-        $this->assertStringContainsString($message, $actual);        
-    }    
-    
+        $this->assertStringContainsString($message, $actual);
+    }
+
     public function testHandleConfirmationUrlVitalityThrowsExceptionWhenCallbackDoesNotReturnTrue()
     {
-        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');
         $this->expectException(CallbackResponseException::class);
-        $this->target->HandleConfirmationUrl(function() {}, function($data) {}, $dataPath, 'php://temp'); 
+        $this->target->HandleConfirmationUrl(function() {}, function($data) {}, $dataPath, 'php://temp');
     }
-   
+
     public function testHandleConfirmationUrlVitalityWritesInputToOutputstream()
     {
-        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');        
+        $dataPath = $this->GetEpsDataPath('VitalityCheckDetails.xml');
         $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
         $this->target->HandleConfirmationUrl(function() {}, null, $dataPath, $temp);
         $expected = file_get_contents($dataPath);
         $actual = file_get_contents($temp);
         $this->assertEquals($expected, $actual);
     }
-    
+
     public function testHandleConfirmationUrlReturnsErrorOnInvalidXml()
     {
-        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsInvalid.xml');        
+        $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsInvalid.xml');
         $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
         try
         {
@@ -303,33 +303,33 @@ class SoCommunicatorTest extends BaseTest
         $this->assertStringContainsString('ShopResponseDetails>', $actual);
         $this->assertStringContainsString('ErrorMsg>Error occured during XML validation</', $actual);
     }
-    
+
     public function testHandleConfirmationUrlReturnsShopResponse()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignature.xml');
         $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
         $this->target->HandleConfirmationUrl(function() { return true; }, null, $dataPath, $temp);
-        
-        $actual = file_get_contents($temp);        
-        $this->assertStringContainsString(':ShopResponseDetails', $actual);        
-        $this->assertStringContainsString('SessionId>13212452dea<', $actual);   
+
+        $actual = file_get_contents($temp);
+        $this->assertStringContainsString(':ShopResponseDetails', $actual);
+        $this->assertStringContainsString('SessionId>13212452dea<', $actual);
         $this->assertStringContainsString('StatusCode>OK<', $actual);
         $this->assertStringContainsString('PaymentReferenceIdentifier>120000302122320812201106461<', $actual);
     }
-    
+
     public function testHandleConfirmationUrlReturnsShopResponseOnConfirmationWithSignature()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
         $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
         $this->target->HandleConfirmationUrl(function() { return true; }, null, $dataPath, $temp);
-        
-        $actual = file_get_contents($temp);        
-        $this->assertStringContainsString(':ShopResponseDetails', $actual);        
-        $this->assertStringContainsString('SessionId>String<', $actual);   
+
+        $actual = file_get_contents($temp);
+        $this->assertStringContainsString(':ShopResponseDetails', $actual);
+        $this->assertStringContainsString('SessionId>String<', $actual);
         $this->assertStringContainsString('StatusCode>OK<', $actual);
         $this->assertStringContainsString('PaymentReferenceIdentifier>RIAT1234567890XYZ<', $actual);
-    }    
-    
+    }
+
     public function testHandleConfirmationUrlReturnsErrorResponseOnCallbackException()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
@@ -344,21 +344,21 @@ class SoCommunicatorTest extends BaseTest
             $catchedMessage = $e->getMessage();
         }
         $this->assertEquals('Something failed', $catchedMessage);
-        
-        $actual = file_get_contents($temp);        
+
+        $actual = file_get_contents($temp);
         XmlValidator::ValidateEpsProtocol($actual);
         $this->assertStringContainsString('ShopResponseDetails>', $actual);
         $this->assertStringNotContainsString('Something failed', $actual);
         $this->assertStringContainsString('ErrorMsg>An exception of type', $actual);
     }
-    
+
     public function testHandleConfirmationUrlThrowsExceptionOnInvalidSecuritySuffix()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
         $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
         $this->target->ObscuritySuffixLength = 3;
         $this->target->ObscuritySeed = 'Foo';
-        try 
+        try
         {
             $this->target->HandleConfirmationUrl(function() { }, null, $dataPath, $temp);
         }
@@ -366,19 +366,19 @@ class SoCommunicatorTest extends BaseTest
         {
             // expected
         }
-        
-        $actual = file_get_contents($temp);        
+
+        $actual = file_get_contents($temp);
         XmlValidator::ValidateEpsProtocol($actual);
-        $this->assertStringContainsString('ShopResponseDetails>', $actual);        
+        $this->assertStringContainsString('ShopResponseDetails>', $actual);
         $this->assertStringContainsString('ErrorMsg>Unknown RemittanceIdentifier supplied', $actual);
     }
-    
+
     public function testHandleConfirmationUrlThrowsExceptionOnInvalidSecuritySetup()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithSignature.xml');
         $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
         $this->target->ObscuritySuffixLength = 3;
-        try 
+        try
         {
             $this->target->HandleConfirmationUrl(function() { }, null, $dataPath, $temp);
         }
@@ -386,31 +386,31 @@ class SoCommunicatorTest extends BaseTest
         {
             // expected
         }
-        
-        $actual = file_get_contents($temp);        
+
+        $actual = file_get_contents($temp);
         XmlValidator::ValidateEpsProtocol($actual);
-        $this->assertStringContainsString('ShopResponseDetails>', $actual);        
+        $this->assertStringContainsString('ShopResponseDetails>', $actual);
         $this->assertStringContainsString('ErrorMsg>An exception of type "UnexpectedValueException" occurred during handling of the confirmation url', $actual);
     }
-    
-    public function testHandleConfirmationUrlStripsSecurityHashFromRemittanceIdentifier()            
+
+    public function testHandleConfirmationUrlStripsSecurityHashFromRemittanceIdentifier()
     {
         $original = $this->GetEpsData('BankConfirmationDetailsWithoutSignature.xml');
         $expected = 'AT1234567890XYZ';
         $data = str_replace($expected, $expected . 'Rm8', $original);
         $dataPath = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
         file_put_contents($dataPath, $data);
-        
+
         $temp = tempnam(sys_get_temp_dir(), 'SoCommunicatorTest_');
         $this->target->ObscuritySuffixLength = 3;
         $this->target->ObscuritySeed = 'Foo';
         $bankConfirmationDetails = null;
         $this->target->HandleConfirmationUrl(function($raw, $bc) use (&$bankConfirmationDetails)
-        { 
+        {
             $bankConfirmationDetails = $bc;
             return true;
         }, null, $dataPath, $temp);
-        
+
         $this->assertSame($expected, $bankConfirmationDetails->GetRemittanceIdentifier());
     }
 
@@ -448,14 +448,14 @@ class SoCommunicatorTest extends BaseTest
         }
         catch (HttpResponseException $e)
         {}
-        
+
         $this->assertEquals('FAILED: Send payment order', $message);
     }
-    
+
     // HELPER FUNCTIONS
 
     /**
-     * 
+     *
      * @return TransferInitiatorDetails
      */
     private function getMockedTransferInitiatorDetails()

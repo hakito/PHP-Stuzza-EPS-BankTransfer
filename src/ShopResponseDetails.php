@@ -24,7 +24,7 @@ class ShopResponseDetails
     public function GetSimpleXml()
     {
         /** @var SimpleXmlElmenet */
-        $xml = EpsXmlElement::CreateEmptySimpleXml('epsp:EpsProtocolDetails xmlns:epsp="' . XMLNS_epsp . '" xmlns:atrul="http://www.stuzza.at/namespaces/eps/austrianrules/2013/02" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:epi="' . XMLNS_epi . '" xmlns:eps="' . XMLNS_eps . '" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.stuzza.at/namespaces/eps/protocol/2013/02 EPSProtocol-V25.xsd" SessionLanguage="DE"');
+        $xml = EpsXmlElement::CreateEmptySimpleXml('epsp:EpsProtocolDetails xmlns:epsp="' . XMLNS_epsp . '" xmlns:atrul="http://www.stuzza.at/namespaces/eps/austrianrules/2014/10" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:epi="' . XMLNS_epi . '" xmlns:eps="' . XMLNS_eps . '" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.stuzza.at/namespaces/eps/protocol/2014/10 EPSProtocol-V26.xsd" SessionLanguage="DE"');
 
         $ShopResponseDetails = $xml->addChildExt('ShopResponseDetails', '', 'epsp');
 

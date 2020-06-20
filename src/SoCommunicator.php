@@ -8,9 +8,9 @@ namespace at\externet\eps_bank_transfer;
 class SoCommunicator
 {
 
-    /** 
+    /**
      * Optional function to send log messages to
-     * @var callable  
+     * @var callable
      */
     public $LogCallback;
 
@@ -20,14 +20,14 @@ class SoCommunicator
      * @var \Requests_Transport     *
      */
     public $Transport;
-    
-    /** 
+
+    /**
      * Number of hash chars to append to RemittanceIdentifier.
      * If set greater as 0 you'll also have to set a ObscuritySeed
      * @var int
      */
     public $ObscuritySuffixLength = 0;
-    
+
     /**
      * Seed to be used by hash function for RemittanceIdentifier
      * @var string
@@ -87,7 +87,7 @@ class SoCommunicator
     public function GetBanks($validateXml = true, $url = null)
     {
         if ($url == null)
-            $url = 'https://routing.eps.or.at/appl/epsSO/data/haendler/v2_5';
+            $url = 'https://routing.eps.or.at/appl/epsSO/data/haendler/v2_6';
 
         $body = $this->GetUrl($url, 'Requesting bank list');
 
@@ -113,7 +113,7 @@ class SoCommunicator
             $transferInitiatorDetails->UnstructuredRemittanceIdentifier = $this->AppendHash($transferInitiatorDetails->UnstructuredRemittanceIdentifier);
 
         if ($targetUrl == null)
-            $targetUrl = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_5';
+            $targetUrl = 'https://routing.eps.or.at/appl/epsSO/transinit/eps/v2_6';
 
         $data = $transferInitiatorDetails->GetSimpleXml();
         $xmlData = $data->asXML();
@@ -127,13 +127,13 @@ class SoCommunicator
      * Call this function when the confirmation URL is called by the Scheme Operator.
      * The function will write ShopResponseDetails to the $outputStream in case of
      * BankConfirmationDetails.
-     * 
+     *
      * @param callable $confirmationCallback a callable to send BankConfirmationDetails to.
      * Will be called with the raw post data as first parameter and an Instance of
      * BankConfirmationDetails as second parameter. This callable must return TRUE.
      * @param callable $vitalityCheckCallback an optional callable for the vitalityCheck
      * Will be called with the raw post data as first parameter and an Instance of
-     * VitalityCheckDetails as second parameter. This callable must return TRUE.     
+     * VitalityCheckDetails as second parameter. This callable must return TRUE.
      * @param string $rawPostStream will read from this stream or file with file_get_contents
      * @param string $outputStream will write to this stream the expected responses for the
      * Scheme Operator
@@ -167,7 +167,7 @@ class SoCommunicator
                     $VitalityCheckDetails = new VitalityCheckDetails($xml);
                     $this->ConfirmationUrlCallback($vitalityCheckCallback, 'vitality check', array($HTTP_RAW_POST_DATA, $VitalityCheckDetails));
                 }
-                
+
                 // 7.1.9 Schritt III-3: Bestätigung Vitality Check Händler-eps SO
                 file_put_contents($outputStream, $HTTP_RAW_POST_DATA);
             }
@@ -180,7 +180,7 @@ class SoCommunicator
                 $BankConfirmationDetails->SetRemittanceIdentifier($this->StripHash($BankConfirmationDetails->GetRemittanceIdentifier()));
 
                 $shopResponseDetails->SessionId = $BankConfirmationDetails->GetSessionId();
-                $shopResponseDetails->StatusCode = $BankConfirmationDetails->GetStatusCode();                              
+                $shopResponseDetails->StatusCode = $BankConfirmationDetails->GetStatusCode();
                 $shopResponseDetails->PaymentReferenceIdentifier = $BankConfirmationDetails->GetPaymentReferenceIdentifier();
 
                 $this->WriteLog(sprintf('Calling confirmationUrlCallback for remittance identifier "%s" with status code %s', $BankConfirmationDetails->GetRemittanceIdentifier(), $BankConfirmationDetails->GetStatusCode()));
@@ -195,19 +195,19 @@ class SoCommunicator
         {
             $this->WriteLog($e->getMessage());
 
-            if (is_subclass_of($e, 'at\externet\eps_bank_transfer\ShopResponseException'))            
+            if (is_subclass_of($e, 'at\externet\eps_bank_transfer\ShopResponseException'))
                 $shopResponseDetails->ErrorMsg = $e->GetShopResponseErrorMessage();
             else
-                $shopResponseDetails->ErrorMsg = 'An exception of type "' . get_class($e) . '" occurred during handling of the confirmation url';           
-            
+                $shopResponseDetails->ErrorMsg = 'An exception of type "' . get_class($e) . '" occurred during handling of the confirmation url';
+
             file_put_contents($outputStream, $shopResponseDetails->GetSimpleXml()->asXml());
-            
+
             throw $e;
         }
     }
-    
+
     // Private functions
-   
+
     private function ConfirmationUrlCallback($callback, $name, $args)
     {
         if (call_user_func_array($callback, $args) !== true)
@@ -217,13 +217,13 @@ class SoCommunicator
             throw new CallbackResponseException($fullMessage);
         }
     }
-    
+
     private function TestCallability(&$callback, $name)
     {
         if (!is_callable($callback))
         {
-            $message = 'The given callback function for "' . $name . '" is not a callable';            
-            $fullMessage = 'Cannot handle confirmation URL. ' . $message;                        
+            $message = 'The given callback function for "' . $name . '" is not a callable';
+            $fullMessage = 'Cannot handle confirmation URL. ' . $message;
             throw new InvalidCallbackException($fullMessage);
         }
     }
@@ -279,7 +279,7 @@ class SoCommunicator
     {
         if (is_callable($this->LogCallback))
         {
-            if ($success !== null)            
+            if ($success !== null)
                 $message = ($success ? "SUCCESS:" : "FAILED:") . ' ' . $message;
 
             call_user_func($this->LogCallback, $message);
@@ -290,23 +290,23 @@ class SoCommunicator
     {
         if ($this->ObscuritySuffixLength == 0)
             return $string;
-        
+
         if (empty($this->ObscuritySeed))
                 throw new \UnexpectedValueException('No security seed set when using security suffix.');
-        
+
         $hash = base64_encode(crypt($string, $this->ObscuritySeed));
         return $string . substr($hash, 0, $this->ObscuritySuffixLength);
     }
-    
+
     private function StripHash($suffixed)
     {
         if ($this->ObscuritySuffixLength == 0)
             return $suffixed;
-        
+
         $remittanceIdentifier = substr($suffixed, 0, -$this->ObscuritySuffixLength);
         if ($this->AppendHash($remittanceIdentifier) != $suffixed)
             throw new UnknownRemittanceIdentifierException('Unknown RemittanceIdentifier supplied: ' . $suffixed);
-        
+
         return $remittanceIdentifier;
     }
 }

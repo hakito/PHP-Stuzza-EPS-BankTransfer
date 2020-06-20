@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- edited with XMLSPY v5 rel. 3 U (http://www.xmlspy.com) by Hendrik Muus (STUZZA GmbH) -->
-<!--
- -->
+<!-- Diese DOCTYPE Definition verursacht Probleme beim Generieren der Java-Klassen mit JAXB
 <!DOCTYPE schema PUBLIC "-//W3C//DTD XMLSchema 200102//EN" "http://www.w3.org/2001/XMLSchema.dtd" [
 	<!ATTLIST schema
 	xmlns:ds CDATA #FIXED "http://www.w3.org/2000/09/xmldsig#"
@@ -10,9 +9,10 @@
 	<!ENTITY % p ''>
 	<!ENTITY % s ''>
 ]>
+-->
 <!-- Schema for XML Signatures
     http://www.w3.org/2000/09/xmldsig#
-    $Revision: 1.1 $ on $Date: 2013/07/01 07:12:04 $ by $Author: rpri111 $
+    $Revision: 1.1.2.1 $ on $Date: 2015/01/23 14:26:39 $ by $Author: rpri111 $
 
     Copyright 2001 The Internet Society and W3C (Massachusetts Institute
     of Technology, Institut National de Recherche en Informatique et en

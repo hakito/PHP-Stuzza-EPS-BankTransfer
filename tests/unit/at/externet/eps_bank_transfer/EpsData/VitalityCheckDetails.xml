@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<epsp:EpsProtocolDetails xsi:schemaLocation="http://www.stuzza.at/namespaces/eps/protocol/2013/02 EPSProtocol-V25.xsd" xmlns:atrul="http://www.stuzza.at/namespaces/eps/austrianrules/2013/02" xmlns:epi="http://www.stuzza.at/namespaces/eps/epi/2013/02" xmlns:eps="http://www.stuzza.at/namespaces/eps/payment/2013/02" xmlns:epsp="http://www.stuzza.at/namespaces/eps/protocol/2013/02" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">    <epsp:VitalityCheckDetails>
+<epsp:EpsProtocolDetails xsi:schemaLocation="http://www.stuzza.at/namespaces/eps/protocol/2014/10 EPSProtocol-V26.xsd" xmlns:atrul="http://www.stuzza.at/namespaces/eps/austrianrules/2014/10" xmlns:epi="http://www.stuzza.at/namespaces/eps/epi/2013/02" xmlns:eps="http://www.stuzza.at/namespaces/eps/payment/2014/10" xmlns:epsp="http://www.stuzza.at/namespaces/eps/protocol/2014/10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">    <epsp:VitalityCheckDetails>
         <epi:RemittanceIdentifier>AT1234567890XYZ</epi:RemittanceIdentifier> 
     </epsp:VitalityCheckDetails> 
 </epsp:EpsProtocolDetails>

@@ -2,9 +2,9 @@
 
 namespace at\externet\eps_bank_transfer;
 
-CONST XMLNS_eps = "http://www.stuzza.at/namespaces/eps/payment/2013/02";
+CONST XMLNS_eps = "http://www.stuzza.at/namespaces/eps/payment/2014/10";
 CONST XMLNS_epi = "http://www.stuzza.at/namespaces/eps/epi/2013/02";
-CONST XMLNS_epsp = "http://www.stuzza.at/namespaces/eps/protocol/2013/02";
+CONST XMLNS_epsp = "http://www.stuzza.at/namespaces/eps/protocol/2014/10";
 
 function FormatMonetaryXsdDecimal($val)
 {

@@ -58,8 +58,8 @@ class TransferInitiatorDetails
     public $UnstructuredRemittanceIdentifier;
 
     /**
-     * Zahlungsreferenz Eindeutige Referenz des Händlers (= Begünstigter) zu einem Geschäftsfall, der im Zahlungsverkehr unverändert wieder an den Händler zurückgeleitet werden muss 
-     * @var string 
+     * Zahlungsreferenz Eindeutige Referenz des Händlers (= Begünstigter) zu einem Geschäftsfall, der im Zahlungsverkehr unverändert wieder an den Händler zurückgeleitet werden muss
+     * @var string
      */
     public $RemittanceIdentifier;
 
@@ -143,7 +143,7 @@ class TransferInitiatorDetails
     }
 
     /**
-     * 
+     *
      * @param int $amount in cents
      */
     public function SetInstructedAmount($amount)
@@ -163,14 +163,14 @@ class TransferInitiatorDetails
     }
 
     /**
-     * 
+     *
      * @return SimpleXMLElement
      */
     public function GetSimpleXml()
     {
 
         /** @var SimpleXmlElmenet */
-        $xml = EpsXmlElement::CreateEmptySimpleXml('epsp:EpsProtocolDetails SessionLanguage="DE" xsi:schemaLocation="http://www.stuzza.at/namespaces/eps/protocol/2013/02 EPSProtocol-V25.xsd" xmlns:atrul="http://www.stuzza.at/namespaces/eps/austrianrules/2013/02" xmlns:epi="http://www.stuzza.at/namespaces/eps/epi/2013/02" xmlns:eps="http://www.stuzza.at/namespaces/eps/payment/2013/02" xmlns:epsp="http://www.stuzza.at/namespaces/eps/protocol/2013/02" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"');
+        $xml = EpsXmlElement::CreateEmptySimpleXml('epsp:EpsProtocolDetails SessionLanguage="DE" xsi:schemaLocation="http://www.stuzza.at/namespaces/eps/protocol/2014/10 EPSProtocol-V26.xsd" xmlns:atrul="http://www.stuzza.at/namespaces/eps/austrianrules/2014/10" xmlns:epi="http://www.stuzza.at/namespaces/eps/epi/2013/02" xmlns:eps="http://www.stuzza.at/namespaces/eps/payment/2014/10" xmlns:epsp="http://www.stuzza.at/namespaces/eps/protocol/2014/10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"');
 
         $TransferInitiatorDetails = $xml->addChildExt('TransferInitiatorDetails', '', 'epsp');
 
@@ -180,10 +180,10 @@ class TransferInitiatorDetails
         $TransactionOkUrl = $TransferMsgDetails->addChildExt('TransactionOkUrl', $this->TransferMsgDetails->TransactionOkUrl, 'epsp');
         $TransactionNokUrl = $TransferMsgDetails->addChildExt('TransactionNokUrl', $this->TransferMsgDetails->TransactionNokUrl, 'epsp');
 
-        if (!empty($this->TransferMsgDetails->TargetWindowOk))            
+        if (!empty($this->TransferMsgDetails->TargetWindowOk))
             $TransactionOkUrl->addAttribute('TargetWindow', $this->TransferMsgDetails->TargetWindowOk);
 
-        if (!empty($this->TransferMsgDetails->TargetWindowNok))            
+        if (!empty($this->TransferMsgDetails->TargetWindowNok))
             $TransactionNokUrl->addAttribute('TargetWindow', $this->TransferMsgDetails->TargetWindowNok);
 
         if (!empty($this->WebshopArticles))

@@ -7,7 +7,7 @@ $userID = 'AKLJS231534';            // Eps "Händler-ID"/UserID = epsp:UserId
 $pin    = 'topSecret';              // Secret for authentication / PIN = part of epsp:MD5Fingerprint
 $bic    = 'GAWIATW1XXX';            // BIC code of receiving bank account = epi:BfiBicIdentifier
 $iban   = 'AT611904300234573201';   // IBAN code of receiving bank account = epi:BeneficiaryAccountIdentifier
-$targetUrl = null; // Target URL to send TransferInitiatorDetails to. 'null' means: Use default URL. For test mode, insert: https://routing.eps.or.at/appl/epsSO-test/transinit/eps/v2_5
+$targetUrl = null; // Target URL to send TransferInitiatorDetails to. 'null' means: Use default URL. For test mode, insert: https://routing.eps.or.at/appl/epsSO-test/transinit/eps/v2_6
 
 // Return urls
 $transferMsgDetails = new eps_bank_transfer\TransferMsgDetails(
