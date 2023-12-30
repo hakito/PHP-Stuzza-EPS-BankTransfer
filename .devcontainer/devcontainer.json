@@ -15,9 +15,6 @@
     "forwardPorts": [
         8080
     ],
-    "features": {
-        "ghcr.io/itsmechlark/features/act:1": {}
-    },
 
     // Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": ".devcontainer/post-create.sh"
