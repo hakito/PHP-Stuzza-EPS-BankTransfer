@@ -2,7 +2,7 @@
 
 namespace at\externet\eps_bank_transfer;
 
-class MockTransport implements \Requests_Transport {
+class MockTransport implements \WpOrg\Requests\Transport {
 	public $code = 200;
 	public $chunked = false;
 	public $body = 'Test Body';
@@ -88,7 +88,8 @@ class MockTransport implements \Requests_Transport {
 		return $responses;
 	}
 
-	public static function test() {
+	public static function test($capabilities = [])
+	{
 		return true;
 	}
 }

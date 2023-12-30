@@ -2,6 +2,9 @@
 
 namespace at\externet\eps_bank_transfer;
 
+use WpOrg\Requests\Exception\Transport;
+use WpOrg\Requests\Requests;
+
 /**
  * Handles the communication with the EPS scheme operator
  */
@@ -19,7 +22,7 @@ class SoCommunicator
     /**
      * requests transport
      * @internal
-     * @var \Requests_Transport     *
+     * @var Transport
      */
     public $Transport;
 
@@ -252,7 +255,7 @@ class SoCommunicator
         $options = $this->Transport === null ? array() : array(
             'transport' => $this->Transport
         );
-        $response = \Requests::get($url, array(), $options);
+        $response = Requests::get($url, array(), $options);
         if ($response->status_code != 200)
         {
             $this->WriteLog($logMessage, false);
@@ -275,7 +278,7 @@ class SoCommunicator
         $options = $this->Transport === null ? array() : array(
             'transport' => $this->Transport
         );
-        $response = \Requests::post($url, array('Content-Type' => 'text/xml; charset=UTF-8'), $data, $options);
+        $response = Requests::post($url, array('Content-Type' => 'text/xml; charset=UTF-8'), $data, $options);
 
         if ($response->status_code != 200)
         {
