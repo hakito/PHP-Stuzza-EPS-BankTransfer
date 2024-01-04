@@ -4,10 +4,9 @@ php:
   - 7.3
   - 8.1
   - 8.2
-  - 8.3
 before_script:
-  - composer require php-coveralls/php-coveralls
+  - composer update
 script:
-  - vendor/bin/phpunit --coverage-clover build/coverage/clover.xml
+  - XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover build/coverage/clover.xml
 after_script:
-  - php vendor/bin/coveralls -v
+  - php vendor/bin/php-coveralls -v

@@ -2,4 +2,5 @@ vendor
 composer.lock
 junit.xml
 build/
+.phpunit.result.cache
 .phpunit.cache/
