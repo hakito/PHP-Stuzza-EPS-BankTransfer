@@ -8,6 +8,6 @@ php:
 before_script:
   - composer require php-coveralls/php-coveralls
 script:
-  - phpunit --coverage-clover build/coverage/clover.xml
+  - vendor/bin/phpunit --coverage-clover build/coverage/clover.xml
 after_script:
-  - php vendor/bin/php-coveralls -v
+  - php vendor/bin/coveralls -v
