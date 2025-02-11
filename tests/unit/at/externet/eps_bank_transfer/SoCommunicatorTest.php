@@ -332,6 +332,39 @@ class SoCommunicatorTest extends BaseTest
         $this->assertStringContainsString('ErrorMsg>Error occured during XML validation</', $actual);
     }
 
+    function testRefundResponseAccepted()
+    {
+        $this->mTransport->body = $this->GetEpsData('RefundResponseAccepted000.xml');
+
+        $refundRequest = $this->getMockedRefundRequest();
+        $response = $this->target->ProcessRefund($refundRequest);
+
+        $this->assertStringContainsString('Keine Fehler - dt accepted', $response);
+        $this->assertStringContainsString('StatusCode>000<', $response);
+    }
+
+    function testRefundResponseFingerprintFailed()
+    {
+        $this->mTransport->body = $this->GetEpsData('RefundResponseFingerprintFailed004.xml');
+
+        $refundRequest = $this->getMockedRefundRequest();
+        $response = $this->target->ProcessRefund($refundRequest);
+
+        $this->assertStringContainsString('Autorisierungsdaten fehlerhaft - SHA256 fingerprint check failed', $response);
+        $this->assertStringContainsString('StatusCode>004<', $response);
+    }
+
+    function testRefundResponseInvalidIban()
+    {
+        $this->mTransport->body = $this->GetEpsData('RefundResponseInvalidIban010.xml');
+
+        $refundRequest = $this->getMockedRefundRequest();
+        $response = $this->target->ProcessRefund($refundRequest);
+
+        $this->assertStringContainsString('IBAN ungueltig - customer data not available', $response);
+        $this->assertStringContainsString('StatusCode>010<', $response);
+    }
+
     public function testHandleConfirmationUrlReturnsShopResponse()
     {
         $dataPath = $this->GetEpsDataPath('BankConfirmationDetailsWithoutSignature.xml');
@@ -505,5 +538,39 @@ class SoCommunicatorTest extends BaseTest
         $transferInitiatorDetails->RemittanceIdentifier = 'orderid';
 
         return $transferInitiatorDetails;
+    }
+
+
+    /**
+     * Creates a mocked instance of RefundRequest.
+     *
+     * @return RefundRequest
+     */
+    private function getMockedRefundRequest()
+    {
+        $simpleXml = $this->getMockBuilder(EpsXmlElement::class)
+            ->setConstructorArgs(array('<xml/>'))
+            ->getMock();
+        $simpleXml->expects($this->any())
+            ->method('asXML')
+            ->will($this->returnValue('<xml>Mocked Refund Data'));
+
+        $refundRequest = $this->getMockBuilder(EpsRefundRequest::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $refundRequest->expects($this->any())
+            ->method('GetSimpleXml')
+            ->will($this->returnValue($simpleXml));
+
+        $refundRequest->CreDtTm = '2025-02-10T15:30:00';
+        $refundRequest->TransactionId = '1234567890';
+        $refundRequest->MerchantIBAN = 'AT611904300234573201';
+        $refundRequest->Amount = 100.50;
+        $refundRequest->AmountCurrencyIdentifier = 'EUR';
+        $refundRequest->UserId = 'TestUserId';
+        $refundRequest->Pin = 'TestPin';
+        $refundRequest->RefundReference = 'Duplicate transaction';
+
+        return $refundRequest;
     }
 }
