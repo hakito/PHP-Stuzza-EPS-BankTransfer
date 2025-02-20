@@ -47,10 +47,10 @@ class RefundRequestTest extends BaseTest
     {
         return [
             [
-                "2018-09-25T08:09:53.454+02:00",
+                "2024-09-25T08:09:53.454+02:00",
                 "epsJMG15K752",
                 "AT175700054011014943",
-                0.03,
+                10.00,
                 "EUR",
                 "HYPTAT22XXX_143921",
                 "fluxkompensator!",
@@ -58,10 +58,10 @@ class RefundRequestTest extends BaseTest
                 "RefundRequest.xml"
             ],
             [
-                "2018-09-25T08:09:53.454+02:00",
+                "2025-09-25T08:09:53.454+02:00",
                 "epsJMG15K753",
                 "AT175700054011014943",
-                0.03,
+                12.90,
                 "EUR",
                 "HYPTAT22XXX_143921",
                 "fluxkompensator!",
