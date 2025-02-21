@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epsr:EpsRefundRequest xmlns:epsr="http://www.stuzza.at/namespaces/eps/refund/2018/09" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+  <epsr:CreDtTm>2024-09-25T08:09:53.454+02:00</epsr:CreDtTm>
+  <epsr:TransactionId>epsJMG15K752</epsr:TransactionId>
+  <epsr:MerchantIBAN>AT175700054011014943</epsr:MerchantIBAN>
+  <epsr:Amount AmountCurrencyIdentifier="EUR">10</epsr:Amount>
+  <epsr:RefundReference>REFUND-123456789</epsr:RefundReference>
+  <epsr:AuthenticationDetails>
+    <epsr:UserId>HYPTAT22XXX_143921</epsr:UserId>
+    <epsr:SHA256Fingerprint>BAA6609328E8A3CB749C4C4C207CB8D4F0C5F1DEEF97B04BE7AB5C4BC2830B70</epsr:SHA256Fingerprint>
+  </epsr:AuthenticationDetails>
+</epsr:EpsRefundRequest>

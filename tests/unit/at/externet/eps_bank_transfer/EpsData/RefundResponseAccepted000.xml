@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<epsr:EpsRefundResponse xsi:schemaLocation="http://www.stuzza.at/namespaces/eps/refund/2018/09 EPSRefund-V26.xsd"
+                        xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"
+                        xmlns:epsr="http://www.stuzza.at/namespaces/eps/refund/2018/09"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <epsr:StatusCode>000</epsr:StatusCode>
+    <epsr:ErrorMsg>Keine Fehler - dt accepted</epsr:ErrorMsg>
+</epsr:EpsRefundResponse>

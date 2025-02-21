@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Schema zu eps Zahlungsrefundierungen-->
+<!--Version 1.0 - Matthias Kautz, September 2018 -->
+<xsd:schema xmlns:epsr="http://www.stuzza.at/namespaces/eps/refund/2018/09" targetNamespace="http://www.stuzza.at/namespaces/eps/refund/2018/09" xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="W3C-XMLDSig.xsd"/>
+	<xsd:element name="EpsRefundRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epsr:CreDtTm"/>
+				<xsd:element ref="epsr:TransactionId"/>
+				<xsd:element ref="epsr:MerchantIBAN"/>
+				<xsd:element ref="epsr:Amount"/>
+				<xsd:element ref="epsr:RefundReference" minOccurs="0"/>
+				<xsd:element ref="epsr:AuthenticationDetails"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="EpsRefundResponse" >
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epsr:StatusCode"/>
+				<xsd:element ref="epsr:ErrorMsg" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="RefundReference">
+		<xsd:annotation>
+			<xsd:documentation>max35, A string of characters, to be forwarded with the refund payment (Auftraggeberreferenz)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="35"/>
+				<xsd:pattern value="[\-A-Za-z0-9\+/\?:\(\)\.,'&#x20;]*"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="MerchantIBAN">
+		<xsd:annotation>
+			<xsd:documentation>The unique and unambiguous identification of the account for the account owner and the account servicer. This must be an IBAN (International Bank Account Number).</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="34"/>
+				<xsd:pattern value="[A-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="TransactionId">
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:pattern value="[a-zA-Z0-9\-\._~]{1,36}" />
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="Amount">
+		<xsd:annotation>
+			<xsd:documentation>Associated with the Class PaymentInstructionDetails, a monetary amount as specified by the beneficiary</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="xsd:decimal">
+					<xsd:attribute name="AmountCurrencyIdentifier" use="required">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="3"/>
+								<xsd:pattern value="[A-Z]{3}"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="StatusCode">
+		<xsd:annotation>
+			<xsd:documentation>000 - Keine Fehler Datentraeger übernommen
+												 004 - Authorisierungsdaten fehlerhaft
+												 007 - Fehler im XML Stream
+												 009 - Interner Fehler
+												 010 - IBAN ungültig
+												 020 - TransaktionsId nicht vorhanden
+												 022 - Refundierungsbetrag zu hoch
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="3"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="ErrorMsg">
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="255"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="AuthenticationDetails">
+		<xsd:annotation>
+			<xsd:documentation>Authentication Datacontainer</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="epsr:UserId"/>
+				<xsd:choice>
+					<xsd:element ref="epsr:SHA256Fingerprint"/>
+					<xsd:element ref="dsig:Signature"/>
+				</xsd:choice>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="UserId">
+		<xsd:annotation>
+			<xsd:documentation>UserID provided by bank to beneficiary</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:maxLength value="25"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="SHA256Fingerprint" >
+		<xsd:annotation>
+			<xsd:documentation>the fingerprint calculated from concatenation of pin and request data</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="epsr:Hex">
+				<xsd:minLength value="64" />
+				<xsd:maxLength value="64" />
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:simpleType name="Hex">
+		<xsd:annotation>
+			<xsd:documentation>string restricted to hex-characters</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-fA-F0-9]*" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="CreDtTm" type="xsd:dateTime">
+		<xsd:annotation>
+			<xsd:documentation>creation time of the intitiation message</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+</xsd:schema>

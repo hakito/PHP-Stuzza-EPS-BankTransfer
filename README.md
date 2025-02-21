@@ -25,6 +25,7 @@ Look at the following files in the sample folder:
 
 * eps_start.php
 * eps_confirm.php
+* eps_refund.php
 
 To run the tests, go to the parent folder of tests and execute:
 

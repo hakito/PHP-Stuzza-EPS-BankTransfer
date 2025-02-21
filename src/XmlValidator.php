@@ -14,6 +14,11 @@ class XmlValidator
         return self::ValidateXml($xml, self::GetXSD('EPSProtocol-V26.xsd'));
     }
 
+    public static function ValidateEpsRefund($xml)
+    {
+        return self::ValidateXml($xml, self::GetXSD('EPSRefund-V26.xsd'));
+    }
+
     // HELPER FUNCTIONS
 
     private static function GetXSD($filename)
