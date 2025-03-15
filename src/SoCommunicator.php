@@ -327,7 +327,7 @@ class SoCommunicator
 
 
     /**
-     * Executes a refund request using the EpsRefundRequest object.
+     * Sends a refund request using the EpsRefundRequest object.
      *
      * @param EpsRefundRequest $refundRequest The refund request data to be sent.
      * @param string|null $targetUrl Optional endpoint URL for EPS refund requests. Defaults to the base URL with refund path.
@@ -335,10 +335,8 @@ class SoCommunicator
      * @return string The response body from the refund request.
      * @throws HttpResponseException If the request fails with a non-200 HTTP status code.
      */
-    public function ProcessRefund(EpsRefundRequest $refundRequest, $targetUrl = null, $logMessage = null)
+    public function SendRefundRequest(EpsRefundRequest $refundRequest, $targetUrl = null, $logMessage = null)
     {
-        $this->WriteLog($logMessage ?? 'Initiating refund request.');
-
         if ($targetUrl === null)
             $targetUrl = $this->BaseUrl . '/refund/eps/v2_6';
 
@@ -347,8 +345,6 @@ class SoCommunicator
 
         $response = $this->PostUrl($targetUrl, $xmlData, $logMessage ?? 'Sending refund request to ' . $targetUrl);
         XmlValidator::ValidateEpsRefund($response);
-
-        $this->WriteLog('Refund request completed successfully.');
 
         return $response;
     }

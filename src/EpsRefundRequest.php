@@ -51,8 +51,6 @@ class EpsRefundRequest
      *
      * @return SimpleXMLElement The XML element representing the refund request.
      */
-
-
     public function __construct(
         string  $CreDtTm,
         string  $TransactionId,

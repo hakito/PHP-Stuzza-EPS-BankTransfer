@@ -332,37 +332,35 @@ class SoCommunicatorTest extends BaseTest
         $this->assertStringContainsString('ErrorMsg>Error occured during XML validation</', $actual);
     }
 
-    function testRefundResponseAccepted()
+    function testSendRefundRequestThrowsValidationException()
     {
+        $refundRequest = $this->getMockedRefundRequest();
+        $this->mTransport->body = 'invalidData';
+
+        $this->expectException(XmlValidationException::class);
+        $this->target->SendRefundRequest($refundRequest);
+    }
+
+    function testSendRefundRequestToCorrectUrl()
+    {
+        $refundRequest = $this->getMockedRefundRequest();
         $this->mTransport->body = $this->GetEpsData('RefundResponseAccepted000.xml');
 
-        $refundRequest = $this->getMockedRefundRequest();
-        $response = $this->target->ProcessRefund($refundRequest);
+        $this->target->SendRefundRequest($refundRequest);
 
-        $this->assertStringContainsString('Keine Fehler - dt accepted', $response);
-        $this->assertStringContainsString('StatusCode>000<', $response);
+        $this->assertEquals('https://routing.eps.or.at/appl/epsSO/refund/eps/v2_6', $this->mTransport->lastUrl);
     }
 
-    function testRefundResponseFingerprintFailed()
+    function testSendRefundRequestToTestUrl()
     {
-        $this->mTransport->body = $this->GetEpsData('RefundResponseFingerprintFailed004.xml');
-
+        $this->target = new SoCommunicator(true);
+        $this->target->Transport = $this->mTransport;
         $refundRequest = $this->getMockedRefundRequest();
-        $response = $this->target->ProcessRefund($refundRequest);
+        $this->mTransport->body = $this->GetEpsData('RefundResponseAccepted000.xml');
 
-        $this->assertStringContainsString('Autorisierungsdaten fehlerhaft - SHA256 fingerprint check failed', $response);
-        $this->assertStringContainsString('StatusCode>004<', $response);
-    }
+        $this->target->SendRefundRequest($refundRequest);
 
-    function testRefundResponseInvalidIban()
-    {
-        $this->mTransport->body = $this->GetEpsData('RefundResponseInvalidIban010.xml');
-
-        $refundRequest = $this->getMockedRefundRequest();
-        $response = $this->target->ProcessRefund($refundRequest);
-
-        $this->assertStringContainsString('IBAN ungueltig - customer data not available', $response);
-        $this->assertStringContainsString('StatusCode>010<', $response);
+        $this->assertEquals('https://routing.eps.or.at/appl/epsSO-test/refund/eps/v2_6', $this->mTransport->lastUrl);
     }
 
     public function testHandleConfirmationUrlReturnsShopResponse()
@@ -544,7 +542,7 @@ class SoCommunicatorTest extends BaseTest
     /**
      * Creates a mocked instance of RefundRequest.
      *
-     * @return RefundRequest
+     * @return EpsRefundRequest
      */
     private function getMockedRefundRequest()
     {

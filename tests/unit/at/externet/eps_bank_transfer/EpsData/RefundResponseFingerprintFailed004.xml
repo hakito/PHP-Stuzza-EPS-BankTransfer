@@ -1,7 +1,0 @@
-<epsr:EpsRefundResponse xsi:schemaLocation="http://www.stuzza.at/namespaces/eps/refund/2018/09 EPSRefund-V26.xsd"
-                        xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"
-                        xmlns:epsr="http://www.stuzza.at/namespaces/eps/refund/2018/09"
-                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <epsr:StatusCode>004</epsr:StatusCode>
-    <epsr:ErrorMsg>Autorisierungsdaten fehlerhaft - SHA256 fingerprint check failed</epsr:ErrorMsg>
-</epsr:EpsRefundResponse>
