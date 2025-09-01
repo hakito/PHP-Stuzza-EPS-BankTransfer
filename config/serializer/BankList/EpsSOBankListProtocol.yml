@@ -1,0 +1,3 @@
+Psa\EpsBankTransfer\Internal\Generated\BankList\EpsSOBankListProtocol:
+    xml_root_name: epsSOBankListProtocol
+    xml_root_namespace: 'http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008'

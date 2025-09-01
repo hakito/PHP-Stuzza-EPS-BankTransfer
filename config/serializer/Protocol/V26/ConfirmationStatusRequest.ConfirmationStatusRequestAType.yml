@@ -1,0 +1,22 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V26\ConfirmationStatusRequest\ConfirmationStatusRequestAType:
+    properties:
+        transactionId:
+            expose: true
+            access_type: public_method
+            serialized_name: TransactionId
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+            accessor:
+                getter: getTransactionId
+                setter: setTransactionId
+            type: string
+        authenticationDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: AuthenticationDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+            accessor:
+                getter: getAuthenticationDetails
+                setter: setAuthenticationDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V26\AuthenticationDetails

@@ -1,0 +1,111 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\EpsProtocolDetails\EpsProtocolDetailsAType:
+    properties:
+        sessionLanguage:
+            expose: true
+            access_type: public_method
+            serialized_name: SessionLanguage
+            accessor:
+                getter: getSessionLanguage
+                setter: setSessionLanguage
+            xml_attribute: true
+            type: string
+        transferInitiatorDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: TransferInitiatorDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getTransferInitiatorDetails
+                setter: setTransferInitiatorDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\TransferInitiatorDetails
+        bankResponseDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: BankResponseDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getBankResponseDetails
+                setter: setBankResponseDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\BankResponseDetails
+        vitalityCheckDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: VitalityCheckDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getVitalityCheckDetails
+                setter: setVitalityCheckDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\VitalityCheckDetails
+        bankConfirmationDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: BankConfirmationDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getBankConfirmationDetails
+                setter: setBankConfirmationDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\BankConfirmationDetails
+        shopResponseDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: ShopResponseDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getShopResponseDetails
+                setter: setShopResponseDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\ShopResponseDetails
+        transactionDetailsRequest:
+            expose: true
+            access_type: public_method
+            serialized_name: TransactionDetailsRequest
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getTransactionDetailsRequest
+                setter: setTransactionDetailsRequest
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\TransactionDetailsRequest
+        transactionDetailsResponse:
+            expose: true
+            access_type: public_method
+            serialized_name: TransactionDetailsResponse
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getTransactionDetailsResponse
+                setter: setTransactionDetailsResponse
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\TransactionDetailsResponse
+        confirmationStatusRequest:
+            expose: true
+            access_type: public_method
+            serialized_name: ConfirmationStatusRequest
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getConfirmationStatusRequest
+                setter: setConfirmationStatusRequest
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\ConfirmationStatusRequest
+        confirmationStatusResponse:
+            expose: true
+            access_type: public_method
+            serialized_name: ConfirmationStatusResponse
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getConfirmationStatusResponse
+                setter: setConfirmationStatusResponse
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\ConfirmationStatusResponse
+        statusMsg:
+            expose: true
+            access_type: public_method
+            serialized_name: StatusMsg
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getStatusMsg
+                setter: setStatusMsg
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\StatusMsg

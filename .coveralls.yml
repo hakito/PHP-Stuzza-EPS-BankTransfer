@@ -1,5 +1,0 @@
-# .coveralls.yml configuration
-
-# for php-coveralls
-coverage_clover: build/coverage/clover.xml
-json_path: build/coverage/coveralls-upload.json

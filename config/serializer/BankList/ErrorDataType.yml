@@ -1,0 +1,22 @@
+Psa\EpsBankTransfer\Internal\Generated\BankList\ErrorDataType:
+    properties:
+        errorCode:
+            expose: true
+            access_type: public_method
+            serialized_name: errorCode
+            xml_element:
+                namespace: 'http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008'
+            accessor:
+                getter: getErrorCode
+                setter: setErrorCode
+            type: string
+        errorMsg:
+            expose: true
+            access_type: public_method
+            serialized_name: errorMsg
+            xml_element:
+                namespace: 'http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008'
+            accessor:
+                getter: getErrorMsg
+                setter: setErrorMsg
+            type: string

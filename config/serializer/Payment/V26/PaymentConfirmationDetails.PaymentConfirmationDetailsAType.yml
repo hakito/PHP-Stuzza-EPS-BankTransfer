@@ -1,0 +1,82 @@
+Psa\EpsBankTransfer\Internal\Generated\Payment\V26\PaymentConfirmationDetails\PaymentConfirmationDetailsAType:
+    properties:
+        remittanceIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: RemittanceIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getRemittanceIdentifier
+                setter: setRemittanceIdentifier
+            type: string
+        unstructuredRemittanceIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: UnstructuredRemittanceIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getUnstructuredRemittanceIdentifier
+                setter: setUnstructuredRemittanceIdentifier
+            type: string
+        paymentInitiatorDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: PaymentInitiatorDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/payment/2014/10'
+            accessor:
+                getter: getPaymentInitiatorDetails
+                setter: setPaymentInitiatorDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Payment\V26\PaymentInitiatorDetails
+        payConApprovingUnitDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: PayConApprovingUnitDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/payment/2014/10'
+            accessor:
+                getter: getPayConApprovingUnitDetails
+                setter: setPayConApprovingUnitDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Payment\V26\PayConApprovingUnitDetails
+        payConApprovalTime:
+            expose: true
+            access_type: public_method
+            serialized_name: PayConApprovalTime
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/payment/2014/10'
+            accessor:
+                getter: getPayConApprovalTime
+                setter: setPayConApprovalTime
+            type: DateTime
+        paymentReferenceIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: PaymentReferenceIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/payment/2014/10'
+            accessor:
+                getter: getPaymentReferenceIdentifier
+                setter: setPaymentReferenceIdentifier
+            type: string
+        statusCode:
+            expose: true
+            access_type: public_method
+            serialized_name: StatusCode
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/payment/2014/10'
+            accessor:
+                getter: getStatusCode
+                setter: setStatusCode
+            type: string
+        signature:
+            expose: true
+            access_type: public_method
+            serialized_name: Signature
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getSignature
+                setter: setSignature
+            type: Psa\EpsBankTransfer\Internal\Generated\XmlDsig\Signature

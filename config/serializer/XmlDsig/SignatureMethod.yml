@@ -1,0 +1,3 @@
+Psa\EpsBankTransfer\Internal\Generated\XmlDsig\SignatureMethod:
+    xml_root_name: SignatureMethod
+    xml_root_namespace: 'http://www.w3.org/2000/09/xmldsig#'

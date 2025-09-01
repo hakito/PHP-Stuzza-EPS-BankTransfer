@@ -1,0 +1,66 @@
+Psa\EpsBankTransfer\Internal\Generated\BankList\BankDataType:
+    properties:
+        bic:
+            expose: true
+            access_type: public_method
+            serialized_name: bic
+            xml_element:
+                namespace: 'http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008'
+            accessor:
+                getter: getBic
+                setter: setBic
+            type: string
+        bezeichnung:
+            expose: true
+            access_type: public_method
+            serialized_name: bezeichnung
+            xml_element:
+                namespace: 'http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008'
+            accessor:
+                getter: getBezeichnung
+                setter: setBezeichnung
+            type: string
+        land:
+            expose: true
+            access_type: public_method
+            serialized_name: land
+            xml_element:
+                namespace: 'http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008'
+            accessor:
+                getter: getLand
+                setter: setLand
+            type: string
+        epsUrl:
+            expose: true
+            access_type: public_method
+            serialized_name: epsUrl
+            xml_element:
+                namespace: 'http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008'
+            accessor:
+                getter: getEpsUrl
+                setter: setEpsUrl
+            type: string
+        zahlungsweiseNat:
+            expose: true
+            access_type: public_method
+            serialized_name: zahlungsweiseNat
+            xml_element:
+                namespace: 'http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008'
+            accessor:
+                getter: getZahlungsweiseNat
+                setter: setZahlungsweiseNat
+            xml_list:
+                inline: true
+                entry_name: zahlungsweiseNat
+                namespace: 'http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008'
+            type: array<Psa\EpsBankTransfer\Internal\Generated\BankList\AuftragsartType>
+        zahlungsweiseInt:
+            expose: true
+            access_type: public_method
+            serialized_name: zahlungsweiseInt
+            xml_element:
+                namespace: 'http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008'
+            accessor:
+                getter: getZahlungsweiseInt
+                setter: setZahlungsweiseInt
+            type: string

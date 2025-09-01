@@ -1,0 +1,12 @@
+Psa\EpsBankTransfer\Internal\Generated\Epi\PaymentInstructionIdentifier:
+    xml_root_name: PaymentInstructionIdentifier
+    xml_root_namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+    properties:
+        __value:
+            expose: true
+            xml_value: true
+            access_type: public_method
+            accessor:
+                getter: value
+                setter: value
+            type: string

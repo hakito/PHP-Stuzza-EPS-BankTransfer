@@ -1,0 +1,12 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V26\ErrorMsg:
+    xml_root_name: ErrorMsg
+    xml_root_namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+    properties:
+        __value:
+            expose: true
+            xml_value: true
+            access_type: public_method
+            accessor:
+                getter: value
+                setter: value
+            type: string

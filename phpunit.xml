@@ -15,7 +15,6 @@
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>
-            <exclude>tests/unit/at/externet/eps_bank_transfer/BaseTest.php</exclude>
         </testsuite>
     </testsuites>
 

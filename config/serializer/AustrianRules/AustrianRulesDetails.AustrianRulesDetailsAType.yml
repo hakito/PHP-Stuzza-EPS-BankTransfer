@@ -1,0 +1,62 @@
+Psa\EpsBankTransfer\Internal\Generated\AustrianRules\AustrianRulesDetails\AustrianRulesDetailsAType:
+    properties:
+        realization:
+            expose: true
+            access_type: public_method
+            serialized_name: Realization
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/austrianrules/2014/10'
+            accessor:
+                getter: getRealization
+                setter: setRealization
+            type: string
+        paymentDescription:
+            expose: true
+            access_type: public_method
+            serialized_name: PaymentDescription
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/austrianrules/2014/10'
+            accessor:
+                getter: getPaymentDescription
+                setter: setPaymentDescription
+            type: string
+        tradeCategoryDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: TradeCategoryDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/austrianrules/2014/10'
+            accessor:
+                getter: getTradeCategoryDetails
+                setter: setTradeCategoryDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\AustrianRules\TradeCategoryDetails
+        digSig:
+            expose: true
+            access_type: public_method
+            serialized_name: DigSig
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/austrianrules/2014/10'
+            accessor:
+                getter: getDigSig
+                setter: setDigSig
+            type: string
+        expirationTime:
+            expose: true
+            access_type: public_method
+            serialized_name: ExpirationTime
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/austrianrules/2014/10'
+            accessor:
+                getter: getExpirationTime
+                setter: setExpirationTime
+            type: DateTime
+        statusMsgEnabled:
+            expose: true
+            access_type: public_method
+            serialized_name: StatusMsgEnabled
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/austrianrules/2014/10'
+            accessor:
+                getter: getStatusMsgEnabled
+                setter: setStatusMsgEnabled
+            type: bool

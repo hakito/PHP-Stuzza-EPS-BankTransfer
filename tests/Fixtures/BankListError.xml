@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<epsSOBankListProtocol xmlns="http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008">
+    <errorDetails>
+        <errorCode>001</errorCode>
+        <errorMsg>Bank list retrieval failed</errorMsg>
+    </errorDetails>
+</epsSOBankListProtocol>

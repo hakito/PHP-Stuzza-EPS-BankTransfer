@@ -1,0 +1,22 @@
+Psa\EpsBankTransfer\Internal\Generated\XmlDsig\PGPDataType:
+    properties:
+        pGPKeyID:
+            expose: true
+            access_type: public_method
+            serialized_name: PGPKeyID
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getPGPKeyID
+                setter: setPGPKeyID
+            type: string
+        pGPKeyPacket:
+            expose: true
+            access_type: public_method
+            serialized_name: PGPKeyPacket
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getPGPKeyPacket
+                setter: setPGPKeyPacket
+            type: string

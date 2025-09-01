@@ -1,0 +1,32 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V26\AuthenticationDetails\AuthenticationDetailsAType:
+    properties:
+        userId:
+            expose: true
+            access_type: public_method
+            serialized_name: UserId
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+            accessor:
+                getter: getUserId
+                setter: setUserId
+            type: string
+        mD5Fingerprint:
+            expose: true
+            access_type: public_method
+            serialized_name: MD5Fingerprint
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+            accessor:
+                getter: getMD5Fingerprint
+                setter: setMD5Fingerprint
+            type: string
+        signature:
+            expose: true
+            access_type: public_method
+            serialized_name: Signature
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getSignature
+                setter: setSignature
+            type: Psa\EpsBankTransfer\Internal\Generated\XmlDsig\Signature

@@ -1,0 +1,72 @@
+Psa\EpsBankTransfer\Internal\Generated\XmlDsig\DSAKeyValueType:
+    properties:
+        p:
+            expose: true
+            access_type: public_method
+            serialized_name: P
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getP
+                setter: setP
+            type: string
+        q:
+            expose: true
+            access_type: public_method
+            serialized_name: Q
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getQ
+                setter: setQ
+            type: string
+        j:
+            expose: true
+            access_type: public_method
+            serialized_name: J
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getJ
+                setter: setJ
+            type: string
+        g:
+            expose: true
+            access_type: public_method
+            serialized_name: G
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getG
+                setter: setG
+            type: string
+        'y':
+            expose: true
+            access_type: public_method
+            serialized_name: 'Y'
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getY
+                setter: setY
+            type: string
+        seed:
+            expose: true
+            access_type: public_method
+            serialized_name: Seed
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getSeed
+                setter: setSeed
+            type: string
+        pgenCounter:
+            expose: true
+            access_type: public_method
+            serialized_name: PgenCounter
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getPgenCounter
+                setter: setPgenCounter
+            type: string

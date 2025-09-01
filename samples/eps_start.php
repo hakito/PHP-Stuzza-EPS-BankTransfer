@@ -1,73 +1,132 @@
 <?php
-require_once('../vendor/autoloader.php');
-use at\externet\eps_bank_transfer;
+declare(strict_types=1);
+require_once('../vendor/autoload.php');
 
-// Connection credentials. Override them for test mode.
-$userID = 'AKLJS231534';            // Eps "Händler-ID"/UserID = epsp:UserId
-$pin    = 'topSecret';              // Secret for authentication / PIN = part of epsp:MD5Fingerprint
-$bic    = 'GAWIATW1XXX';            // BIC code of receiving bank account = epi:BfiBicIdentifier
-$iban   = 'AT611904300234573201';   // IBAN code of receiving bank account = epi:BeneficiaryAccountIdentifier
+// Optional: Specify EPS interface version for all calls. Default is '2.6'.
+// You can omit passing this constant to use the default.
+const EPS_INTERFACE_VERSION = '2.6';
 
-// Return urls
-$transferMsgDetails = new eps_bank_transfer\TransferMsgDetails(
-  'http(s)://yourdomain.example.com/eps_confirm.php?id=12345', // The URL that the EPS Scheme Operator (=SO) will call before (= VitaliyCheck) and after payment = epsp:ConfirmationUrl. Use samples/eps_confirm.php as a starting point. You must include a unique query string (and parse it in samples/eps_confirm.php), since the matching of a confirmation to a payment is solely based on this URL!
-  'http(s)://yourdomain.example.com/ThankYou.html',   // The URL that the buyer will be redirected to on succesful payment = epsp:TransactionOkUrl
-  'http(s)://yourdomain.example.com/Failure.html'     // The URL that the buyer will be redirected to on cancel or failure = epsp:TransactionNokUrl
+use Psa\EpsBankTransfer\Api\SoCommunicator;
+use Psa\EpsBankTransfer\Exceptions\EpsException;
+use Psa\EpsBankTransfer\Requests\Parts\WebshopArticle;
+use Psa\EpsBankTransfer\Requests\TransferInitiatorDetails;
+use Psa\EpsBankTransfer\Requests\Parts\PaymentFlowUrls;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Symfony\Component\HttpClient\Psr18Client;
+
+// === Configure your merchant and beneficiary account details ===
+// Note: Replace all placeholders with your real data.
+// For testing, keep using the TEST endpoint (see SoCommunicator below).
+$userID = 'AKLJS231534';            // EPS merchant User ID (epsp:UserId)
+$pin    = 'topSecret';              // Merchant PIN/secret used to compute MD5 fingerprint (epsp:MD5Fingerprint)
+$bic    = 'GAWIATW1XXX';            // BIC of the beneficiary account = epi:BfiBicIdentifier
+$iban   = 'AT611904300234573201';   // IBAN of the beneficiary account = epi:BeneficiaryAccountIdentifier
+
+// === URLs used during the payment flow ===
+$paymentFlowUrls = new PaymentFlowUrls(
+    // Confirmation URL: Called by the EPS Scheme Operator (SO) BEFORE (vitality check) and AFTER the customer authorizes payment.
+    // IMPORTANT: Include a unique identifier in the query string (e.g., order ID) so you can match the callback to your order.
+    // See samples/eps_confirm.php for handling.
+    'https://yourdomain.example.com/eps_confirm.php?id=12345', // = epsp:ConfirmationUrl
+
+    // Customer redirect on successful payment authorization.
+    'https://yourdomain.example.com/ThankYou.html',            // = epsp:TransactionOkUrl
+
+    // Customer redirect on cancellation or failure.
+    'https://yourdomain.example.com/Failure.html'              // = epsp:TransactionNokUrl
 );
 
-$transferInitiatorDetails = new eps_bank_transfer\TransferInitiatorDetails(
-  $userID,
-  $pin,
-  $bic,
-  'John Q. Public',         // Name (and optional address) of the receiving account owner = epi:BeneficiaryNameAddressText. In theory, this can be 140 characters; but in practice, Austrian banks only guarantee 70 characters. Line breaks are not allowed (EPS-Pflichtenheft is ambiguous about this).
-  $iban,
-  '12345',                  // epi:ReferenceIdentifier. Mandatory but useless, since you will never (!) get to see this number again - not upon payment confirmation and not at the bank statement (Kontoauszug). It's also not displayed to the customer. Best guess: Use your order number, i.e. same as epi:RemittanceIdentifier.
-  '9999',                   // Total amount in EUR cent ≈ epi:InstructedAmount
-  $transferMsgDetails
+$initiateTransferRequest = new TransferInitiatorDetails(
+    $userID,
+    $pin,
+    $bic,
+    // Beneficiary name (and optional address). Spec allows up to 140 chars, but banks often only guarantee 70. No line breaks.
+    'John Q. Public',                                            // = epi:BeneficiaryNameAddressText
+    $iban,
+    // Reference Identifier (mandatory by spec) but not returned in confirmation or shown on bank statement.
+    // Best practice: reuse your order number (often equals the Remittance Identifier).
+    '12345',                                                     // = epi:ReferenceIdentifier
+    // Total amount in EURO cents (e.g., 9999 = €99.99).
+    '9999',                                                      // ≈ epi:InstructedAmount
+    $paymentFlowUrls,
+    null,
+    60 // Optional: link timeout in minutes
 );
 
-// Optional: Include ONE (i.e. not both!) of the following two lines:
-$transferInitiatorDetails->RemittanceIdentifier = 'Order123';             // "Zahlungsreferenz". Will be returned on payment confirmation = epi:RemittanceIdentifier
-$transferInitiatorDetails->UnstructuredRemittanceIdentifier = 'Order123'; // "Verwendungszweck". Will be returned on payment confirmation = epi:UnstructuredRemittanceIdentifier
+// Optional: Include ONE (not both!) of the following remittance fields.
+// These values are returned in the confirmation and are useful for matching.
+$initiateTransferRequest->setRemittanceIdentifier('Order123');                  // "Remittance Identifier" (Zahlungsreferenz) = epi:RemittanceIdentifier
+// Only use ONE of the following fields. Commented out to follow spec strictly:
+// $initiateTransferRequest->setUnstructuredRemittanceIdentifier('Order123');     // "Unstructured Remittance Identifier" (Verwendungszweck) = epi:UnstructuredRemittanceIdentifier
 
-// Optional:
-$transferInitiatorDetails->SetExpirationMinutes(60);     // Sets ExpirationTimeout. Value must be between 5 and 60
-
-// Optional: Include information about one or more articles = epsp:WebshopDetails
-$article = new eps_bank_transfer\WebshopArticle(  // = epsp:WebshopArticle
-  'ArticleName',  // Article name
-  1,              // Quantity
-  9999            // Price in EUR cents
+// Optional: Provide article details shown by some banks/webshops = epsp:WebshopDetails
+$article = new WebshopArticle( // = epsp:WebshopArticle
+    'ArticleName',   // Article name
+    1,               // Quantity
+    9999             // Unit price in EURO cents
 );
-$transferInitiatorDetails->WebshopArticles[] = $article;
+$initiateTransferRequest->addArticle($article);
 
-// Send TransferInitiatorDetails to Scheme Operator
-$testMode = true; // To use live mode call the SoCommunicator constructor with $testMode = false
-$soCommunicator = new eps_bank_transfer\SoCommunicator($testMode);
+// === Send TransferInitiatorDetails to the EPS Scheme Operator (SO) ===
+$testMode = true; // To use live mode, construct SoCommunicator with the LIVE base URL
+$psr17Factory = new Psr17Factory();
+$soCommunicator = new SoCommunicator(
+    new Psr18Client(),
+    $psr17Factory,
+    $psr17Factory,
+    SoCommunicator::TEST_MODE_URL, // Change to LIVE base URL for production
+    new Monolog\Logger('eps')
+);
 
-// Optional: You can provide a bank selection on your payment site
-// $bankList = $soCommunicator->GetBanksArray(); // Alternative: TryGetBanksArray
+// Optional: Display a bank selection to the user on your checkout page
+// Example: Fetch current bank list (available for interface 2.6) and print BIC + name
+try {
+    $bankList = $soCommunicator->getBanks(EPS_INTERFACE_VERSION);
+    foreach ($bankList->getBanks() as $bank) {
+        // You could render this as a dropdown in your checkout
+        echo $bank->getBic() . ' - ' . $bank->getName() . "\n";
+    }
 
-// Optional: You can override the default URLs for test and live mode and specify your custom base URL
-// $soCommunicator->BaseUrl = 'http://examplel.com/My/Eps/Test/Environment';
-
-// Send transfer initiator details to default URL
-$plain = $soCommunicator->SendTransferInitiatorDetails($transferInitiatorDetails);
-// Optional: When using a preselected bank you can provide this URL as second parameter
-// $plain = $soCommunicator->SendTransferInitiatorDetails($transferInitiatorDetails, $epsUrlFromGetBanksArray);
-
-$xml = new \SimpleXMLElement($plain);
-$soAnswer = $xml->children(eps_bank_transfer\XMLNS_epsp);
-$errorDetails = $soAnswer->BankResponseDetails->ErrorDetails;
-
-if (('' . $errorDetails->ErrorCode) != '000')
-{
-  $errorCode = '' . $errorDetails->ErrorCode;
-  $errorMsg = '' . $errorDetails->ErrorMsg;
+    // Example: Preselect a bank using orderingCustomerOfiIdentifier (per EPS spec v2.6)
+    // Rather than overriding the endpoint URL directly, we set the customer's bank selection via 
+    // orderingCustomerOfiIdentifier to ensure proper routing to the bank.
+    // In your UI, let the customer select their bank; here we just take the first as a demo:
+    $banks = $bankList->getBanks();
+    if (!empty($banks)) {
+        $selectedBank = $banks[0];
+        // orderingCustomerOfiIdentifier expects the bank identifier (typically BIC)
+        $initiateTransferRequest->setOrderingCustomerOfiIdentifier($selectedBank->getBic());
+    }
+} catch (\Throwable $e) {
+    // If bank list is temporarily unavailable, continue without preselection
 }
-else
-{
-  // This is the url you have to redirect the client to.
-  $redirectUrl = $soAnswer->BankResponseDetails->ClientRedirectUrl->__toString();
-  header('Location: ' . $redirectUrl);
+
+// Optional: Override the default base URL (rarely needed)
+//$soCommunicator->setBaseUrl('https://example.com/My/Eps/Environment');
+
+// Perform the initiate-transfer call and handle the response
+try {
+    // Optional version can be passed as the 2nd argument; default is '2.6'
+    $protocolDetails = $soCommunicator->sendTransferInitiatorDetails($initiateTransferRequest, EPS_INTERFACE_VERSION);
+
+    if ($protocolDetails->getErrorCode() !== '000') {
+        // Non-success from SO: log/display for troubleshooting
+        $errorCode = $protocolDetails->getErrorCode();
+        $errorMessage = $protocolDetails->getErrorMessage();
+
+        echo "Error occurred during EPS bank transfer initiation:\n";
+        echo "Error code: " . $errorCode . "\n";
+        echo "Error message: " . $errorMessage . "\n";
+    } else {
+        // Redirect the customer to their bank to complete authorization
+        header('Location: ' . $protocolDetails->getClientRedirectUrl());
+    }
+} catch (EpsException $e) {
+    // Handle PSA specific exceptions
+    $errorCode = 'EPS Exception';
+    $errorMessage = $e->getMessage();
+} catch (\Exception $e) {
+    // Handle other unexpected exceptions
+    $errorCode = 'Exception';
+    $errorMessage = $e->getMessage();
 }

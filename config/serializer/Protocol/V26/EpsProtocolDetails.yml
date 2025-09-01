@@ -1,0 +1,10 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V26\EpsProtocolDetails:
+    xml_root_name: EpsProtocolDetails
+    xml_root_namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+    xml_root_prefix: epsp
+    xml_namespaces:
+      epsp: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+      eps:  'http://www.stuzza.at/namespaces/eps/payment/2014/10'
+      atrul: 'http://www.stuzza.at/namespaces/eps/austrianrules/2014/10'
+      epi:  'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+      dsig: 'http://www.w3.org/2000/09/xmldsig#'

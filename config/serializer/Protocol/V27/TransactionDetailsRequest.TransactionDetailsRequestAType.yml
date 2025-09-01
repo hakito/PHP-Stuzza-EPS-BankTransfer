@@ -1,0 +1,32 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\TransactionDetailsRequest\TransactionDetailsRequestAType:
+    properties:
+        transactionId:
+            expose: true
+            access_type: public_method
+            serialized_name: TransactionId
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getTransactionId
+                setter: setTransactionId
+            type: string
+        bankId:
+            expose: true
+            access_type: public_method
+            serialized_name: BankId
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getBankId
+                setter: setBankId
+            type: string
+        signature:
+            expose: true
+            access_type: public_method
+            serialized_name: Signature
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getSignature
+                setter: setSignature
+            type: Psa\EpsBankTransfer\Internal\Generated\XmlDsig\Signature

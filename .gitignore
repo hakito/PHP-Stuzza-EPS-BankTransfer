@@ -4,3 +4,4 @@ junit.xml
 build/
 .phpunit.result.cache
 .phpunit.cache/
+.idea

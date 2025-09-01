@@ -1,0 +1,19 @@
+Psa\EpsBankTransfer\Internal\Generated\BankList\AuftragsartType:
+    properties:
+        __value:
+            expose: true
+            xml_value: true
+            access_type: public_method
+            accessor:
+                getter: value
+                setter: value
+            type: string
+        terminueberweisung:
+            expose: true
+            access_type: public_method
+            serialized_name: terminueberweisung
+            accessor:
+                getter: getTerminueberweisung
+                setter: setTerminueberweisung
+            xml_attribute: true
+            type: bool

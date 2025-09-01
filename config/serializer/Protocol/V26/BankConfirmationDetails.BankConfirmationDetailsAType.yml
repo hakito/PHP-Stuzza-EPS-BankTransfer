@@ -1,0 +1,22 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V26\BankConfirmationDetails\BankConfirmationDetailsAType:
+    properties:
+        sessionId:
+            expose: true
+            access_type: public_method
+            serialized_name: SessionId
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+            accessor:
+                getter: getSessionId
+                setter: setSessionId
+            type: string
+        paymentConfirmationDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: PaymentConfirmationDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/payment/2014/10'
+            accessor:
+                getter: getPaymentConfirmationDetails
+                setter: setPaymentConfirmationDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Payment\V26\PaymentConfirmationDetails

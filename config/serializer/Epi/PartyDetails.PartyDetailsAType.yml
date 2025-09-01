@@ -1,0 +1,22 @@
+Psa\EpsBankTransfer\Internal\Generated\Epi\PartyDetails\PartyDetailsAType:
+    properties:
+        bfiPartyDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: BfiPartyDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getBfiPartyDetails
+                setter: setBfiPartyDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Epi\BfiPartyDetails
+        beneficiaryPartyDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: BeneficiaryPartyDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getBeneficiaryPartyDetails
+                setter: setBeneficiaryPartyDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Epi\BeneficiaryPartyDetails

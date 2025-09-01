@@ -1,28 +1,54 @@
 {
-    "name": "hakito/php-stuzza-eps-banktransfer",
-    "description": "Stuzza e-payment standard implementation for PHP",
-    "keywords": ["eps", "payments", "stuzza", "bank transfer"],
-    "type": "library",
-    "license": "GPL-2.0",
-    "homepage": "https://github.com/hakito/PHP-Stuzza-EPS-BankTransfer",
-    "authors": [
-        {
-            "name": "Hakito",
-            "homepage": "https://github.com/hakito/PHP-Stuzza-EPS-BankTransfer/graphs/contributors"
-        }
-    ],
-    "require": {
-        "php": ">=7.3.0",
-        "rmccue/requests": "^2.0"
+  "name": "psa/eps-bank-transfer",
+  "description": "Stuzza e-payment standard implementation for PHP",
+  "keywords": [
+    "eps",
+    "payments",
+    "stuzza",
+    "bank transfer"
+  ],
+  "type": "library",
+  "version": "1.0.0",
+  "license": "GPL-2.0",
+  "homepage": "https://github.com/hakito/PHP-Stuzza-EPS-BankTransfer",
+  "authors": [
+    {
+      "name": "Hakito",
+      "homepage": "https://github.com/hakito/PHP-Stuzza-EPS-BankTransfer/graphs/contributors"
     },
-    "require-dev": {
-        "phpunit/phpunit": "9.*",
-        "php-coveralls/php-coveralls": "^2.7"
-    },
-    "autoload": {
-        "files": [ "src/functions.php"],
-        "psr-4": {
-            "at\\externet\\eps_bank_transfer\\": "src/"
-        }
+    {
+      "name": "knusperleicht",
+      "homepage": "https://github.com/knusperleicht"
     }
+  ],
+  "require": {
+    "php": ">=7.3.0",
+    "psr/http-client": "^1.0",
+    "psr/http-message": "^2.0",
+    "psr/http-factory": "^1.0",
+    "ext-simplexml": "*",
+    "ext-dom": "*",
+    "ext-libxml": "*",
+    "jms/serializer": "^3.29"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "9.*",
+    "php-coveralls/php-coveralls": "^2.7",
+    "nyholm/psr7": "^1.8",
+    "symfony/http-client": "^5.4",
+    "goetas-webservices/xsd2php": "^0.4.13",
+    "goetas-webservices/xsd2php-runtime": "^0.2.17",
+    "monolog/monolog": "^2.10"
+  },
+  "autoload": {
+    "psr-4": {
+      "Psa\\EpsBankTransfer\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Psa\\EpsBankTransfer\\Tests\\": "tests/Unit/",
+      "Psa\\EpsBankTransfer\\Tests\\Helper\\": "tests/Helper/"
+    }
+  }
 }

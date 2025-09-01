@@ -1,0 +1,32 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V26\ShopResponseDetails\ShopResponseDetailsAType:
+    properties:
+        sessionId:
+            expose: true
+            access_type: public_method
+            serialized_name: SessionId
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+            accessor:
+                getter: getSessionId
+                setter: setSessionId
+            type: string
+        shopConfirmationDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: ShopConfirmationDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/payment/2014/10'
+            accessor:
+                getter: getShopConfirmationDetails
+                setter: setShopConfirmationDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Payment\V26\ShopConfirmationDetails
+        errorMsg:
+            expose: true
+            access_type: public_method
+            serialized_name: ErrorMsg
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+            accessor:
+                getter: getErrorMsg
+                setter: setErrorMsg
+            type: string

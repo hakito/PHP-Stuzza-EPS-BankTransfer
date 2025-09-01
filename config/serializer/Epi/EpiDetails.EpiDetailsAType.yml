@@ -1,0 +1,32 @@
+Psa\EpsBankTransfer\Internal\Generated\Epi\EpiDetails\EpiDetailsAType:
+    properties:
+        identificationDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: IdentificationDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getIdentificationDetails
+                setter: setIdentificationDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Epi\IdentificationDetails
+        partyDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: PartyDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getPartyDetails
+                setter: setPartyDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Epi\PartyDetails
+        paymentInstructionDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: PaymentInstructionDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getPaymentInstructionDetails
+                setter: setPaymentInstructionDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Epi\PaymentInstructionDetails

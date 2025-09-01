@@ -1,0 +1,22 @@
+Psa\EpsBankTransfer\Internal\Generated\Refund\EpsRefundResponse\EpsRefundResponseAType:
+    properties:
+        statusCode:
+            expose: true
+            access_type: public_method
+            serialized_name: StatusCode
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/refund/2018/09'
+            accessor:
+                getter: getStatusCode
+                setter: setStatusCode
+            type: string
+        errorMsg:
+            expose: true
+            access_type: public_method
+            serialized_name: ErrorMsg
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/refund/2018/09'
+            accessor:
+                getter: getErrorMsg
+                setter: setErrorMsg
+            type: string

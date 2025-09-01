@@ -1,0 +1,32 @@
+Psa\EpsBankTransfer\Internal\Generated\Epi\BeneficiaryPartyDetails\BeneficiaryPartyDetailsAType:
+    properties:
+        beneficiaryNameAddressText:
+            expose: true
+            access_type: public_method
+            serialized_name: BeneficiaryNameAddressText
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getBeneficiaryNameAddressText
+                setter: setBeneficiaryNameAddressText
+            type: string
+        beneficiaryBeiIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: BeneficiaryBeiIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getBeneficiaryBeiIdentifier
+                setter: setBeneficiaryBeiIdentifier
+            type: string
+        beneficiaryAccountIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: BeneficiaryAccountIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getBeneficiaryAccountIdentifier
+                setter: setBeneficiaryAccountIdentifier
+            type: string

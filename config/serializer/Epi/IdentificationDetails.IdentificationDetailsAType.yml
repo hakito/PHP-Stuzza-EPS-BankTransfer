@@ -1,0 +1,82 @@
+Psa\EpsBankTransfer\Internal\Generated\Epi\IdentificationDetails\IdentificationDetailsAType:
+    properties:
+        date:
+            expose: true
+            access_type: public_method
+            serialized_name: Date
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getDate
+                setter: setDate
+            type: string
+        referenceIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: ReferenceIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getReferenceIdentifier
+                setter: setReferenceIdentifier
+            type: string
+        url:
+            expose: true
+            access_type: public_method
+            serialized_name: Url
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getUrl
+                setter: setUrl
+            type: string
+        emailAddressIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: EmailAddressIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getEmailAddressIdentifier
+                setter: setEmailAddressIdentifier
+            type: string
+        orderInfoText:
+            expose: true
+            access_type: public_method
+            serialized_name: OrderInfoText
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getOrderInfoText
+                setter: setOrderInfoText
+            type: string
+        orderingCustomerOfiIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: OrderingCustomerOfiIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getOrderingCustomerOfiIdentifier
+                setter: setOrderingCustomerOfiIdentifier
+            type: string
+        orderingCustomerIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: OrderingCustomerIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getOrderingCustomerIdentifier
+                setter: setOrderingCustomerIdentifier
+            type: string
+        orderingCustomerNameAddressText:
+            expose: true
+            access_type: public_method
+            serialized_name: OrderingCustomerNameAddressText
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getOrderingCustomerNameAddressText
+                setter: setOrderingCustomerNameAddressText
+            type: string

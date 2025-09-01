@@ -1,0 +1,31 @@
+Psa\EpsBankTransfer\Internal\Generated\Epi\DateOptionDetails\DateOptionDetailsAType:
+    properties:
+        dateSpecificationCode:
+            expose: true
+            access_type: public_method
+            serialized_name: DateSpecificationCode
+            accessor:
+                getter: getDateSpecificationCode
+                setter: setDateSpecificationCode
+            xml_attribute: true
+            type: string
+        optionDate:
+            expose: true
+            access_type: public_method
+            serialized_name: OptionDate
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getOptionDate
+                setter: setOptionDate
+            type: string
+        optionTime:
+            expose: true
+            access_type: public_method
+            serialized_name: OptionTime
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getOptionTime
+                setter: setOptionTime
+            type: string

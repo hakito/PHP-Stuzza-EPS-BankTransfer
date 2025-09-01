@@ -1,0 +1,12 @@
+Psa\EpsBankTransfer\Internal\Generated\Epi\BfiPartyDetails\BfiPartyDetailsAType:
+    properties:
+        bfiBicIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: BfiBicIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getBfiBicIdentifier
+                setter: setBfiBicIdentifier
+            type: string

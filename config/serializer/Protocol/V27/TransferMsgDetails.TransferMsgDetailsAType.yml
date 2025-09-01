@@ -1,0 +1,32 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\TransferMsgDetails\TransferMsgDetailsAType:
+    properties:
+        confirmationUrl:
+            expose: true
+            access_type: public_method
+            serialized_name: ConfirmationUrl
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getConfirmationUrl
+                setter: setConfirmationUrl
+            type: string
+        transactionOkUrl:
+            expose: true
+            access_type: public_method
+            serialized_name: TransactionOkUrl
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getTransactionOkUrl
+                setter: setTransactionOkUrl
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\TransactionOkUrl
+        transactionNokUrl:
+            expose: true
+            access_type: public_method
+            serialized_name: TransactionNokUrl
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getTransactionNokUrl
+                setter: setTransactionNokUrl
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\TransactionNokUrl

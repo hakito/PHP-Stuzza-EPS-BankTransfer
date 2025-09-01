@@ -1,0 +1,12 @@
+Psa\EpsBankTransfer\Internal\Generated\Refund\SHA256Fingerprint:
+    xml_root_name: SHA256Fingerprint
+    xml_root_namespace: 'http://www.stuzza.at/namespaces/eps/refund/2018/09'
+    properties:
+        __value:
+            expose: true
+            xml_value: true
+            access_type: public_method
+            accessor:
+                getter: value
+                setter: value
+            type: string

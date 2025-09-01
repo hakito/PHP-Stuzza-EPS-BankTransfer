@@ -1,0 +1,31 @@
+Psa\EpsBankTransfer\Internal\Generated\Payment\V27\StatusReason\StatusReasonAType:
+    properties:
+        from:
+            expose: true
+            access_type: public_method
+            serialized_name: from
+            accessor:
+                getter: getFrom
+                setter: setFrom
+            xml_attribute: true
+            type: string
+        reasonCode:
+            expose: true
+            access_type: public_method
+            serialized_name: ReasonCode
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/payment/2025/01'
+            accessor:
+                getter: getReasonCode
+                setter: setReasonCode
+            type: string
+        reasonMessage:
+            expose: true
+            access_type: public_method
+            serialized_name: ReasonMessage
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/payment/2025/01'
+            accessor:
+                getter: getReasonMessage
+                setter: setReasonMessage
+            type: string

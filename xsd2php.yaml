@@ -1,0 +1,61 @@
+xsd2php:
+  namespaces:
+    # V26 (Default, legacy schemas)
+    'http://www.stuzza.at/namespaces/eps/protocol/2014/10': 'Psa\EpsBankTransfer\Internal\Generated\Protocol\V26'
+    'http://www.stuzza.at/namespaces/eps/payment/2014/10': 'Psa\EpsBankTransfer\Internal\Generated\Payment\V26'
+    'http://www.stuzza.at/namespaces/eps/austrianrules/2014/10': 'Psa\EpsBankTransfer\Internal\Generated\AustrianRules'
+    'http://www.stuzza.at/namespaces/eps/epi/2013/02': 'Psa\EpsBankTransfer\Internal\Generated\Epi'
+    'http://www.stuzza.at/namespaces/eps/refund/2018/09': 'Psa\EpsBankTransfer\Internal\Generated\Refund'
+    'http://www.eps.or.at/epsSO/epsSOBankListProtocol/201008': 'Psa\EpsBankTransfer\Internal\Generated\BankList'
+    'http://www.w3.org/2000/09/xmldsig#': 'Psa\EpsBankTransfer\Internal\Generated\XmlDsig'
+
+    # V27 (new schemas)
+    'http://www.stuzza.at/namespaces/eps/protocol/2025/01': 'Psa\EpsBankTransfer\Internal\Generated\Protocol\V27'
+    'http://www.stuzza.at/namespaces/eps/payment/2025/01': 'Psa\EpsBankTransfer\Internal\Generated\Payment\V27'
+
+  destinations_php:
+    # Protocol
+    'Psa\EpsBankTransfer\Internal\Generated\Protocol\V26': 'src/Internal/Generated/Protocol/V26'
+    'Psa\EpsBankTransfer\Internal\Generated\Protocol\V27': 'src/Internal/Generated/Protocol/V27'
+
+    # Payment
+    'Psa\EpsBankTransfer\Internal\Generated\Payment\V26': 'src/Internal/Generated/Payment/V26'
+    'Psa\EpsBankTransfer\Internal\Generated\Payment\V27': 'src/Internal/Generated/Payment/V27'
+
+    # Others (not versioned)
+    'Psa\EpsBankTransfer\Internal\Generated\AustrianRules': 'src/Internal/Generated/AustrianRules'
+    'Psa\EpsBankTransfer\Internal\Generated\Epi': 'src/Internal/Generated/Epi'
+    'Psa\EpsBankTransfer\Internal\Generated\Refund': 'src/Internal/Generated/Refund'
+    'Psa\EpsBankTransfer\Internal\Generated\BankList': 'src/Internal/Generated/BankList'
+    'Psa\EpsBankTransfer\Internal\Generated\XmlDsig': 'src/Internal/Generated/XmlDsig'
+
+  destinations_jms:
+    # Protocol
+    'Psa\EpsBankTransfer\Internal\Generated\Protocol\V26': 'config/serializer/Protocol/V26'
+    'Psa\EpsBankTransfer\Internal\Generated\Protocol\V27': 'config/serializer/Protocol/V27'
+
+    # Payment
+    'Psa\EpsBankTransfer\Internal\Generated\Payment\V26': 'config/serializer/Payment/V26'
+    'Psa\EpsBankTransfer\Internal\Generated\Payment\V27': 'config/serializer/Payment/V27'
+
+    # Others (not versioned)
+    'Psa\EpsBankTransfer\Internal\Generated\AustrianRules': 'config/serializer/AustrianRules'
+    'Psa\EpsBankTransfer\Internal\Generated\Epi': 'config/serializer/Epi'
+    'Psa\EpsBankTransfer\Internal\Generated\Refund': 'config/serializer/Refund'
+    'Psa\EpsBankTransfer\Internal\Generated\BankList': 'config/serializer/BankList'
+    'Psa\EpsBankTransfer\Internal\Generated\XmlDsig': 'config/serializer/XmlDsig'
+
+  aliases:
+    'http://www.w3.org/2001/XMLSchema':
+      dateTime: 'DateTime'
+      date: 'string'
+      time: 'string'
+      anyURI: 'string'
+      base64Binary: 'string'
+      token: 'string'
+      string: 'string'
+      integer: 'int'
+      int: 'int'
+      long: 'int'
+      boolean: 'bool'
+      decimal: 'float'

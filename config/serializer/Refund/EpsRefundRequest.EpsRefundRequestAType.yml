@@ -1,0 +1,62 @@
+Psa\EpsBankTransfer\Internal\Generated\Refund\EpsRefundRequest\EpsRefundRequestAType:
+    properties:
+        creDtTm:
+            expose: true
+            access_type: public_method
+            serialized_name: CreDtTm
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/refund/2018/09'
+            accessor:
+                getter: getCreDtTm
+                setter: setCreDtTm
+            type: DateTime
+        transactionId:
+            expose: true
+            access_type: public_method
+            serialized_name: TransactionId
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/refund/2018/09'
+            accessor:
+                getter: getTransactionId
+                setter: setTransactionId
+            type: string
+        merchantIBAN:
+            expose: true
+            access_type: public_method
+            serialized_name: MerchantIBAN
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/refund/2018/09'
+            accessor:
+                getter: getMerchantIBAN
+                setter: setMerchantIBAN
+            type: string
+        amount:
+            expose: true
+            access_type: public_method
+            serialized_name: Amount
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/refund/2018/09'
+            accessor:
+                getter: getAmount
+                setter: setAmount
+            type: Psa\EpsBankTransfer\Internal\Generated\Refund\Amount
+        refundReference:
+            expose: true
+            access_type: public_method
+            serialized_name: RefundReference
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/refund/2018/09'
+            accessor:
+                getter: getRefundReference
+                setter: setRefundReference
+            type: string
+        authenticationDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: AuthenticationDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/refund/2018/09'
+            accessor:
+                getter: getAuthenticationDetails
+                setter: setAuthenticationDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Refund\AuthenticationDetails

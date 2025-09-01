@@ -1,0 +1,3 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V26\VitalityCheckDetails:
+    xml_root_name: VitalityCheckDetails
+    xml_root_namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'

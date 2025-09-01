@@ -1,0 +1,82 @@
+Psa\EpsBankTransfer\Internal\Generated\Epi\PaymentInstructionDetails\PaymentInstructionDetailsAType:
+    properties:
+        paymentInstructionIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: PaymentInstructionIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getPaymentInstructionIdentifier
+                setter: setPaymentInstructionIdentifier
+            type: string
+        transactionTypeCode:
+            expose: true
+            access_type: public_method
+            serialized_name: TransactionTypeCode
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getTransactionTypeCode
+                setter: setTransactionTypeCode
+            type: string
+        instructionCode:
+            expose: true
+            access_type: public_method
+            serialized_name: InstructionCode
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getInstructionCode
+                setter: setInstructionCode
+            type: string
+        remittanceIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: RemittanceIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getRemittanceIdentifier
+                setter: setRemittanceIdentifier
+            type: string
+        unstructuredRemittanceIdentifier:
+            expose: true
+            access_type: public_method
+            serialized_name: UnstructuredRemittanceIdentifier
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getUnstructuredRemittanceIdentifier
+                setter: setUnstructuredRemittanceIdentifier
+            type: string
+        instructedAmount:
+            expose: true
+            access_type: public_method
+            serialized_name: InstructedAmount
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getInstructedAmount
+                setter: setInstructedAmount
+            type: Psa\EpsBankTransfer\Internal\Generated\Epi\InstructedAmount
+        chargeCode:
+            expose: true
+            access_type: public_method
+            serialized_name: ChargeCode
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getChargeCode
+                setter: setChargeCode
+            type: string
+        dateOptionDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: DateOptionDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/epi/2013/02'
+            accessor:
+                getter: getDateOptionDetails
+                setter: setDateOptionDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Epi\DateOptionDetails

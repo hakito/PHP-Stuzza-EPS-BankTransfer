@@ -1,0 +1,22 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V26\StatusMsg\StatusMsgAType:
+    properties:
+        transactionId:
+            expose: true
+            access_type: public_method
+            serialized_name: TransactionId
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+            accessor:
+                getter: getTransactionId
+                setter: setTransactionId
+            type: string
+        status:
+            expose: true
+            access_type: public_method
+            serialized_name: Status
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+            accessor:
+                getter: getStatus
+                setter: setStatus
+            type: string

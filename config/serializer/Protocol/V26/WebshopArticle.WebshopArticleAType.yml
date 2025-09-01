@@ -1,0 +1,29 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V26\WebshopArticle\WebshopArticleAType:
+    properties:
+        articleName:
+            expose: true
+            access_type: public_method
+            serialized_name: ArticleName
+            accessor:
+                getter: getArticleName
+                setter: setArticleName
+            xml_attribute: true
+            type: string
+        articleCount:
+            expose: true
+            access_type: public_method
+            serialized_name: ArticleCount
+            accessor:
+                getter: getArticleCount
+                setter: setArticleCount
+            xml_attribute: true
+            type: string
+        articlePrice:
+            expose: true
+            access_type: public_method
+            serialized_name: ArticlePrice
+            accessor:
+                getter: getArticlePrice
+                setter: setArticlePrice
+            xml_attribute: true
+            type: float

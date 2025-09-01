@@ -1,0 +1,42 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\BankResponseDetails\BankResponseDetailsAType:
+    properties:
+        clientRedirectUrl:
+            expose: true
+            access_type: public_method
+            serialized_name: ClientRedirectUrl
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getClientRedirectUrl
+                setter: setClientRedirectUrl
+            type: string
+        errorDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: ErrorDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getErrorDetails
+                setter: setErrorDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\ErrorDetails
+        transactionId:
+            expose: true
+            access_type: public_method
+            serialized_name: TransactionId
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getTransactionId
+                setter: setTransactionId
+            type: string
+        qRCodeUrl:
+            expose: true
+            access_type: public_method
+            serialized_name: QRCodeUrl
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getQRCodeUrl
+                setter: setQRCodeUrl
+            type: string

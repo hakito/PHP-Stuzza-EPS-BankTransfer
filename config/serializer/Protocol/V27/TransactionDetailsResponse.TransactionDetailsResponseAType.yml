@@ -1,0 +1,57 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\TransactionDetailsResponse\TransactionDetailsResponseAType:
+    properties:
+        paymentInitiatorDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: PaymentInitiatorDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/payment/2025/01'
+            accessor:
+                getter: getPaymentInitiatorDetails
+                setter: setPaymentInitiatorDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Payment\V27\PaymentInitiatorDetails
+        transferMsgDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: TransferMsgDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getTransferMsgDetails
+                setter: setTransferMsgDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\TransferMsgDetails
+        webshopDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: WebshopDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getWebshopDetails
+                setter: setWebshopDetails
+            type: array<Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\WebshopArticle>
+            xml_list:
+                inline: false
+                entry_name: WebshopArticle
+                skip_when_empty: true
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+        signature:
+            expose: true
+            access_type: public_method
+            serialized_name: Signature
+            xml_element:
+                namespace: 'http://www.w3.org/2000/09/xmldsig#'
+            accessor:
+                getter: getSignature
+                setter: setSignature
+            type: Psa\EpsBankTransfer\Internal\Generated\XmlDsig\Signature
+        errorDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: ErrorDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getErrorDetails
+                setter: setErrorDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\ErrorDetails

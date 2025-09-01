@@ -1,0 +1,67 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\TransferInitiatorDetails\TransferInitiatorDetailsAType:
+    properties:
+        paymentInitiatorDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: PaymentInitiatorDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/payment/2025/01'
+            accessor:
+                getter: getPaymentInitiatorDetails
+                setter: setPaymentInitiatorDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Payment\V27\PaymentInitiatorDetails
+        transferMsgDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: TransferMsgDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getTransferMsgDetails
+                setter: setTransferMsgDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\TransferMsgDetails
+        webshopDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: WebshopDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getWebshopDetails
+                setter: setWebshopDetails
+            type: array<Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\WebshopArticle>
+            xml_list:
+                inline: false
+                entry_name: WebshopArticle
+                skip_when_empty: true
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+        transactionId:
+            expose: true
+            access_type: public_method
+            serialized_name: TransactionId
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getTransactionId
+                setter: setTransactionId
+            type: string
+        qRCodeUrl:
+            expose: true
+            access_type: public_method
+            serialized_name: QRCodeUrl
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getQRCodeUrl
+                setter: setQRCodeUrl
+            type: string
+        authenticationDetails:
+            expose: true
+            access_type: public_method
+            serialized_name: AuthenticationDetails
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2025/01'
+            accessor:
+                getter: getAuthenticationDetails
+                setter: setAuthenticationDetails
+            type: Psa\EpsBankTransfer\Internal\Generated\Protocol\V27\AuthenticationDetails

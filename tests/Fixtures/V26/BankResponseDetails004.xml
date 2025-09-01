@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<epsp:EpsProtocolDetails xmlns:epsp="http://www.stuzza.at/namespaces/eps/protocol/2014/10"
+                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xsi:schemaLocation="http://www.stuzza.at/namespaces/eps/protocol/2014/10 http://www.stuzza.at/namespaces/eps/protocol/2014/10/EPSProtocol-V26.xsd">
+	<epsp:BankResponseDetails>
+		<epsp:ErrorDetails>
+			<epsp:ErrorCode>004</epsp:ErrorCode>
+			<epsp:ErrorMsg>merchant not found!</epsp:ErrorMsg>
+		</epsp:ErrorDetails>
+	</epsp:BankResponseDetails>
+</epsp:EpsProtocolDetails>

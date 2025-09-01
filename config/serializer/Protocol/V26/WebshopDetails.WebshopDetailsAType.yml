@@ -1,0 +1,16 @@
+Psa\EpsBankTransfer\Internal\Generated\Protocol\V26\WebshopDetails\WebshopDetailsAType:
+    properties:
+        webshopArticle:
+            expose: true
+            access_type: public_method
+            serialized_name: WebshopArticle
+            xml_element:
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+            accessor:
+                getter: getWebshopArticle
+                setter: setWebshopArticle
+            xml_list:
+                inline: true
+                entry_name: WebshopArticle
+                namespace: 'http://www.stuzza.at/namespaces/eps/protocol/2014/10'
+            type: array<Psa\EpsBankTransfer\Internal\Generated\Protocol\V26\WebshopArticle>
